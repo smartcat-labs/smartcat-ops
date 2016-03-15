@@ -1,6 +1,27 @@
 # smartcat-ops
 
-Ops scripts and tools
+Ops scripts and tools. Prerequest for OPS scripts is Vagrant and Ansible.
+
+##Mac installation
+
+###Vagrant
+
+Vagrant uses VirtualBox. To install it use homebrew and following command:
+```
+brew cask install virtualbox
+```
+
+After that you can install vagrant as well with homebrew:
+```
+brew cask install vagrant
+```
+
+###Ansible
+
+After that you need to install Ansible and you are good to go:
+```
+brew install ansible
+```
 
 ## Provisioning
 

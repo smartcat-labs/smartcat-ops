@@ -1,0 +1,11 @@
+#!/bin/sh
+while [ $# -gt 0 ]; do
+   case "$1" in
+   "start" | "restart" | "force-start")
+    exit 101 # action forbidden by policy
+   ;;
+  esac
+  shift
+done
+exit 0
+

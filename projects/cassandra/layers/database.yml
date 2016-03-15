@@ -1,0 +1,11 @@
+---
+- hosts: databaselayer
+  sudo: yes
+  vars_files:
+    - ../project.yml
+    - ../environments/{{ env }}.yml
+  roles:
+    - common
+    - java
+    - cassandra
+    - python

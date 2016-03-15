@@ -1,0 +1,6 @@
+---
+python_version: 2.7
+python_executable_path: "/usr/bin/python{{ python_version }}"
+python_dist_packages_dir: /usr/local/lib/python{{ python_version }}/dist-packages
+
+pip_version: 1.5.4

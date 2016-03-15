@@ -1,0 +1,52 @@
+# Ansible playbook to install Java 8 on Debian
+#
+# Thanks to http://www.sysadminslife.com/linux/howto-oracle-sun-java-7-installation-unter-debian-6-squeeze/
+#
+# Scripted JRE download instructions:
+#
+#  https://ivan-site.com/2012/05/download-oracle-java-jre-jdk-using-a-script/
+#
+# Author: Gabriel Birke <gb@birke-software.de>
+
+---
+  - include_vars: java{{ java_version }}.yml
+
+  - name: Install wget
+    apt: pkg=wget state=present
+
+  - name: Download Java
+    command: >
+              wget
+              -q
+              -O {{java_archive}}
+              --no-cookies
+              --no-check-certificate
+              --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie"
+              {{java_download}}
+              creates={{java_archive}}
+
+  - name: Extract Java archive
+    command: tar -xzf {{java_archive}} -C {{download_folder}} creates={{download_folder}}/{{java_name}}
+
+  - name: Fix ownership
+    file: state=directory path={{download_folder}}/{{java_name}} owner=root group=root recurse=yes
+
+  - name: Create Java folder
+    file: state=directory path={{java_folder}}
+
+  - name: Move Java to final folder
+    command: mv {{download_folder}}/{{java_name}} {{java_folder}}
+             creates={{java_folder}}/{{java_name}}
+
+  - name: Create symlink for easier update
+    file:
+      state=link
+      src={{java_folder}}/{{java_name}}
+      dest={{java_folder}}/{{java_alias}}
+
+  - name: Make Java available for system
+    command: update-alternatives
+              --install "/usr/bin/java"
+              "java"
+              "{{java_folder}}/{{java_alias}}/bin/java"
+              1

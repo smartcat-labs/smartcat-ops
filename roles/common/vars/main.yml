@@ -1,0 +1,4 @@
+---
+# Directory where files downloaded during provisioning are stored.
+downloads_directory: /var/downloads
+local_bin_directory: /usr/local/bin

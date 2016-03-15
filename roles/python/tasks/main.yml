@@ -1,0 +1,10 @@
+---
+  - name: Install Python
+    apt: name={{ item }} update_cache=yes
+    with_items:
+      - python{{ python_version }}
+      - python-dev
+      - python-pip
+
+  - name: Upgrade pip
+    pip: name=pip version={{ pip_version }}

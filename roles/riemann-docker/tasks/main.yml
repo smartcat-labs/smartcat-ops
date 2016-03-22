@@ -1,0 +1,19 @@
+---
+  - name: Ensure Riemann config directory
+    file: path={{ riemann_config_path }} owner=root group=root state=directory
+
+  - name: Riemann config file
+    template: src=riemann.config.j2 dest={{ riemann_config_path }}/riemann.config mode=0755
+
+  - name: Ensure Riemann docker container
+    docker: 
+      name: riemann
+      image: "{{ riemann_docker_image }}"
+      state: reloaded
+      log_driver: syslog
+      restart_policy: always
+      ports:
+        - "{{ riemann_tcp_port }}:5555"
+        - "{{ riemann_tcp_port }}:5555/udp"
+      volumes:
+        - "{{ riemann_config_path }}/riemann.config:/app/etc/riemann.config"

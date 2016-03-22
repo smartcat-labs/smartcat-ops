@@ -1,0 +1,15 @@
+---
+- hosts: server
+  become: yes
+  become_user: root
+  become_method: sudo
+  vars_files:
+    - ../project.yml
+    - ../environments/{{ env }}.yml
+  roles:
+    - common
+    - docker-common
+    - influxdb-docker
+    - grafana-docker
+    - riemann-docker
+

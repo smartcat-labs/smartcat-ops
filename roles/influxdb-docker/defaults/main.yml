@@ -1,0 +1,8 @@
+---
+influxdb_docker_image: "tutum/influxdb:0.9"
+influxdb_data_path: "/var/influxdb/data"
+influxdb_admin_user: "admin"
+influxdb_admin_pwd: "secret"
+influxdb_pre_created_db: "metric"
+influxdb_console_port: "8083"
+influxdb_api_port: "8086"

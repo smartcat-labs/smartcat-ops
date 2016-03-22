@@ -1,0 +1,2 @@
+[server]
+192.168.35.30 ansible_ssh_port=22 ansible_ssh_user=vagrant ansible_ssh_private_key_file=projects/monitor/.vagrant/machines/default/virtualbox/private_key

@@ -1,0 +1,76 @@
+---
+  - name: Ensure Grafana config directory
+    file: path={{ grafana_config_path }} owner=root group=root state=directory
+
+  - name: Ensure Grafana data directory
+    file: path={{ grafana_data_path }} owner=root group=root state=directory
+
+  - name: Grafana config file
+    template: src=grafana.ini.j2 dest={{ grafana_config_path }}/grafana.ini mode=0755
+    register: grafana_config_ready
+
+  - name: Ensure Grafana docker container
+    docker: 
+      name: grafana
+      image: "{{ grafana_docker_image }}"
+      state: reloaded
+      log_driver: syslog
+      restart_policy: always
+      ports:
+        - "{{ grafana_console_port }}:3000"
+      env:
+        GF_SERVER_ROOT_URL: "{{ grafana_url }}"
+        GF_SECURITY_ADMIN_PASSWORD: "{{ grafana_admin_pwd }}"
+      volumes:
+        - "{{ grafana_config_path }}/grafana.ini:/etc/grafana/grafana.ini"
+        - "{{ grafana_data_path }}:/var/lib/grafana"
+    when: grafana_config_ready|success
+    register: grafana_docker_container
+
+  - name: Wait for Grafana API to start
+    wait_for: 
+      port: "{{ grafana_console_port }}"
+      timeout: 30
+    when: grafana_docker_container|success
+    register: grafana_api_ready
+
+  - name: Fetching Grafana DataSources
+    uri:
+      url: "{{ grafana_url }}/api/datasources"
+      force_basic_auth: yes
+      user: "{{ grafana_admin_user }}"
+      password: "{{ grafana_admin_pwd }}"      
+      return_content: yes
+    until: grafana_datasources|success
+    retries: 10
+    delay: 1
+    register: grafana_datasources
+    when: grafana_api_ready|success
+
+  - name: Creating Grafana default InfluxDB DataSource
+    uri:
+      url: "{{ grafana_url }}/api/datasources"
+      method: POST
+      force_basic_auth: yes
+      user: "{{ grafana_admin_user }}"
+      password: "{{ grafana_admin_pwd }}"
+      body_format: json      
+      body: "{{ lookup('template','datasource.json.j2') }}"
+      status_code: 200
+    when: grafana_datasources.json[0] is not defined
+
+  - name: Creating Grafana Overview Dashboard
+    uri:
+      url: "{{ grafana_url }}/api/dashboards/db"
+      method: POST
+      force_basic_auth: yes
+      user: "{{ grafana_admin_user }}"
+      password: "{{ grafana_admin_pwd }}"
+      body_format: json      
+      body: "{{ lookup('template','overview-dashboard.json.j2') }}"
+      status_code: 200
+    when: grafana_datasources.json[0] is not defined
+
+
+
+

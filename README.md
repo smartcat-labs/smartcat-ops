@@ -33,6 +33,13 @@ Provision your virtual machine with following command:
    -e "project_id={project_id} env={environment}"
 ```
 
+Projects may require additional Ansible roles from [Ansible-Galaxy](https://galaxy.ansible.com/) hub. In order
+to install those dependencies the following command could be issued:
+
+```
+ansible-galaxy install -r projects/{project_id}/requirements.yml
+```
+
 ##Folder organization
 
 *Roles* folder consists of reusable roles, each is self contained and from layer you define which set of roles

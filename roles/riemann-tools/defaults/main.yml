@@ -1,0 +1,3 @@
+---
+  riemann_tools_target: localhost
+  riemann_tools_runner_path: "/usr/share/"

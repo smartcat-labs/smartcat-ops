@@ -1,0 +1,11 @@
+---
+  - name: Ensure ruby installed
+    apt: name=ruby-full state=present
+
+  - name: Riemann tools gem
+    gem: name=riemann-tools state=latest
+
+  - name: Riemann tools bash script
+    template: src=riemann.sh dest={{ riemann_tools_runner_path }}/riemann.sh mode=0755
+
+  - shell: {{ riemann_tools_runner_path }}/riemann.sh

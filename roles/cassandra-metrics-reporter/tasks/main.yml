@@ -1,0 +1,15 @@
+---
+  - name: Remove default reporter config
+    shell: rm -rf {{ cassandra_lib_location }}/{{ cassandra_default_reporter_config_jar }}
+
+  - name: Copy reporter config fat jar
+    template: src=metrics-config.yaml dest={{ cassandra_lib_location }}/metrics-config.yaml mode=0755 owner=cassandra group=cassandra
+
+  - name: Copy reporter config
+    template: src=reporter-config2-3.0.1.jar dest={{ cassandra_lib_location }}/reporter-config2-3.0.1.jar mode=0755 owner=cassandra group=cassandra
+
+  - name: Add configuration to cassandra-env.sh
+    shell: echo 'JVM_OPTS="$JVM_OPTS -Dcassandra.metricsReporterConfigFile=metrics-config.yaml"' >> {{ cassandra_env_location }}/{{ cassandra_env_file }}
+
+  - name: Restart cassandra
+    service: name=cassandra state=restarted

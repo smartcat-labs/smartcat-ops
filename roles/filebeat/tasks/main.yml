@@ -1,0 +1,22 @@
+- name: Ensure common deps
+  apt: name={{item}} state=installed force=yes
+  with_items:
+    - apt-transport-https
+
+- name: Adding Elasticsearch repo key
+  apt_key: url=https://packages.elasticsearch.org/GPG-KEY-elasticsearch state=present
+
+- name: Adding Elasticsearch apt repo
+  apt_repository: repo='deb https://packages.elastic.co/beats/apt stable main' state=present
+
+- name: Install Filebeat
+  apt: name=filebeat update_cache=yes state=installed
+
+- name: Copy filebeat template
+  template: src=filebeat.template.json.j2 dest=/etc/filebeat/filebeat.template.json mode=0755
+
+- name: Copy filebeat configuration
+  template: src=filebeat.yml.j2 dest=/etc/filebeat/filebeat.yml mode=0755
+
+- name: Set filebeat srevice
+  service: name=filebeat enabled=yes state=restarted

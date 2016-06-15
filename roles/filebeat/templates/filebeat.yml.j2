@@ -1,0 +1,18 @@
+filebeat:
+ prospectors:
+   - paths: [{{ filebeat_paths }}]
+     encoding: plain
+     input_type: log
+     document_type: log
+     scan_frequency: {{ filebeat_scan_frequency }}
+
+output:
+ elasticsearch:
+   hosts: [{{ filebeat_elasticsearch_hosts }}]
+   worker: 1
+   index: "filebeat"
+
+   template:
+     name: "filebeat"
+     path: "filebeat.template.json"
+     overwrite: false

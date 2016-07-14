@@ -5,6 +5,11 @@ filebeat:
      input_type: log
      document_type: log
      scan_frequency: {{ filebeat_scan_frequency }}
+     # merges any line that begins with whitespace up to the previous line to single event
+      multiline:
+        pattern: '^[[:space:]]'
+        negate: false
+        match: after
 
 output:
  elasticsearch:

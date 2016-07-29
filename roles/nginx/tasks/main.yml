@@ -1,0 +1,29 @@
+---
+  - name: Install nginx
+    apt: name=nginx state=present
+
+  - name: Ensure web root directory
+    file:
+      path={{ web_root }}
+      owner={{ web_root_user }}
+      group={{ web_root_group }}
+      state=directory
+
+  - name: Ensure nginx sites-available
+    file: name=/etc/nginx/sites-available state=directory
+
+  - name: Ensure nginx sites-enabled
+    file: name=/etc/nginx/sites-enabled state=directory
+
+  - name: Configure nginx
+    template: src=nginx.conf.j2 dest=/etc/nginx/nginx.conf
+    notify: Restart nginx
+
+  - name: Add default site template
+    template: src=default.conf.j2 dest=/etc/nginx/sites-available/{{ site_name }}.conf
+    notify: Restart nginx
+
+  - name: Enable default site
+    file: src=/etc/nginx/sites-available/{{ site_name }}.conf
+      dest=/etc/nginx/sites-enabled/{{ site_name }}.conf state=link
+    notify: Restart nginx

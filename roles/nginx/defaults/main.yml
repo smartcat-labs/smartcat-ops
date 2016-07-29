@@ -1,0 +1,12 @@
+---
+site_name: "{{ inventory_hostname }}"
+web_root: /var/www/{{ site_name }}
+web_root_user: www-data
+web_root_group: www-data
+web_index_file_name: index.html
+
+nginx_proxy_prefix: "/rest"
+web_socket_endpoint_prefix: {{ web_socket_endpoint_prefix }}
+nginx_proxy_destination_url: "http://127.0.0.1:8080"
+
+nginx_request_body_maximum_size: 1M

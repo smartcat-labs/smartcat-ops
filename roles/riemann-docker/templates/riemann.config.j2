@@ -27,10 +27,18 @@
                        :username "{{ riemann_influxdb_user }}"
                        :password "{{ riemann_influxdb_pwd }}"}))))
 
+; Divide timestamp with 1000 if it is sent as ms to correctly handle ms precision
+(defn autoscale [ts]
+  (if (> ts 1000000000000) (/ ts 1000) ts))
+
 (let [index (index)]
   (streams
     (default :ttl 60
+
+    (adjust [:time autoscale]
+      index
+
       influx
 
       (expired
-        (fn [event] (info "expired" event))) )))
+        (fn [event] (info "expired" event))) ))))

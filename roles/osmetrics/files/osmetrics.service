@@ -1,0 +1,11 @@
+[Unit]
+Description=osmetrics
+After=network.target
+
+[Service]
+ExecStart=/usr/share/osmetrics/osmetrics
+Type=simple
+PIDFile=/var/run/osmetrics.pid
+
+[Install]
+WantedBy=default.target

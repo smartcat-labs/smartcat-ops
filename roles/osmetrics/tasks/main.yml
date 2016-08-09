@@ -1,0 +1,40 @@
+- name: Download latest OS Metrics (from GitHub master)
+  get_url: url={{ osmetrics_github_download_url }} dest=/tmp/os-metrics.zip
+
+- name: Ensure unzip tool
+  package: name=unzip state=present
+
+- name: Extract OS Metrics
+  unarchive: src=/tmp/os-metrics.zip dest=/tmp copy=no
+
+- name: Cleanup previos OS Metrics installation
+  file: path={{ osmetrics_install_dir }} state=absent
+
+- name: Install OS Metrics files
+  shell: "mv -f /tmp/smartcat-os-metrics-master {{ osmetrics_install_dir }}"
+
+- name: Install OS Metrics dependencies
+  shell: "pip install -r {{ osmetrics_install_dir }}/requirements.txt"
+
+- name: Ensure configuration directory
+  file: path={{ osmetrics_config_dir }} state=directory
+
+- name: Install OS Metrics configuration
+  template: src=config.j2 dest={{ osmetrics_config_dir }}/config
+
+- name: Install OS Metrics start shell script
+  copy: src=osmetrics dest={{ osmetrics_install_dir }}/osmetrics mode=755
+
+- name: Install OS Metrics sytemd unit file
+  copy: src=osmetrics.service dest=/etc/systemd/system mode=664
+  register: result
+
+- name: Ensure systemd is reloaded if osmetrics.service has changed
+  shell: systemctl daemon-reload
+  when: result|changed
+
+- name: Restart OS Metrics service
+  service: name=osmetrics enabled=yes state=restarted
+
+
+

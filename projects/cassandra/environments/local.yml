@@ -3,3 +3,4 @@
 cassandra_seeds: 192.168.34.20
 cassandra_listen_address: 192.168.34.20
 cassandra_rpc_address: 192.168.34.20
+cluster_name: Cassandra Cluster

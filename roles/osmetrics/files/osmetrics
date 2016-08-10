@@ -1,5 +1,0 @@
-#!/bin/sh
-
-[ -f /etc/osmetrics/config ] && . /etc/osmetrics/config
-
-/usr/bin/python /usr/share/osmetrics/start.py -h $OSMETRICS_RIEMANN_HOST -p $OSMETRICS_RIEMANN_PORT -i $OSMETRICS_INTERVAL

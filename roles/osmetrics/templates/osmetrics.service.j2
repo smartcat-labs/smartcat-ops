@@ -3,7 +3,7 @@ Description=osmetrics
 After=network.target
 
 [Service]
-ExecStart=/usr/share/osmetrics/osmetrics
+ExecStart={{ osmetrics_install_dir }}/osmetrics
 Type=simple
 PIDFile=/var/run/osmetrics.pid
 

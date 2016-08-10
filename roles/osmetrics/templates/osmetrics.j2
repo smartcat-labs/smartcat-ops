@@ -1,0 +1,5 @@
+#!/bin/sh
+
+[ -f {{ osmetrics_config_dir }}/config ] && . {{ osmetrics_config_dir }}/config
+
+/usr/bin/python {{ osmetrics_install_dir }}/start.py -h $OSMETRICS_RIEMANN_HOST -p $OSMETRICS_RIEMANN_PORT -i $OSMETRICS_INTERVAL

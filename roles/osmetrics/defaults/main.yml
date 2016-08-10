@@ -1,0 +1,4 @@
+---
+osmetrics_riemann_host: 192.168.3.22
+osmetrics_riemann_port: 5555
+osmetrics_interval: 5

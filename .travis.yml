@@ -14,5 +14,4 @@ script:
   # Test syntax
   - ansible-playbook -i tests/inventory tests/test.yml --syntax-check
   # Test role run
-  - ansible-playbook -i tests/inventory tests/test.yml -e "project_id=test env=test" --connection=local --sudo
-  # Test role idempotency
+  - ansible-playbook -i tests/inventory tests/test.yml -e "env=test" --connection=local --sudo

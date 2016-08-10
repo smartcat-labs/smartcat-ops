@@ -8,8 +8,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "debian7"
   config.vm.box_url = "file:///Users/nenadbozic/Development/VM/debian-wheezy-64.box"
 
-  # Turn off shared folders
-  config.vm.synced_folder ".", "/vagrant", id: "vagrant-root", disabled: true
+  # Turn on shared folders to send files to VM
+  config.vm.synced_folder "./vagrant-shared", "/vagrant", id: "vagrant-root", disabled: false
 
   # Database server
   config.vm.define "database" do |database|

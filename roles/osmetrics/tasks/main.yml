@@ -23,10 +23,10 @@
   template: src=config.j2 dest={{ osmetrics_config_dir }}/config
 
 - name: Install OS Metrics start shell script
-  copy: src=osmetrics.j2 dest={{ osmetrics_install_dir }}/osmetrics mode=755
+  template: src=osmetrics.j2 dest={{ osmetrics_install_dir }}/osmetrics mode=755
 
 - name: Install OS Metrics sytemd unit file
-  copy: src=osmetrics.service.j2 dest=/etc/systemd/system mode=664
+  template: src=osmetrics.service.j2 dest=/etc/systemd/system/osmetrics.service mode=664
   register: result
 
 - name: Ensure systemd is reloaded if osmetrics.service has changed

@@ -14,7 +14,7 @@
   shell: "mv -f /tmp/smartcat-os-metrics-master {{ osmetrics_install_dir }}"
 
 - name: Install OS Metrics dependencies
-  shell: "pip install -r {{ osmetrics_install_dir }}/requirements.txt"
+  pip: requirements={{ osmetrics_install_dir }}/requirements.txt
 
 - name: Ensure configuration directory
   file: path={{ osmetrics_config_dir }} state=directory

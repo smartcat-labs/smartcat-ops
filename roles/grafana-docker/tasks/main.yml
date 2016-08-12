@@ -10,7 +10,7 @@
     register: grafana_config_ready
 
   - name: Ensure Grafana docker container
-    docker: 
+    docker:
       name: grafana
       image: "{{ grafana_docker_image }}"
       state: reloaded
@@ -28,7 +28,7 @@
     register: grafana_docker_container
 
   - name: Wait for Grafana API to start
-    wait_for: 
+    wait_for:
       port: "{{ grafana_console_port }}"
       timeout: 30
     when: grafana_docker_container|success
@@ -39,7 +39,7 @@
       url: "{{ grafana_url }}/api/datasources"
       force_basic_auth: yes
       user: "{{ grafana_admin_user }}"
-      password: "{{ grafana_admin_pwd }}"      
+      password: "{{ grafana_admin_pwd }}"
       return_content: yes
     until: grafana_datasources|success
     retries: 10
@@ -54,8 +54,8 @@
       force_basic_auth: yes
       user: "{{ grafana_admin_user }}"
       password: "{{ grafana_admin_pwd }}"
-      body_format: json      
-      body: "{{ lookup('template','datasource.json.j2') }}"
+      body_format: json
+      body: "{{ lookup('template','datasource.json.j2') | from_json }}"
       status_code: 200
     when: grafana_datasources.json[0] is not defined
 
@@ -66,11 +66,7 @@
       force_basic_auth: yes
       user: "{{ grafana_admin_user }}"
       password: "{{ grafana_admin_pwd }}"
-      body_format: json      
-      body: "{{ lookup('template','overview-dashboard.json.j2') }}"
+      body_format: json
+      body: "{{ lookup('template','overview-dashboard.json.j2') | from_json }}"
       status_code: 200
     when: grafana_datasources.json[0] is not defined
-
-
-
-

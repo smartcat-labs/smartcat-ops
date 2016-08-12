@@ -25,7 +25,8 @@
                        :port {{ riemann_influxdb_port }}
                        :db "{{ riemann_influxdb_db }}"
                        :username "{{ riemann_influxdb_user }}"
-                       :password "{{ riemann_influxdb_pwd }}"}))))
+                       :password "{{ riemann_influxdb_pwd }}"
+                       :tag-fields #{:host :id :statementType}}))))
 
 ; Divide timestamp with 1000 if it is sent as ms to correctly handle ms precision
 (defn autoscale [ts]
@@ -33,6 +34,7 @@
 
 (let [index (index)]
   (streams
+
     (default :ttl 60
 
     (adjust [:time autoscale]

@@ -21,7 +21,7 @@
                              :keep-alive-time 60000}
 
             (influxdb {:host "{{ riemann_influxdb_host }}"
-                       :version :0.9
+                       :version :{{ riemann_influxdb_version }}
                        :port {{ riemann_influxdb_port }}
                        :db "{{ riemann_influxdb_db }}"
                        :username "{{ riemann_influxdb_user }}"

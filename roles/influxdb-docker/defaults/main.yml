@@ -1,5 +1,6 @@
 ---
-influxdb_docker_image: "tutum/influxdb:0.9"
+influxdb_version: "0.9"
+influxdb_docker_image: "tutum/influxdb:{{ influxdb_version }}"
 influxdb_data_path: "/var/influxdb/data"
 influxdb_admin_user: "admin"
 influxdb_admin_pwd: "secret"

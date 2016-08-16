@@ -4,6 +4,7 @@ riemann_config_path: "/etc/riemann/"
 riemann_tcp_port: "5555"
 riemann_udp_port: "5555"
 
+riemann_influxdb_version: "0.9"
 riemann_influxdb_host: "127.0.0.1"
 riemann_influxdb_port: "8086"
 riemann_influxdb_db: "metric"

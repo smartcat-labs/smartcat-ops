@@ -6,7 +6,7 @@
     template: src=riemann.config.j2 dest={{ riemann_config_path }}/riemann.config mode=0755
 
   - name: Ensure Riemann docker container
-    docker: 
+    docker:
       name: riemann
       image: "{{ riemann_docker_image }}"
       state: reloaded

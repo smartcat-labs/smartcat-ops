@@ -59,17 +59,17 @@
       status_code: 200
     when: grafana_datasources.json[0] is not defined
 
-  - name: Fetching Grafana Overview Dashboards
+  - name: Searching for Grafana Overview Dashboards
     uri:
-      url: "{{ grafana_url }}/api/dashboards/db/overview"
+      url: "{{ grafana_url }}/api/search?query=Overview"
       force_basic_auth: yes
       user: "{{ grafana_admin_user }}"
       password: "{{ grafana_admin_pwd }}"
       return_content: yes
-    until: grafana_overview_dashboard|success
+    until: grafana_dashboards|success
     retries: 10
     delay: 1
-    register: grafana_overview_dashboard
+    register: grafana_dashboards
     when: grafana_api_ready|success
 
   - name: Creating Grafana Overview Dashboard
@@ -82,4 +82,4 @@
       body_format: json
       body: "{{ lookup('template','overview-dashboard.json.j2') | from_json }}"
       status_code: 200
-    when: grafana_overview_dashboard.content is not defined
+    when: grafana_dashboards.json[0] is not defined

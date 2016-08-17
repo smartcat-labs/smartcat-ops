@@ -16,4 +16,4 @@
         - "{{ riemann_tcp_port }}:5555"
         - "{{ riemann_tcp_port }}:5555/udp"
       volumes:
-        - "{{ riemann_config_path }}/riemann.config:/app/etc/riemann.config"
+        - "{{ riemann_config_path }}/riemann.config:/etc/riemann/riemann.config"

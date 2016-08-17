@@ -1,5 +1,5 @@
 ---
-riemann_docker_image: "rlister/riemann"
+riemann_docker_image: "mnuessler/riemann"
 riemann_config_path: "/etc/riemann/"
 riemann_tcp_port: "5555"
 riemann_udp_port: "5555"

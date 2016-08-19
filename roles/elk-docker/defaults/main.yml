@@ -1,0 +1,8 @@
+---
+elk_version: "es234_l234_k453"
+elk_docker_image: "sebp/elk:{{ elk_version }}"
+elk_elasticsearch_data_path: "/var/elasticsearch/data"
+elk_kibana_port: "5601"
+elk_elasticsearch_port: "9200"
+elk_logstash_beats_port: "5044"
+elk_logstash_lumberjack_port: "5000"

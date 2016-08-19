@@ -34,17 +34,15 @@
     when: grafana_docker_container|success
     register: grafana_api_ready
 
-  - name: Fetching Grafana DataSources
+  - name: Fetching Grafana Influx DataSource
     uri:
-      url: "{{ grafana_url }}/api/datasources"
+      url: "{{ grafana_url }}/api/datasources/name/InfluxDB"
       force_basic_auth: yes
       user: "{{ grafana_admin_user }}"
       password: "{{ grafana_admin_pwd }}"
       return_content: yes
-    until: grafana_datasources|success
-    retries: 10
-    delay: 1
-    register: grafana_datasources
+      status_code: 200, 404
+    register: grafana_influx_datasource
     when: grafana_api_ready|success
 
   - name: Creating Grafana default InfluxDB DataSource
@@ -55,21 +53,42 @@
       user: "{{ grafana_admin_user }}"
       password: "{{ grafana_admin_pwd }}"
       body_format: json
-      body: "{{ lookup('template','datasource.json.j2') | from_json }}"
+      body: "{{ lookup('template','influx_datasource.json.j2') | from_json }}"
       status_code: 200
-    when: grafana_datasources.json[0] is not defined
+    when: grafana_influx_datasource.json.id is not defined
 
-  - name: Searching for Grafana Overview Dashboards
+  - name: Fetching Grafana ElasticSearch DataSource
     uri:
-      url: "{{ grafana_url }}/api/search?query=Overview"
+      url: "{{ grafana_url }}/api/datasources/name/ElasticSearch"
       force_basic_auth: yes
       user: "{{ grafana_admin_user }}"
       password: "{{ grafana_admin_pwd }}"
       return_content: yes
-    until: grafana_dashboards|success
-    retries: 10
-    delay: 1
-    register: grafana_dashboards
+      status_code: 200, 404
+    register: grafana_elasticsearch_datasource
+    when: grafana_api_ready|success
+
+  - name: Creating Grafana default ElasticSearch DataSource
+    uri:
+      url: "{{ grafana_url }}/api/datasources"
+      method: POST
+      force_basic_auth: yes
+      user: "{{ grafana_admin_user }}"
+      password: "{{ grafana_admin_pwd }}"
+      body_format: json
+      body: "{{ lookup('template','elasticsearch_datasource.json.j2') | from_json }}"
+      status_code: 200
+    when: grafana_elasticsearch_datasource.json.id is not defined
+
+  - name: Searching for Grafana Overview Dashboards
+    uri:
+      url: "{{ grafana_url }}/api/dashboards/db/overview"
+      force_basic_auth: yes
+      user: "{{ grafana_admin_user }}"
+      password: "{{ grafana_admin_pwd }}"
+      return_content: yes
+      status_code: 200, 404
+    register: grafana_overview_dashboard
     when: grafana_api_ready|success
 
   - name: Creating Grafana Overview Dashboard
@@ -82,4 +101,4 @@
       body_format: json
       body: "{{ lookup('template','overview-dashboard.json.j2') | from_json }}"
       status_code: 200
-    when: grafana_dashboards.json[0] is not defined
+    when: grafana_overview_dashboard.json.dashboard is not defined

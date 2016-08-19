@@ -1,0 +1,18 @@
+---
+  - name: Ensure Elasticsearch data directory
+    file: path={{ elk_elasticsearch_data_path }} owner=root group=root state=directory
+
+  - name: Ensure ELK docker container
+    docker:
+      name: elk
+      image: "{{ elk_docker_image }}"
+      state: reloaded
+      log_driver: syslog
+      restart_policy: always
+      ports:
+        - "{{ elk_kibana_port }}:5601"
+        - "{{ elk_elasticsearch_port }}:9200"
+        - "{{ elk_logstash_beats_port }}:5044"
+        - "{{ elk_logstash_lumberjack_port }}:5000"
+      volumes:
+        - "{{ elk_elasticsearch_data_path }}:/var/lib/elasticsearch"

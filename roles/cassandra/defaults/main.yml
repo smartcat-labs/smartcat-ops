@@ -1,6 +1,6 @@
 ---
 cassandra_rpc_address: 127.0.0.1
-cassandra_seeds: 127.0.0.6
+cassandra_seeds: 127.0.0.1
 
 # This has to resolve to an internal IP address. If using Route 53, set up a split-view DNS so the
 # internal IP address is returned from within the VPC, and the external IP address from the public

@@ -28,9 +28,16 @@
     register: grafana_docker_container
 
   - name: Wait for Grafana API to start
-    wait_for:
-      port: "{{ grafana_console_port }}"
-      timeout: 30
+    uri:
+      url: "{{ grafana_url }}/api/dashboards/home"
+      force_basic_auth: yes
+      user: "{{ grafana_admin_user }}"
+      password: "{{ grafana_admin_pwd }}"
+      return_content: yes
+      status_code: 200
+    until: grafana_api_ready|success
+    retries: 10
+    delay: 10
     when: grafana_docker_container|success
     register: grafana_api_ready
 

@@ -3,14 +3,11 @@
   become: yes
   become_user: root
   become_method: sudo
-  vars_files:
-    - ../project.yml
-    - ../environments/{{ env }}.yml
   roles:
+    - hostname
     - common
     - docker-common
     - influxdb-docker
     - elk-docker
     - grafana-docker
     - riemann-docker
-

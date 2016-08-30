@@ -1,20 +1,40 @@
-- name: Download latest OS Metrics (from GitHub master)
-  get_url: url={{ osmetrics_github_download_url }} dest=/tmp/os-metrics.zip
-
 - name: Ensure unzip tool
   package: name=unzip state=present
 
+- name: Ensure phyton binding
+  package: name=libselinux-python state=present
+
+- name: Check for pip
+  stat: path=/usr/bin/pip
+  register: pip
+
+- name: Get pip installation
+  get_url: url=https://bootstrap.pypa.io/get-pip.py dest=/tmp/get-pip.py
+  when: not pip.stat.exists
+
+- name: Install pip
+  shell:  python /tmp/get-pip.py
+  when: not pip.stat.exists
+
+- name: Download latest OS Metrics (from GitHub master)
+  get_url: url={{ osmetrics_github_download_url }} dest=/tmp/os-metrics.zip force="{{ osmetrics_force_install }}"
+  register: download_osmetrics
+
 - name: Extract OS Metrics
   unarchive: src=/tmp/os-metrics.zip dest=/tmp copy=no
+  when: download_osmetrics|changed
 
 - name: Cleanup previos OS Metrics installation
   file: path={{ osmetrics_install_dir }} state=absent
+  when: download_osmetrics|changed
 
 - name: Install OS Metrics files
   shell: "mv -f /tmp/smartcat-os-metrics-master {{ osmetrics_install_dir }}"
+  when: download_osmetrics|changed
 
 - name: Install OS Metrics dependencies
   pip: requirements={{ osmetrics_install_dir }}/requirements.txt
+  when: download_osmetrics|changed
 
 - name: Ensure configuration directory
   file: path={{ osmetrics_config_dir }} state=directory
@@ -22,16 +42,11 @@
 - name: Install OS Metrics configuration
   template: src=config.j2 dest={{ osmetrics_config_dir }}/config
 
-- name: Install OS Metrics start shell script
-  template: src=osmetrics.j2 dest={{ osmetrics_install_dir }}/osmetrics mode=755
-
-- name: Install OS Metrics sytemd unit file
-  template: src=osmetrics.service.j2 dest=/etc/systemd/system/osmetrics.service mode=664
-  register: result
-
-- name: Ensure systemd is reloaded if osmetrics.service has changed
-  shell: systemctl daemon-reload
-  when: result|changed
+- name: Install OS Metrics init script
+  template: src=osmetrics.init.j2 dest=/etc/rc.d/init.d/osmetrics mode=755
+  register: init_script
 
 - name: Restart OS Metrics service
   service: name=osmetrics enabled=yes state=restarted
+  when: init_script|changed or download_osmetrics|changed
+

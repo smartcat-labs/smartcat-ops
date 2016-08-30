@@ -1,0 +1,116 @@
+#!/bin/bash
+#
+# osmetrics          Start up the OS Metrics daemon
+#
+# chkconfig: 2345 55 25
+# description: OS Metrics sends OS metrics data towards Riemann server.
+#
+# processname: osmetrics
+# config: {{ osmetrics_config_dir }}/config
+# pidfile: /var/run/osmetrics.pid
+
+### BEGIN INIT INFO
+# Provides: osmetrics
+# Required-Start: $local_fs $network $syslog
+# Required-Stop: $local_fs $syslog
+# Should-Start: $syslog
+# Should-Stop: $network $syslog
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
+# Short-Description: Start up the OS Metrics daemon
+# Description:       OS Metrics sends OS metrics data towards Riemann server.
+### END INIT INFO
+
+# Prevent systemd redirect
+SYSTEMCTL_SKIP_REDIRECT=1
+
+# source function library
+. /etc/rc.d/init.d/functions
+
+# pull in sysconfig settings
+[ -f {{ osmetrics_config_dir }}/config ] && . {{ osmetrics_config_dir }}/config
+
+RETVAL=0
+prog="osmetrics"
+lockfile=/var/lock/subsys/osmetrics
+PID_FILE=/var/run/osmetrics.pid
+runlevel=$(set -- $(runlevel); eval "echo \$$#" )
+
+start()
+{
+        echo -n $"Starting $prog: "
+        /usr/bin/python {{ osmetrics_install_dir }}/start.py -h $OSMETRICS_RIEMANN_HOST -p $OSMETRICS_RIEMANN_PORT -i $OSMETRICS_INTERVAL &
+        RETVAL=$?
+        echo $! > $PID_FILE
+        [ $RETVAL -eq 0 ] && touch $lockfile
+        [ $RETVAL -eq 0 ] && success || failure
+        echo
+        return $RETVAL
+}
+
+stop()
+{
+        echo -n $"Stopping $prog: "
+        killproc -p $PID_FILE $prog
+        RETVAL=$?
+        # if we are in halt or reboot runlevel kill all running sessions
+        # so the TCP connections are closed cleanly
+        if [ "x$runlevel" = x0 -o "x$runlevel" = x6 ] ; then
+            trap '' TERM
+            killall $prog 2>/dev/null
+            trap TERM
+        fi
+        [ $RETVAL -eq 0 ] && rm -f $lockfile
+        echo
+}
+
+reload()
+{
+        stop
+        start
+}
+
+restart() {
+        stop
+        start
+}
+
+force_reload() {
+        restart
+}
+
+case "$1" in
+        start)
+                if [ -f $lockfile ] ; then
+                    exit 0
+                fi
+                start
+                ;;
+        stop)
+                if [ -f $lockfile ] ; then
+                    rm -f $lockfile
+                fi
+                stop
+                ;;
+        restart)
+                restart
+                ;;
+        reload)
+                reload
+                ;;
+        force-reload)
+                force_reload
+                ;;
+        condrestart|try-restart)
+                ;;
+        status)
+                RETVAL=0
+                if [ -f $lockfile ] ; then
+                        RETVAL=2
+                fi
+                ;;
+        *)
+                echo $"Usage: $0 {start|stop|restart|reload|force-reload|condrestart|try-restart|status}"
+                RETVAL=2
+esac
+exit $RETVAL

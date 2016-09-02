@@ -1,0 +1,5 @@
+zabbix_db_user: zabbix
+zabbix_db_password: secret
+zabbix_web_port: 8081
+zabbix_server_port: 10051
+zabbix_db_port: 3306

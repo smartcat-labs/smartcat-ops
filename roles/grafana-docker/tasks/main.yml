@@ -14,7 +14,10 @@
       name: grafana
       image: "{{ grafana_docker_image }}"
       state: reloaded
-      log_driver: syslog
+      log_driver: "json-file"
+      log_opt:
+          "max-file": "2"
+          "max-size": "10m"
       restart_policy: always
       ports:
         - "{{ grafana_console_port }}:3000"

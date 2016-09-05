@@ -3,3 +3,5 @@
 **/.vagrant
 **/vagrant-shared
 **/angstwad.docker_ubuntu
+**/*.retry
+

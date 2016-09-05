@@ -1,0 +1,42 @@
+- name: Find cassandra diagnostics version file
+  stat: path={{ cassandra_diagnostics_version_file }}
+  register: version_file
+
+- name: Check the current version
+  shell: "cat {{ cassandra_diagnostics_version_file }}"
+  register: current_version
+  ignore_errors: true
+  when: version_file is defined and version_file.stat.exists
+
+- name: Download new binaries
+  include: download.yml
+  when: current_version|skipped or cassandra_diagnostics_version != current_version.stdout
+  notify: Restart cassandra service
+
+- name: Update cassandra diagnostics configuration
+  template: src={{ cassandra_diagnostics_configuration_file }} group={{ cassandra_user }} owner={{ cassandra_user }}
+    dest={{ cassandra_configuration_dir }}/cassandra-diagnostics.yml
+  notify: Restart cassandra service
+
+- name: Remove cassandra-env javaagent line
+  lineinfile: dest={{ cassandra_configuration_dir }}/cassandra-env.sh state=absent
+    regexp='^JVM_OPTS="\$JVM_OPTS -javaagent:.*cassandra-diagnostics-core-.*"'
+  when: current_version|skipped or cassandra_diagnostics_version != current_version.stdout
+  notify: Restart cassandra service
+
+- name: Set cassandra-env javaagent line
+  lineinfile: dest={{ cassandra_configuration_dir }}/cassandra-env.sh
+    line='JVM_OPTS="$JVM_OPTS -javaagent:{{ cassandra_diagnostics_target_dir }}cassandra-diagnostics-core-{{ cassandra_diagnostics_version }}.jar"'
+  when: current_version|skipped or cassandra_diagnostics_version != current_version.stdout
+  notify: Restart cassandra service
+
+- name: Update cassandra-env configuration line
+  lineinfile: dest={{ cassandra_configuration_dir }}/cassandra-env.sh state=present
+    line='JVM_OPTS="$JVM_OPTS -Dcassandra.diagnostics.config=cassandra-diagnostics.yml"'
+  notify: Restart cassandra service
+
+- name: Write new version
+  shell: "echo {{ cassandra_diagnostics_version }} > {{ cassandra_diagnostics_version_file }}"
+  when: current_version|skipped or cassandra_diagnostics_version != current_version.stdout
+
+- meta: flush_handlers

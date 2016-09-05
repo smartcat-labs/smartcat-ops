@@ -4,6 +4,10 @@
     name: zabbix-db-storage
     image: busybox
     state: present
+    log_driver: "json-file"
+    log_opt:
+        "max-file": "2"
+        "max-size": "10m"
     volumes:
       - /var/lib/mysql
 
@@ -11,6 +15,10 @@
   docker:
     name: zabbix-db
     image: monitoringartist/zabbix-db-mariadb
+    log_driver: "json-file"
+    log_opt:
+        "max-file": "2"
+        "max-size": "10m"
     state: started
     ports:
       - "{{ zabbix_db_port }}:3306"
@@ -26,6 +34,10 @@
   docker:
     name: zabbix
     image: "monitoringartist/zabbix-3.0-xxl:3.0.4"
+    log_driver: "json-file"
+    log_opt:
+        "max-file": "2"
+        "max-size": "10m"
     state: started
     ports:
       - "{{ zabbix_web_port }}:80"

@@ -10,7 +10,10 @@
       name: riemann
       image: "{{ riemann_docker_image }}"
       state: reloaded
-      log_driver: syslog
+      log_driver: "json-file"
+      log_opt:
+          "max-file": "2"
+          "max-size": "10m"
       restart_policy: always
       ports:
         - "{{ riemann_tcp_port }}:5555"

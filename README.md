@@ -30,7 +30,6 @@ Provision your virtual machine with following command:
 ```
  ansible-playbook
    -i projects/{project_id}/inventory/{environment} projects/{project_id}/layers/{layer}.yml
-   -e "project_id={project_id} env={environment}"
 ```
 
 Projects may require additional Ansible roles from [Ansible-Galaxy](https://galaxy.ansible.com/) hub. In order
@@ -48,9 +47,7 @@ you want to install for that layer.
 *Projects* consists of all projects.
 
 *Project* folder has
- - environments which can be production, staging, local etc.
  - files which is placeholder for various files
- - inventory folder has inventory for environments
- - layers has vertical layers application is using (database, application, web)
- - project.yml is main file for project configuration
+ - inventory folder has inventory for different environments and group vars for different groups
+ - layers has playbooks for different layers application is using (database, application, web)
  - Vagrantfile contain vagrant configuration for virtual machine

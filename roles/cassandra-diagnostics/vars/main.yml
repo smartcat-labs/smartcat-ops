@@ -1,0 +1,6 @@
+cassandra_diagnostics_url_main: "https://dl.bintray.com/smartcat-labs/maven/io/smartcat/"
+cassandra_diagnostics_url_core: "{{ cassandra_diagnostics_url_main }}cassandra-diagnostics-core/{{ cassandra_diagnostics_version }}/cassandra-diagnostics-core-{{ cassandra_diagnostics_version }}.jar"
+cassandra_diagnostics_url_connector: "{{ cassandra_diagnostics_url_main }}cassandra-diagnostics-connector{{ cassandra_diagnostics_connector_version }}/{{ cassandra_diagnostics_version }}/cassandra-diagnostics-connector21-{{ cassandra_diagnostics_version }}.jar"
+cassandra_diagnostics_url_driver_connector: "{{ cassandra_diagnostics_url_main }}cassandra-diagnostics-driver-connector/{{ cassandra_diagnostics_version }}/cassandra-diagnostics-driver-connector-{{ cassandra_diagnostics_version }}.jar"
+cassandra_diagnostics_url_reporter_influx: "{{ cassandra_diagnostics_url_main }}cassandra-diagnostics-reporter-influx/{{ cassandra_diagnostics_version }}/cassandra-diagnostics-reporter-influx-{{ cassandra_diagnostics_version }}-all.jar"
+cassandra_diagnostics_url_reporter_riemann: "{{ cassandra_diagnostics_url_main }}cassandra-diagnostics-reporter-riemann/{{ cassandra_diagnostics_version }}/cassandra-diagnostics-reporter-riemann-{{ cassandra_diagnostics_version }}-all.jar"

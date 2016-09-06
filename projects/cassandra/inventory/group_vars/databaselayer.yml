@@ -4,3 +4,12 @@ cassandra_seeds: 192.168.34.20
 cassandra_listen_address: 192.168.34.20
 cassandra_rpc_address: 192.168.34.20
 cluster_name: Cassandra Cluster
+
+cassandra_diagnostics_riemann_host: 192.168.35.30
+cassandra_diagnostics_riemann_port: 5555
+cassandra_diagnostics_version: 1.1.1
+cassandra_diagnostics_configuration_file: ../../improve/templates/cassandra-diagnostics.yml.j2
+cassandra_diagnostics_binaries:
+  - "{{ cassandra_diagnostics_url_core }}"
+  - "{{ cassandra_diagnostics_url_connector }}"
+  - "{{ cassandra_diagnostics_url_reporter_riemann }}"

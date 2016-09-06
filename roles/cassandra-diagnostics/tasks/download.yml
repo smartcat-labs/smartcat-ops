@@ -1,0 +1,17 @@
+- name: Find old binaries
+  find:
+    paths: "{{ cassandra_diagnostics_target_dir }}"
+    patterns: "cassandra-diagnostics-*"
+  register: old_binaries
+
+- name: Cleanup old binaries
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  with_items: "{{ old_binaries.files }}"
+  when: old_binaries is defined
+
+- name: Download binaries
+  get_url: url={{ item }} dest={{ cassandra_diagnostics_target_dir }}
+    group={{ cassandra_user }} owner={{ cassandra_user }}
+  with_items: "{{ cassandra_diagnostics_binaries }}"

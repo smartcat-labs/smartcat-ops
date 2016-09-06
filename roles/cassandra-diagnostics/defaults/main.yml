@@ -1,0 +1,10 @@
+cassandra_configuration_dir: "/usr/share/cassandra/"
+cassandra_user: "cassandra"
+cassandra_diagnostics_version: "1.1.1"
+cassandra_diagnostics_connector_version: "21"
+cassandra_diagnostics_version_file: "/opt/cassandra-diagnostics.version"
+cassandra_diagnostics_target_dir: "/var/lib/cassandra/"
+cassandra_diagnostics_configuration_file: "cassandra-diagnostics.yml.j2"
+
+cassandra_diagnostics_binaries:
+  - "{{ cassandra_diagnostics_url_core }}"

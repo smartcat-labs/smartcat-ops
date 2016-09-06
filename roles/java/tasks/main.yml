@@ -50,3 +50,10 @@
               "java"
               "{{java_folder}}/{{java_alias}}/bin/java"
               1
+
+  - name: Make installed Java version default for the system
+    command: update-alternatives
+              --set
+              "java"
+              "{{java_folder}}/{{java_alias}}/bin/java"
+

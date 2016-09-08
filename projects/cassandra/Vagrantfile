@@ -1,15 +1,7 @@
-# -*- mode: ruby -*-
-# vi: set ft=ruby :
-
-# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.box = "debian7"
-  config.vm.box_url = "file:///Users/nenadbozic/Development/VM/debian-wheezy-64.box"
-
-  # Turn on shared folders to send files to VM
-  config.vm.synced_folder "./vagrant-shared", "/vagrant", id: "vagrant-root", disabled: false
+  config.vm.box = "ubuntu/trusty64"
 
   # Database server
   config.vm.define "database" do |database|

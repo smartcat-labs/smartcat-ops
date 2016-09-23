@@ -52,7 +52,7 @@
       password: "{{ grafana_admin_pwd }}"
       return_content: yes
       status_code: 200, 404
-    register: grafana_influx_datasource
+    register: influx_datasource_result
     when: grafana_api_ready|success
 
   - name: Creating Grafana default InfluxDB DataSource
@@ -63,9 +63,9 @@
       user: "{{ grafana_admin_user }}"
       password: "{{ grafana_admin_pwd }}"
       body_format: json
-      body: "{{ lookup('template','influx_datasource.json.j2') | from_json }}"
+      body: "{{ lookup('template','influx_datasource.json.j2', convert_data=False) }}"
       status_code: 200
-    when: grafana_influx_datasource.json.id is not defined
+    when: influx_datasource_result.status == 404
 
   - name: Fetching Grafana ElasticSearch DataSource
     uri:
@@ -75,7 +75,7 @@
       password: "{{ grafana_admin_pwd }}"
       return_content: yes
       status_code: 200, 404
-    register: grafana_elasticsearch_datasource
+    register: elasticsearch_datasource_result
     when: grafana_api_ready|success
 
   - name: Creating Grafana default ElasticSearch DataSource
@@ -86,9 +86,9 @@
       user: "{{ grafana_admin_user }}"
       password: "{{ grafana_admin_pwd }}"
       body_format: json
-      body: "{{ lookup('template','elasticsearch_datasource.json.j2') | from_json }}"
+      body: "{{ lookup('template','elasticsearch_datasource.json.j2', convert_data=False) }}"
       status_code: 200
-    when: grafana_elasticsearch_datasource.json.id is not defined
+    when: elasticsearch_datasource_result.status == 404
 
   - name: Searching for Grafana Overview Dashboards
     uri:

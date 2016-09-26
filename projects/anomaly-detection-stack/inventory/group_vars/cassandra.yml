@@ -8,7 +8,7 @@ cassandra_user: "cassandra"
 cassandra_diagnostics_version: "1.1.1"
 cassandra_diagnostics_connector_version: "21"
 cassandra_diagnostics_version_file: "/opt/cassandra-diagnostics.version"
-cassandra_diagnostics_configuration_file: "cassandra-diagnostics.yml.j2"
+cassandra_diagnostics_configuration_file: ../../anomaly-detection-stack/templates/cassandra-diagnostics.yml.j2
 
 cassandra_configuration_dir: "/etc/cassandra/"
 cassandra_diagnostics_target_dir: "/usr/share/cassandra/lib/"

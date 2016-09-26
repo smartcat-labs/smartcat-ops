@@ -1,0 +1,30 @@
+---
+- name: create monitoring node
+  ec2:
+    region: eu-central-1
+    image: ami-26c43149
+    keypair: "eu-smartcat"
+    wait: yes
+    group: anomaly-stack
+    instance_type: t2.micro
+    instance_tags:
+      Name: anomaly-monitoring
+    exact_count: 1
+    count_tag:
+      Name: anomaly-monitoring
+  register: ec2
+
+- name: add instance
+  add_host:
+    hostname: '{{ item.public_ip }}'
+    groupname: monitoring
+    private_ip: '{{ item.private_ip }}'
+  with_items: '{{ ec2.instances }}'
+
+- name: wait instances by checking SSH port
+  wait_for:
+    host: '{{ item.public_dns_name }}'
+    port: 22
+    timeout: 120
+    state: started
+  with_items: '{{ ec2.instances }}'

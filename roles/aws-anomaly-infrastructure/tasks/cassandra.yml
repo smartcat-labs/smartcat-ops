@@ -12,13 +12,22 @@
     exact_count: 3
     count_tag:
       Name: anomaly-database
+  tags:
+    - cassandra-setup
+
+- name: retrieve cluster info
+  ec2_remote_facts:
+    region: eu-central-1
+    filters:
+      instance-state-name: running
+      "tag:Name": anomaly-database
   register: ec2
 
 - name: add instance
   add_host:
-    hostname: '{{ item.public_ip }}'
+    hostname: '{{ item.public_dns_name }}'
     groupname: cassandra
-    private_ip: '{{ item.private_ip }}'
+    private_ip: '{{ item.private_ip_address }}'
   with_items: '{{ ec2.instances }}'
 
 - name: wait instances by checking SSH port

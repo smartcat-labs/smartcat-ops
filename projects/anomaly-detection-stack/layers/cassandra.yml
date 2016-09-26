@@ -1,0 +1,13 @@
+---
+- name: setup database
+  hosts: cassandra
+  serial: 1
+  remote_user: ubuntu
+  become: yes
+  become_method: sudo
+
+  roles:
+    - java
+    - cassandra
+    - cassandra-diagnostics
+    - cassandra-seed-delay

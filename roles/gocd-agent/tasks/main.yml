@@ -16,4 +16,3 @@
 
   - name: Add go user to sudoers
     lineinfile: "dest=/etc/sudoers line='go ALL=(ALL) NOPASSWD: ALL'"
-

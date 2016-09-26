@@ -10,6 +10,7 @@
     
   - name: Install go-agent
     apt: name=go-agent update_cache=yes  
+    register: install_go_agent
 
   - name: Ensure GoCD agent is started
     service: name=go-agent state=started

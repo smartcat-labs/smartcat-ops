@@ -16,3 +16,4 @@
   tasks:
     - name: Ensure GoCD server restarted
       service: name=go-server state=restarted
+      when: install_go_agent.changed

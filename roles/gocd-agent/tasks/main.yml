@@ -1,0 +1,19 @@
+---
+  - name: Add GoCD repo
+    apt_repository: repo='deb https://download.go.cd /' state=present update_cache=yes
+    
+  - name: Download GoCD apt key
+    shell: wget -P /tmp/ https://download.go.cd/GOCD-GPG-KEY.asc # could not use get_url or apt_key because of a bug in ansible https://github.com/ansible/ansible/issues/9966
+    
+  - name: Add GoCD apt key
+    apt_key: file=/tmp/GOCD-GPG-KEY.asc state=present
+    
+  - name: Install go-agent
+    apt: name=go-agent update_cache=yes  
+    register: install_go_agent
+
+  - name: Ensure GoCD agent is started
+    service: name=go-agent state=started
+
+  - name: Add go user to sudoers
+    lineinfile: "dest=/etc/sudoers line='go ALL=(ALL) NOPASSWD: ALL'"

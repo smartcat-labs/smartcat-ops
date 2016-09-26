@@ -1,0 +1,5 @@
+[server]
+192.168.33.20 ansible_ssh_user=vagrant ansible_ssh_private_key_file=projects/gocd/.vagrant/machines/ci-server/virtualbox/private_key
+
+[agents]
+192.168.33.20 ansible_ssh_user=vagrant ansible_ssh_private_key_file=projects/gocd/.vagrant/machines/ci-server/virtualbox/private_key

@@ -1,0 +1,19 @@
+---
+
+- hosts: server
+  become: yes
+
+  roles:
+    - gocd-server
+
+- hosts: agents
+  become: yes
+  roles:
+    - gocd-agent
+
+- hosts: server
+  become: yes
+  tasks:
+    - name: Ensure GoCD server restarted
+      service: name=go-server state=restarted
+      when: install_go_agent.changed

@@ -8,6 +8,7 @@
 
   roles:
     - java
+    - filebeat
     - cassandra
     - cassandra-diagnostics
     - cassandra-seed-delay

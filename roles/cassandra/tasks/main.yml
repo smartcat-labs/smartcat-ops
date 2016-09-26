@@ -2,7 +2,7 @@
 - name: Cassandra | Add APT repository keys
   apt_key: url=http://debian.datastax.com/debian/repo_key state=present
 
-- name: Cassandra | Add 21x APT repository
+- name: Cassandra | Add 3.0.x APT repository
   apt_repository: repo="deb http://debian.datastax.com/community stable main" state=present
 
 - name: Cassandra | Stop Cassandra from running with default config
@@ -11,9 +11,7 @@
 - name: Cassandra | Install package
   apt: name={{ item }} state=present update-cache=yes force=yes
   with_items:
-    - dsc21={{ cassandra_version }}-1
-    - cassandra-tools={{ cassandra_version }}
-    - cassandra={{ cassandra_version }}
+    - dsc30={{ cassandra_version }}-1
 
 - name: Cassandra | Setup configuration file
   template: src=cassandra.yaml dest=/etc/cassandra/cassandra.yaml

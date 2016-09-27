@@ -1,0 +1,35 @@
+# Reporters
+reporters:
+  - reporter: io.smartcat.cassandra.diagnostics.reporter.LogReporter
+  - reporter: io.smartcat.cassandra.diagnostics.reporter.RiemannReporter
+    options:
+      riemannHost: {{ hostvars[groups["monitoring"][0]]["private_ip"] }}
+      batchEventSize: 1
+
+# Modules
+modules:
+  - module: io.smartcat.cassandra.diagnostics.module.heartbeat.HeartbeatModule
+    measurement: heartbeat
+    options:
+      period: 15
+      timeunit: MINUTES
+    reporters:
+      - io.smartcat.cassandra.diagnostics.reporter.LogReporter
+      - io.smartcat.cassandra.diagnostics.reporter.RiemannReporter
+  - module: io.smartcat.cassandra.diagnostics.module.slowquery.SlowQueryModule
+    measurement: queryReport
+    options:
+      # Slow query threshold
+      slowQueryThresholdInMilliseconds: 1
+    reporters:
+      - io.smartcat.cassandra.diagnostics.reporter.LogReporter
+      - io.smartcat.cassandra.diagnostics.reporter.RiemannReporter
+  - module: io.smartcat.cassandra.diagnostics.module.requestrate.RequestRateModule
+    measurement: requestRate
+    options:
+      period: 1
+      timeunit: SECONDS
+    reporters:
+      - io.smartcat.cassandra.diagnostics.reporter.LogReporter
+      - io.smartcat.cassandra.diagnostics.reporter.RiemannReporter
+

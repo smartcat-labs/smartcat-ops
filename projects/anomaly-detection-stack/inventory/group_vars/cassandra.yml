@@ -1,0 +1,39 @@
+---
+# Cassandra
+cassandra_version: 3.0.8
+
+cassandra_seed_0: '{{ hostvars[groups["cassandra"][0]]["private_ip"] }}'
+cassandra_seed_1: '{{ hostvars[groups["cassandra"][1]]["private_ip"] }}'
+cassandra_seed_2: '{{ hostvars[groups["cassandra"][2]]["private_ip"] }}'
+cassandra_seeds: "{{ cassandra_seed_0 }},{{ cassandra_seed_1 }},{{ cassandra_seed_2 }}"
+
+cassandra_native_transport_port: 9042
+cluster_name: App Cluster
+
+cassandra_user: "cassandra"
+cassandra_configuration_dir: "/etc/cassandra/"
+
+# Diagnostics
+cassandra_diagnostics_version: "1.1.1"
+cassandra_diagnostics_connector_version: "21"
+cassandra_diagnostics_version_file: "/opt/cassandra-diagnostics.version"
+cassandra_diagnostics_configuration_file: ../../anomaly-detection-stack/templates/cassandra-diagnostics.yml.j2
+cassandra_diagnostics_target_dir: "/usr/share/cassandra/lib/"
+cassandra_diagnostics_url_main: "https://dl.bintray.com/smartcat-labs/maven/io/smartcat/"
+cassandra_diagnostics_url_core: "{{ cassandra_diagnostics_url_main }}cassandra-diagnostics-core/{{ cassandra_diagnostics_version }}/cassandra-diagnostics-core-{{ cassandra_diagnostics_version }}.jar"
+cassandra_diagnostics_url_connector: "{{ cassandra_diagnostics_url_main }}cassandra-diagnostics-connector{{ cassandra_diagnostics_connector_version }}/{{ cassandra_diagnostics_version }}/cassandra-diagnostics-connector21-{{ cassandra_diagnostics_version }}.jar"
+cassandra_diagnostics_url_driver_connector: "{{ cassandra_diagnostics_url_main }}cassandra-diagnostics-driver-connector/{{ cassandra_diagnostics_version }}/cassandra-diagnostics-driver-connector-{{ cassandra_diagnostics_version }}.jar"
+cassandra_diagnostics_url_reporter_influx: "{{ cassandra_diagnostics_url_main }}cassandra-diagnostics-reporter-influx/{{ cassandra_diagnostics_version }}/cassandra-diagnostics-reporter-influx-{{ cassandra_diagnostics_version }}-all.jar"
+cassandra_diagnostics_url_reporter_riemann: "{{ cassandra_diagnostics_url_main }}cassandra-diagnostics-reporter-riemann/{{ cassandra_diagnostics_version }}/cassandra-diagnostics-reporter-riemann-{{ cassandra_diagnostics_version }}-all.jar"
+
+cassandra_diagnostics_binaries:
+  - "{{ cassandra_diagnostics_url_core }}"
+  - "{{ cassandra_diagnostics_url_connector }}"
+  - "{{ cassandra_diagnostics_url_reporter_riemann }}"
+
+monitoring_node: '{{ hostvars[groups["monitoring"][0]]["private_ip"] }}'
+cassandra_diagnostics_riemann_host: '{{ monitoring_node }}'
+cassandra_diagnostics_riemann_port: 5555
+
+# Filebeat
+filebeat_elasticsearch_hosts: "'{{ monitoring_node }}:9200'"

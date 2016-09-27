@@ -1,0 +1,27 @@
+---
+- name: Create Cassandra cluster
+  hosts: localhost
+  connection: local
+  roles:
+    - role: aws
+      ec2_tags:
+        Name: "anomaly-detection-cassandra"
+      ec2_region: eu-central-1
+      ec2_image_id: ami-26c43149
+      ec2_key_name: "eu-smartcat"
+      ec2_security_group: "anomaly-stack"
+      ec2_instance_type: t2.micro
+      ec2_count: 3
+      ec2_group: "cassandra"
+
+- name: Setup instances
+  hosts: cassandra
+  remote_user: ubuntu
+  become: yes
+  become_method: sudo
+
+  roles:
+    - java
+    - filebeat
+    - cassandra
+    - cassandra-diagnostics

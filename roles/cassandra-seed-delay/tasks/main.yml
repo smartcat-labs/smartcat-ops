@@ -1,5 +1,0 @@
----
-- name: Cassandra | Seed node delay
-  wait_for:
-    timeout: 120
-  when: groups["cassandra"][0] == inventory_hostname

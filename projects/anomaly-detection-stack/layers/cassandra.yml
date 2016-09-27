@@ -1,7 +1,6 @@
 ---
 - name: setup database
   hosts: cassandra
-  serial: 1
   remote_user: ubuntu
   become: yes
   become_method: sudo
@@ -11,4 +10,3 @@
     - filebeat
     - cassandra
     - cassandra-diagnostics
-    - cassandra-seed-delay

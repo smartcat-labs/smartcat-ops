@@ -1,6 +1,0 @@
----
-- name: create AWS instances
-  hosts: localhost
-
-  roles:
-    - aws-anomaly-infrastructure

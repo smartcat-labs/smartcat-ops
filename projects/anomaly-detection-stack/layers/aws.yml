@@ -1,3 +1,2 @@
-- include: infrastructure.yml
 - include: monitoring.yml
 - include: cassandra.yml

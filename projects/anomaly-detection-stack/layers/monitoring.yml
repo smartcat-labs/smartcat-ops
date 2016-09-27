@@ -1,5 +1,20 @@
 ---
-- name: setup monitoring
+- name: Create monitoring node
+  hosts: localhost
+  connection: local
+  roles:
+    - role: aws
+      ec2_tags:
+        Name: "anomaly-detection-monitoring"
+      ec2_region: eu-central-1
+      ec2_image_id: ami-26c43149
+      ec2_key_name: "eu-smartcat"
+      ec2_security_group: "anomaly-stack"
+      ec2_instance_type: t2.micro
+      ec2_count: 1
+      ec2_group: "monitoring"
+
+- name: Setup instance
   hosts: monitoring
   remote_user: ubuntu
   become: yes

@@ -11,3 +11,7 @@ cassandra_jmx_host: 127.0.0.1
 cassandra_jmx_port: 7199
 cassandra_system_user: cassandra
 cluster_name: Test Cluster
+cassandra_configuration_dir: "/etc/cassandra/"
+
+cassandra_env_max_heap_size: 1G
+cassandra_env_heap_newsize: 100M

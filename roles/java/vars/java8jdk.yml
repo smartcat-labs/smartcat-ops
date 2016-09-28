@@ -1,0 +1,5 @@
+---
+download_url: http://download.oracle.com/otn-pub/java/jdk/8u102-b14/jdk-8u102-linux-x64.tar.gz
+download_folder: /opt
+java_name: "{{download_folder}}/jdk1.8.0_102"
+java_archive: "{{download_folder}}/jdk-8u102-linux-x64.tar.gz"

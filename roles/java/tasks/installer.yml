@@ -1,0 +1,28 @@
+  - name: Install java8 jdk
+    include_vars: java8jdk.yml
+    when: java_version == 'java8jdk'
+
+  - name: Install java8 jre
+    include_vars: java8jre.yml
+    when: java_version == 'java8jre'
+
+  - name: Download Java
+    get_url:
+      url={{ download_url }}
+      dest={{ java_archive }}
+      headers='Cookie:oraclelicense=accept-securebackup-cookie'
+
+  - name: Unpack archive
+    unarchive: src={{java_archive}} dest={{download_folder}} copy=no
+
+  - name: Fix ownership
+    file: state=directory path={{java_name}} owner=root group=root recurse=yes
+
+  - name: Add java to alternatives
+    command: 'update-alternatives --install /usr/bin/java java {{java_name}}/bin/java 1'
+
+  - name: Register java
+    command: 'update-alternatives --set java {{java_name}}/bin/java'
+
+  - name: Clean up
+    file: state=absent path={{java_archive}}

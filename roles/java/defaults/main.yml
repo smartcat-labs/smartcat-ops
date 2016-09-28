@@ -1,0 +1,4 @@
+java_version: java8jre
+java_binary: 1.8.0_102
+# java_version: java8jre
+# java_version: java8jdk

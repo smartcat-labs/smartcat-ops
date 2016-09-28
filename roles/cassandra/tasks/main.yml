@@ -14,7 +14,10 @@
     - dsc30={{ cassandra_version }}-1
 
 - name: Cassandra | Setup configuration file
-  template: src=cassandra.yaml dest=/etc/cassandra/cassandra.yaml
+  template: src=cassandra.yaml dest={{ cassandra_configuration_dir }}/cassandra.yaml
+
+- name: Cassandra | Copy Cassandra env
+  template: src=cassandra-env.sh.j2 dest={{ cassandra_configuration_dir }}/cassandra-env.sh
 
 - name: Cassandra | Remove policy-rc.d file so Cassandra can start
   file: path=/usr/sbin/policy-rc.d state=absent

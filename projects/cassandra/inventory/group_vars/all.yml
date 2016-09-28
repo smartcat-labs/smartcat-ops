@@ -4,7 +4,7 @@
 #################################
 
 project_id: cassandra
-java_version: 8
+java_version: java8jre
 
 #################################
 # Application layer

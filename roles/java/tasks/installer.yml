@@ -19,10 +19,10 @@
     file: state=directory path={{java_name}} owner=root group=root recurse=yes
 
   - name: Add java to alternatives
-    command: 'alternatives --install /usr/bin/java java {{java_name}}/bin/java 2000'
+    command: 'update-alternatives --install /usr/bin/java java {{java_name}}/bin/java 1'
 
   - name: Register java
-    command: 'alternatives --set java {{java_name}}/bin/java'
+    command: 'update-alternatives --set java {{java_name}}/bin/java'
 
   - name: Clean up
     file: state=absent path={{java_archive}}

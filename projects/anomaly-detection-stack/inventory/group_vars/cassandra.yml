@@ -12,7 +12,7 @@ cluster_name: App Cluster
 
 cassandra_user: "cassandra"
 cassandra_configuration_dir: "/etc/cassandra/"
-cassandra_env_max_heap_size: 512M 
+cassandra_env_max_heap_size: 512M
 cassandra_env_heap_newsize: 100M
 
 # Diagnostics
@@ -26,9 +26,6 @@ cassandra_diagnostics_binaries:
   - "{{ cassandra_diagnostics_url_core }}"
   - "{{ cassandra_diagnostics_url_connector }}"
 
-monitoring_node: '{{ hostvars[groups["monitoring"][0]]["private_ip"] }}'
-cassandra_diagnostics_riemann_host: '{{ monitoring_node }}'
-cassandra_diagnostics_riemann_port: 5555
-
 # Filebeat
+monitoring_node: '{{ hostvars[groups["monitoring"][0]]["private_ip"] }}'
 filebeat_elasticsearch_hosts: "'{{ monitoring_node }}:9200'"

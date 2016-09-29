@@ -2,12 +2,12 @@
   - name: Copy reporter config fat jar
     copy: src=reporter-config2-custom.jar
       dest={{ cassandra_lib_location }}/reporter-config2-custom.jar
-      mode=0755 owner=cassandra group=cassandra
+      mode=0755 owner={{ cassandra_user }} group={{ cassandra_user }}
     notify: Restart cassandra service
 
   - name: Copy reporter config
     template: src=metrics-config.yaml.j2 dest={{ cassandra_lib_location }}/metrics-config.yaml
-      mode=0755 owner=cassandra group=cassandra
+      mode=0755 owner={{ cassandra_user }} group={{ cassandra_user }}
     notify: Restart cassandra service
 
   - name: Ensure configuration exists in cassandra-env.sh

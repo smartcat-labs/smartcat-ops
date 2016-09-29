@@ -34,6 +34,8 @@
 
 - name: Install OS Metrics dependencies
   pip: requirements={{ osmetrics_install_dir }}/requirements.txt
+  environment:
+    PATH: /usr/local/bin:{{ ansible_env.PATH }}
   when: download_osmetrics|changed
 
 - name: Ensure configuration directory

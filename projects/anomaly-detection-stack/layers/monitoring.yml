@@ -19,10 +19,11 @@
   remote_user: ubuntu
   become: yes
   become_method: sudo
-
   roles:
     - docker-common
     - influxdb-docker
     - elk-docker
     - grafana-docker
     - riemann-docker
+  tags:
+    - aws-start

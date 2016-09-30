@@ -13,12 +13,12 @@
     count_tag: '{{ launch_tags }}'
     exact_count: '{{ ec2_count }}'
     wait: true
-  tags: 'aws-start'
+  tags: 'aws-setup'
 
 - name: AWS | Retrieve instances info
   delegate_to: localhost
   ec2_remote_facts:
-    region: eu-central-1
+    region: '{{ ec2_region }}'
     filters:
       'tag:Group': '{{ ec2_group }}'
   register: ec2

@@ -13,7 +13,7 @@
     count_tag: '{{ launch_tags }}'
     exact_count: '{{ ec2_count }}'
     wait: true
-  tags: 'aws-setup'
+  tags: 'aws-start'
 
 - name: AWS | Retrieve instances info
   delegate_to: localhost
@@ -22,7 +22,6 @@
     filters:
       'tag:Group': '{{ ec2_group }}'
   register: ec2
-  tags: ['aws-setup', 'aws-start', 'aws-stop']
 
 - name: AWS | Build group
   delegate_to: localhost
@@ -31,7 +30,6 @@
     groupname: '{{ ec2_group }}'
     private_ip: '{{ item.private_ip_address }}'
   with_items: '{{ ec2.instances }}'
-  tags: ['aws-setup', 'aws-start', 'aws-stop']
 
 - name: AWS | Start instances
   delegate_to: localhost
@@ -51,7 +49,7 @@
     timeout: 120
     state: started
   with_items: '{{ ec2.instances }}'
-  tags: ['aws-setup', 'aws-start']
+  tags: 'aws-start'
 
 - name: AWS | Stop instances
   delegate_to: localhost

@@ -6,7 +6,7 @@
     notify: Restart cassandra service
 
   - name: Copy reporter config
-    template: src=metrics-config.yaml.j2 dest={{ cassandra_lib_location }}/metrics-config.yaml
+    template: src=metrics-config.yaml.j2 dest={{ cassandra_env_location }}/metrics-config.yaml
       mode=0755 owner={{ cassandra_user }} group={{ cassandra_user }}
     notify: Restart cassandra service
 

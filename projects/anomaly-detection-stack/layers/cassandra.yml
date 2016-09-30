@@ -19,9 +19,9 @@
   remote_user: ubuntu
   become: yes
   become_method: sudo
-
   roles:
     - java
     - filebeat
     - cassandra
+    - cassandra-metrics-reporter
     - cassandra-diagnostics

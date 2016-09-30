@@ -1,4 +1,7 @@
 ---
+cassandra_dsc_version: dsc30
+cassandra_version: 3.0.8
+
 cassandra_rpc_address: 127.0.0.1
 cassandra_seeds: 127.0.0.1
 

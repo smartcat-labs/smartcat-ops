@@ -6,7 +6,7 @@ following software:
 
 | Software              | Version |
 |-----------------------|---------|
-| Apache Cassandra      | 3.0.8   |
+| Apache Cassandra      | 2.1.15  |
 | cassandra-diagnostics | 1.1.1   |
 | Filebeat              | 1.3.1   |
 

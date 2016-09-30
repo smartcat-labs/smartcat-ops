@@ -1,0 +1,18 @@
+---
+  - name: Added MongoDB GPG key
+    apt_key: keyserver=keyserver.ubuntu.com id=EA312927
+
+  - name: Create a list file for MongoDB
+    lineinfile: dest=/etc/apt/sources.list.d/mongodb-org-3.2.list line="deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.2 multiverse" state=present create=yes
+    
+  - name: Install MongoDB using apt-get
+    apt: name={{ item }} update_cache=yes
+    with_items:
+      - mongodb-org=3.2.9 
+      - mongodb-org-server=3.2.9
+      - mongodb-org-shell=3.2.9
+      - mongodb-org-mongos=3.2.9
+      - mongodb-org-tools=3.2.9
+
+  - name: Ensure mongod started
+    service: name=mongod state=started

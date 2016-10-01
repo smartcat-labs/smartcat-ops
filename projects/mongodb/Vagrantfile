@@ -1,0 +1,14 @@
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.vm.box = "ubuntu/trusty64"
+
+  # MongoDB server
+  config.vm.define "mongodb-server" do |database|
+    database.vm.network "private_network", ip: "192.168.33.33"
+
+    database.vm.provider "virtualbox" do |v|
+      v.customize [ "modifyvm", :id, "--memory", "2048" ]
+    end
+  end
+end

@@ -1,0 +1,2 @@
+[server]
+192.168.33.33 ansible_ssh_user=vagrant ansible_ssh_private_key_file=projects/mongodb/.vagrant/machines/mongodb-server/virtualbox/private_key

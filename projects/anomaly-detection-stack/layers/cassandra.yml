@@ -25,3 +25,5 @@
     - cassandra
     - cassandra-metrics-reporter
     - cassandra-diagnostics
+  tags:
+    - aws-start

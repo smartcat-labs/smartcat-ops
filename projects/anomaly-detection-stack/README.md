@@ -6,7 +6,7 @@ following software:
 
 | Software              | Version |
 |-----------------------|---------|
-| Apache Cassandra      | 3.0.8   |
+| Apache Cassandra      | 2.1.15  |
 | cassandra-diagnostics | 1.1.1   |
 | Filebeat              | 1.3.1   |
 
@@ -30,18 +30,24 @@ will also need to export the AWS_ACCESS_KEY and AWS_SECRET_ACCESS_KEY as environ
 
 ## Usage
 
-The playbook should be executed from the repository root, using the following command:
+The playbook is intended to be used from the repository root. In case that the infrastructure does
+not exist, set the appropriate instance tags (ec2_group variable) and enter the following command:
 
 ```
-ansible-playbook -i projects/anomaly-detection-stack/inventory --private-key <path to PEM file> projects/anomaly-detection-stack/layers/aws.yml
+ansible-playbook -i projects/anomaly-detection-stack/inventory --private-key <path to PEM file> projects/anomaly-detection-stack/layers/aws.yml --tags aws-setup
 ```
 
-Once started, it will create new EC2 instances and provision each of them. In case that you do not
-want to create instances, but only to provision the existing ones, use the `--skip-tags "aws_setup"`
-attribute:
+To start the cluster, use the following command:
 
 ```
-ansible-playbook -i projects/anomaly-detection-stack/inventory --private-key <path to PEM file> projects/anomaly-detection-stack/layers/aws.yml --skip-tags "aws_setup"
+ansible-playbook -i projects/anomaly-detection-stack/inventory --private-key <path to PEM file> projects/anomaly-detection-stack/layers/aws.yml --skip-tags "aws-stop,aws-setup"
+```
+
+Once you finish using the cluster, make sure you stop it by invoking the playbook as shown in the
+snipped below:
+
+```
+ansible-playbook -i projects/anomaly-detection-stack/inventory --private-key <path to PEM file> projects/anomaly-detection-stack/layers/aws.yml --skip-tags "aws-start,aws-setup"
 ```
 
 [1]: https://aws.amazon.com/ec2/instance-types/

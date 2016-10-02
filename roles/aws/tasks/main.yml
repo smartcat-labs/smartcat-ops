@@ -1,6 +1,6 @@
 ---
 - name: AWS | Launch instances
-  delegate_to: "localhost"
+  delegate_to: localhost
   vars:
     launch_tags: "{{ ec2_tags|combine({'Group': ec2_group}) }}"
   ec2:
@@ -13,30 +13,50 @@
     count_tag: '{{ launch_tags }}'
     exact_count: '{{ ec2_count }}'
     wait: true
-  tags: "aws_setup"
+  tags: 'aws-setup'
 
 - name: AWS | Retrieve instances info
-  delegate_to: "localhost"
+  delegate_to: localhost
   ec2_remote_facts:
-    region: eu-central-1
+    region: '{{ ec2_region }}'
     filters:
-      instance-state-name: running
-      "tag:Group": '{{ ec2_group }}'
+      'tag:Group': '{{ ec2_group }}'
   register: ec2
 
 - name: AWS | Build group
-  delegate_to: "localhost"
+  delegate_to: localhost
   add_host:
     hostname: '{{ item.public_dns_name }}'
     groupname: '{{ ec2_group }}'
     private_ip: '{{ item.private_ip_address }}'
   with_items: '{{ ec2.instances }}'
 
+- name: AWS | Start instances
+  delegate_to: localhost
+  ec2:
+    instance_ids: '{{ item.id }}'
+    region: '{{ ec2_region }}'
+    state: running
+    wait: true
+  with_items: '{{ ec2.instances }}'
+  tags: 'aws-start'
+
 - name: AWS | Check SSH connections
-  delegate_to: "localhost"
+  delegate_to: localhost
   wait_for:
     host: '{{ item.public_dns_name }}'
     port: 22
     timeout: 120
     state: started
   with_items: '{{ ec2.instances }}'
+  tags: 'aws-start'
+
+- name: AWS | Stop instances
+  delegate_to: localhost
+  ec2:
+    instance_ids: '{{ item.id }}'
+    region: '{{ ec2_region }}'
+    state: stopped
+    wait: true
+  with_items: '{{ ec2.instances }}'
+  tags: 'aws-stop'

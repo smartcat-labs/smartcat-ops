@@ -25,5 +25,4 @@
     - elk-docker
     - grafana-docker
     - riemann-docker
-  tags:
-    - aws-start
+  tags: ['aws-setup', 'aws-start']

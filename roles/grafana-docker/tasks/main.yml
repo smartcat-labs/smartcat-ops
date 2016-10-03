@@ -135,3 +135,26 @@
       body: "{{ lookup('template','cluster-slow-queries-dashboard.json.j2') | from_json }}"
       status_code: 200
     when: grafana_cluster_slow_queries_dashboard.json.dashboard is not defined
+
+  - name: Searching for Grafana Cluster Diagnostics Dashboards
+    uri:
+      url: "{{ grafana_url }}/api/dashboards/db/cluster-cassandra-diagnostics"
+      force_basic_auth: yes
+      user: "{{ grafana_admin_user }}"
+      password: "{{ grafana_admin_pwd }}"
+      return_content: yes
+      status_code: 200, 404
+    register: grafana_cluster_cassandra_diagnostics_dashboard
+    when: grafana_api_ready|success
+
+  - name: Creating Grafana Cluster Diagnostics Dashboard
+    uri:
+      url: "{{ grafana_url }}/api/dashboards/db"
+      method: POST
+      force_basic_auth: yes
+      user: "{{ grafana_admin_user }}"
+      password: "{{ grafana_admin_pwd }}"
+      body_format: json
+      body: "{{ lookup('template','cluster-cassandra-diagnostics-dashboard.json.j2') | from_json }}"
+      status_code: 200
+    when: grafana_cluster_cassandra_diagnostics_dashboard.json.dashboard is not defined

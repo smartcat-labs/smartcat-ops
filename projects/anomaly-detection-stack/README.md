@@ -40,14 +40,14 @@ ansible-playbook -i projects/anomaly-detection-stack/inventory --private-key <pa
 To start the cluster, use the following command:
 
 ```
-ansible-playbook -i projects/anomaly-detection-stack/inventory --private-key <path to PEM file> projects/anomaly-detection-stack/layers/aws.yml --skip-tags "aws-stop,aws-setup"
+ansible-playbook -i projects/anomaly-detection-stack/inventory --private-key <path to PEM file> projects/anomaly-detection-stack/layers/aws.yml --tags aws-start
 ```
 
 Once you finish using the cluster, make sure you stop it by invoking the playbook as shown in the
 snipped below:
 
 ```
-ansible-playbook -i projects/anomaly-detection-stack/inventory --private-key <path to PEM file> projects/anomaly-detection-stack/layers/aws.yml --skip-tags "aws-start,aws-setup"
+ansible-playbook -i projects/anomaly-detection-stack/inventory --private-key <path to PEM file> projects/anomaly-detection-stack/layers/aws.yml --tags aws-stop
 ```
 
 [1]: https://aws.amazon.com/ec2/instance-types/

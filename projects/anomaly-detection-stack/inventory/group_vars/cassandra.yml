@@ -36,3 +36,7 @@ cassandra_diagnostics_binaries:
   - "{{ cassandra_diagnostics_url_core }}"
   - "{{ cassandra_diagnostics_url_connector }}"
   - "{{ cassandra_diagnostics_url_reporter_riemann }}"
+
+# OS metrics
+osmetrics_riemann_port: "{{ cassandra_diagnostics_riemann_port }}"
+osmetrics_riemann_host: "{{ monitoring_node }}"

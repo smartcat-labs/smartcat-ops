@@ -1,8 +1,13 @@
 - name: Ensure unzip tool
   package: name=unzip state=present
 
-- name: Ensure phyton binding
+- name: Ensure python binding
   package: name=libselinux-python state=present
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
+
+- name: Ensure python binding
+  package: name=python-selinux state=present
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
 - name: Check for pip
   stat: path=/usr/bin/pip
@@ -47,6 +52,12 @@
 - name: Install OS Metrics init script
   template: src=osmetrics.init.j2 dest=/etc/rc.d/init.d/osmetrics mode=755
   register: init_script
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'RedHat'
+
+- name: Install OS Metrics init script
+  template: src=osmetrics.init.j2 dest=/etc/init.d/osmetrics mode=755
+  register: init_script
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
 - name: Restart OS Metrics service
   service: name=osmetrics enabled=yes state=restarted

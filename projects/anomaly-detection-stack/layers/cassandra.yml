@@ -1,5 +1,5 @@
 ---
-- name: Create Cassandra cluster
+- name: Cassandra cluster
   hosts: localhost
   connection: local
   roles:
@@ -16,13 +16,18 @@
 
 - name: Setup instances
   hosts: cassandra
+  gather_facts: False
+  tags: ['aws-setup', 'aws-start']
   remote_user: ubuntu
   become: yes
   become_method: sudo
+  pre_tasks:
+    - name: Gathering facts
+      setup:
   roles:
     - java
     - filebeat
     - cassandra
     - cassandra-metrics-reporter
     - cassandra-diagnostics
-  tags: ['aws-setup', 'aws-start']
+    - osmetrics

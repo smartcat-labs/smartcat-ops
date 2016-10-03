@@ -1,5 +1,5 @@
 ---
-- name: Create monitoring node
+- name: Monitoring node
   hosts: localhost
   connection: local
   roles:
@@ -16,13 +16,17 @@
 
 - name: Setup instance
   hosts: monitoring
+  gather_facts: False
+  tags: ['aws-setup', 'aws-start']
   remote_user: ubuntu
   become: yes
   become_method: sudo
+  pre_tasks:
+    - name: Gathering facts
+      setup:
   roles:
     - docker-common
     - influxdb-docker
     - elk-docker
     - grafana-docker
     - riemann-docker
-  tags: ['aws-setup', 'aws-start']

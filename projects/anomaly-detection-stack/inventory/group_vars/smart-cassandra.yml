@@ -3,9 +3,9 @@
 cassandra_dsc_version: dsc21
 cassandra_version: 2.1.15
 
-cassandra_seed_0: '{{ hostvars[groups["cassandra"][0]]["private_ip"] }}'
-cassandra_seed_1: '{{ hostvars[groups["cassandra"][1]]["private_ip"] }}'
-cassandra_seed_2: '{{ hostvars[groups["cassandra"][2]]["private_ip"] }}'
+cassandra_seed_0: '{{ hostvars[groups["smart-cassandra"][0]]["private_ip"] }}'
+cassandra_seed_1: '{{ hostvars[groups["smart-cassandra"][1]]["private_ip"] }}'
+cassandra_seed_2: '{{ hostvars[groups["smart-cassandra"][2]]["private_ip"] }}'
 cassandra_seeds: "{{ cassandra_seed_0 }},{{ cassandra_seed_1 }},{{ cassandra_seed_2 }}"
 
 cassandra_native_transport_port: 9042
@@ -17,7 +17,7 @@ cassandra_env_max_heap_size: 512M
 cassandra_env_heap_newsize: 100M
 
 # Filebeat
-monitoring_node: '{{ hostvars[groups["monitoring"][0]]["private_ip"] }}'
+monitoring_node: '{{ hostvars[groups["smart-monitoring"][0]]["private_ip"] }}'
 filebeat_elasticsearch_hosts: "'{{ monitoring_node }}:9200'"
 
 # Diagnostics

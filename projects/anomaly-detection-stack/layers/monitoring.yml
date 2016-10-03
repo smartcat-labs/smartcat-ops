@@ -5,17 +5,17 @@
   roles:
     - role: aws
       ec2_tags:
-        Name: "anomaly-detection-monitoring"
+        Name: "smart-monitoring"
       ec2_region: eu-central-1
       ec2_image_id: ami-26c43149
       ec2_key_name: "eu-smartcat"
       ec2_security_group: "anomaly-stack"
-      ec2_instance_type: t2.micro
+      ec2_instance_type: m4.xlarge
       ec2_count: 1
-      ec2_group: "monitoring"
+      ec2_group: smart-monitoring
 
 - name: Setup instance
-  hosts: monitoring
+  hosts: smart-monitoring
   gather_facts: False
   tags: ['aws-setup', 'aws-start']
   remote_user: ubuntu

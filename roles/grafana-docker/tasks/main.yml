@@ -158,3 +158,72 @@
       body: "{{ lookup('template','cluster-cassandra-diagnostics-dashboard.json.j2') | from_json }}"
       status_code: 200
     when: grafana_cluster_cassandra_diagnostics_dashboard.json.dashboard is not defined
+
+  - name: Searching for Grafana Cluster OS Stats Dashboards
+    uri:
+      url: "{{ grafana_url }}/api/dashboards/db/cluster-os-stats"
+      force_basic_auth: yes
+      user: "{{ grafana_admin_user }}"
+      password: "{{ grafana_admin_pwd }}"
+      return_content: yes
+      status_code: 200, 404
+    register: grafana_cluster_os_stats_dashboard
+    when: grafana_api_ready|success
+
+  - name: Creating Grafana Cluster OS Dashboard
+    uri:
+      url: "{{ grafana_url }}/api/dashboards/db"
+      method: POST
+      force_basic_auth: yes
+      user: "{{ grafana_admin_user }}"
+      password: "{{ grafana_admin_pwd }}"
+      body_format: json
+      body: "{{ lookup('template','cluster-cassandra-os-stats-dashboard.json.j2') | from_json }}"
+      status_code: 200
+    when: grafana_cluster_os_stats_dashboard.json.dashboard is not defined
+
+  - name: Searching for Grafana Cluster Disk Stats Dashboards
+    uri:
+      url: "{{ grafana_url }}/api/dashboards/db/cluster-disk-stats"
+      force_basic_auth: yes
+      user: "{{ grafana_admin_user }}"
+      password: "{{ grafana_admin_pwd }}"
+      return_content: yes
+      status_code: 200, 404
+    register: grafana_cluster_disk_stats_dashboard
+    when: grafana_api_ready|success
+
+  - name: Creating Grafana Cluster Disk Dashboard
+    uri:
+      url: "{{ grafana_url }}/api/dashboards/db"
+      method: POST
+      force_basic_auth: yes
+      user: "{{ grafana_admin_user }}"
+      password: "{{ grafana_admin_pwd }}"
+      body_format: json
+      body: "{{ lookup('template','cluster-cassandra-disk-stats-dashboard.json.j2') | from_json }}"
+      status_code: 200
+    when: grafana_cluster_disk_stats_dashboard.json.dashboard is not defined
+
+  - name: Searching for Grafana Cluster Network Stats Dashboards
+    uri:
+      url: "{{ grafana_url }}/api/dashboards/db/cluster-network-stats"
+      force_basic_auth: yes
+      user: "{{ grafana_admin_user }}"
+      password: "{{ grafana_admin_pwd }}"
+      return_content: yes
+      status_code: 200, 404
+    register: grafana_cluster_network_stats_dashboard
+    when: grafana_api_ready|success
+
+  - name: Creating Grafana Cluster Network Dashboard
+    uri:
+      url: "{{ grafana_url }}/api/dashboards/db"
+      method: POST
+      force_basic_auth: yes
+      user: "{{ grafana_admin_user }}"
+      password: "{{ grafana_admin_pwd }}"
+      body_format: json
+      body: "{{ lookup('template','cluster-cassandra-network-stats-dashboard.json.j2') | from_json }}"
+      status_code: 200
+    when: grafana_cluster_network_stats_dashboard.json.dashboard is not defined

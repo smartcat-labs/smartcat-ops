@@ -2,7 +2,7 @@
   "dashboard":
   {
     "id": null,
-    "title": "Cluster Slow Queries",
+    "title": "Cluster Disk stats",
     "tags": [
       "cassandra"
     ],
@@ -30,7 +30,7 @@
               "threshold2": null,
               "threshold2Color": "rgba(234, 112, 112, 0.22)"
             },
-            "id": 1,
+            "id": 3,
             "isNew": true,
             "legend": {
               "avg": false,
@@ -68,7 +68,6 @@
                 "measurement": "queryReport",
                 "policy": "default",
                 "query": "SELECT \"value\" FROM \"queryReport\" WHERE \"host\" =~ /^$host$/ AND \"statementType\" =~ /^$querytype$/ AND $timeFilter GROUP BY \"host\"",
-                "rawQuery": true,
                 "refId": "A",
                 "resultFormat": "time_series",
                 "select": [
@@ -121,7 +120,7 @@
             ]
           }
         ],
-        "title": "Row"
+        "title": "New row"
       },
       {
         "collapse": false,
@@ -131,7 +130,126 @@
           {
             "aliasColors": {},
             "bars": false,
-            "datasource": "ElasticSearch",
+            "datasource": "InfluxDB",
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 1,
+            "isNew": true,
+            "legend": {
+              "avg": false,
+              "current": false,
+              "max": false,
+              "min": false,
+              "show": true,
+              "total": false,
+              "values": false
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "alias": "$tag_host",
+                "dsType": "influxdb",
+                "groupBy": [
+                  {
+                    "params": [
+                      "$interval"
+                    ],
+                    "type": "time"
+                  },
+                  {
+                    "params": [
+                      "host"
+                    ],
+                    "type": "tag"
+                  },
+                  {
+                    "params": [
+                      "null"
+                    ],
+                    "type": "fill"
+                  }
+                ],
+                "measurement": "diskstats xvda reads reqs",
+                "policy": "default",
+                "refId": "A",
+                "resultFormat": "time_series",
+                "select": [
+                  [
+                    {
+                      "params": [
+                        "value"
+                      ],
+                      "type": "field"
+                    },
+                    {
+                      "params": [],
+                      "type": "max"
+                    }
+                  ]
+                ],
+                "tags": [
+                  {
+                    "key": "host",
+                    "operator": "=~",
+                    "value": "/^$host$/"
+                  }
+                ]
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "(data volume) diskstats xvda reads reqs",
+            "tooltip": {
+              "msResolution": true,
+              "shared": true,
+              "sort": 0,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "xaxis": {
+              "show": true
+            },
+            "yaxes": [
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": "InfluxDB",
             "editable": true,
             "error": false,
             "fill": 1,
@@ -152,13 +270,13 @@
               "total": false,
               "values": false
             },
-            "lines": false,
+            "lines": true,
             "linewidth": 2,
             "links": [],
-            "nullPointMode": "null",
+            "nullPointMode": "connected",
             "percentage": false,
-            "pointradius": 3,
-            "points": true,
+            "pointradius": 5,
+            "points": false,
             "renderer": "flot",
             "seriesOverrides": [],
             "span": 12,
@@ -166,42 +284,31 @@
             "steppedLine": false,
             "targets": [
               {
-                "alias": "",
-                "bucketAggs": [
+                "alias": "$tag_host",
+                "dsType": "influxdb",
+                "groupBy": [
                   {
-                    "fake": true,
-                    "field": "beat.hostname",
-                    "id": "3",
-                    "settings": {
-                      "order": "asc",
-                      "orderBy": "_term",
-                      "size": "0"
-                    },
-                    "type": "terms"
+                    "params": [
+                      "$interval"
+                    ],
+                    "type": "time"
                   },
                   {
-                    "field": "@timestamp",
-                    "id": "2",
-                    "settings": {
-                      "interval": "auto",
-                      "min_doc_count": 1,
-                      "trimEdges": 0
-                    },
-                    "type": "date_histogram"
-                  }
-                ],
-                "dsType": "elasticsearch",
-                "groupBy": [],
-                "measurement": "queryReport",
-                "metrics": [
+                    "params": [
+                      "host"
+                    ],
+                    "type": "tag"
+                  },
                   {
-                    "field": "select field",
-                    "id": "1",
-                    "type": "count"
+                    "params": [
+                      "null"
+                    ],
+                    "type": "fill"
                   }
                 ],
-                "query": "message:\"QueryReport [\"",
-                "refId": "L",
+                "measurement": "diskstats xvda io time",
+                "policy": "default",
+                "refId": "A",
                 "resultFormat": "time_series",
                 "select": [
                   [
@@ -210,15 +317,25 @@
                         "value"
                       ],
                       "type": "field"
+                    },
+                    {
+                      "params": [],
+                      "type": "max"
                     }
                   ]
                 ],
-                "timeField": "@timestamp"
+                "tags": [
+                  {
+                    "key": "host",
+                    "operator": "=~",
+                    "value": "/^$host$/"
+                  }
+                ]
               }
             ],
             "timeFrom": null,
             "timeShift": null,
-            "title": "Log Query Reporter messages",
+            "title": "(data volume) diskstats xvda io time",
             "tooltip": {
               "msResolution": true,
               "shared": true,
@@ -232,6 +349,7 @@
             "yaxes": [
               {
                 "format": "short",
+                "label": null,
                 "logBase": 1,
                 "max": null,
                 "min": null,
@@ -239,6 +357,253 @@
               },
               {
                 "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          }
+        ],
+        "title": "Row"
+      },
+      {
+        "collapse": false,
+        "editable": true,
+        "height": "250px",
+        "panels": [
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": "InfluxDB",
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 5,
+            "isNew": true,
+            "legend": {
+              "avg": false,
+              "current": false,
+              "max": false,
+              "min": false,
+              "show": true,
+              "total": false,
+              "values": false
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "alias": "$tag_host",
+                "dsType": "influxdb",
+                "groupBy": [
+                  {
+                    "params": [
+                      "$interval"
+                    ],
+                    "type": "time"
+                  },
+                  {
+                    "params": [
+                      "host"
+                    ],
+                    "type": "tag"
+                  },
+                  {
+                    "params": [
+                      "null"
+                    ],
+                    "type": "fill"
+                  }
+                ],
+                "measurement": "diskstats xvda writes reqs",
+                "policy": "default",
+                "refId": "A",
+                "resultFormat": "time_series",
+                "select": [
+                  [
+                    {
+                      "params": [
+                        "value"
+                      ],
+                      "type": "field"
+                    },
+                    {
+                      "params": [],
+                      "type": "max"
+                    }
+                  ]
+                ],
+                "tags": [
+                  {
+                    "key": "host",
+                    "operator": "=~",
+                    "value": "/^$host$/"
+                  }
+                ]
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "(commit log) diskstats xvda writes reqs",
+            "tooltip": {
+              "msResolution": true,
+              "shared": true,
+              "sort": 0,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "xaxis": {
+              "show": true
+            },
+            "yaxes": [
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          },
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": "InfluxDB",
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 4,
+            "isNew": true,
+            "legend": {
+              "avg": false,
+              "current": false,
+              "max": false,
+              "min": false,
+              "show": true,
+              "total": false,
+              "values": false
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "alias": "$tag_host",
+                "dsType": "influxdb",
+                "groupBy": [
+                  {
+                    "params": [
+                      "$interval"
+                    ],
+                    "type": "time"
+                  },
+                  {
+                    "params": [
+                      "host"
+                    ],
+                    "type": "tag"
+                  },
+                  {
+                    "params": [
+                      "null"
+                    ],
+                    "type": "fill"
+                  }
+                ],
+                "measurement": "diskstats xvda io reqs",
+                "policy": "default",
+                "refId": "A",
+                "resultFormat": "time_series",
+                "select": [
+                  [
+                    {
+                      "params": [
+                        "value"
+                      ],
+                      "type": "field"
+                    },
+                    {
+                      "params": [],
+                      "type": "max"
+                    }
+                  ]
+                ],
+                "tags": [
+                  {
+                    "key": "host",
+                    "operator": "=~",
+                    "value": "/^$host$/"
+                  }
+                ]
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "(commit log) diskstats xvda io reqs",
+            "tooltip": {
+              "msResolution": true,
+              "shared": true,
+              "sort": 0,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "xaxis": {
+              "show": true
+            },
+            "yaxes": [
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": null,
                 "logBase": 1,
                 "max": null,
                 "min": null,
@@ -248,267 +613,10 @@
           }
         ],
         "title": "New row"
-      },
-      {
-        "collapse": false,
-        "editable": true,
-        "height": "250px",
-        "panels": [
-          {
-            "columns": [],
-            "datasource": "InfluxDB",
-            "editable": true,
-            "error": false,
-            "fontSize": "100%",
-            "id": 5,
-            "isNew": true,
-            "links": [],
-            "pageSize": null,
-            "scroll": true,
-            "showHeader": true,
-            "sort": {
-              "col": 0,
-              "desc": true
-            },
-            "span": 12,
-            "styles": [
-              {
-                "dateFormat": "YYYY-MM-DD HH:mm:ss",
-                "pattern": "Time",
-                "type": "date"
-              },
-              {
-                "colorMode": null,
-                "colors": [
-                  "rgba(245, 54, 54, 0.9)",
-                  "rgba(237, 129, 40, 0.89)",
-                  "rgba(50, 172, 45, 0.97)"
-                ],
-                "decimals": 2,
-                "pattern": "/.*/",
-                "thresholds": [],
-                "type": "number",
-                "unit": "short"
-              }
-            ],
-            "targets": [
-              {
-                "dsType": "influxdb",
-                "groupBy": [
-                  {
-                    "params": [
-                      "$interval"
-                    ],
-                    "type": "time"
-                  },
-                  {
-                    "params": [
-                      "host"
-                    ],
-                    "type": "tag"
-                  },
-                  {
-                    "params": [
-                      "null"
-                    ],
-                    "type": "fill"
-                  }
-                ],
-                "hide": false,
-                "measurement": "slow_query",
-                "policy": "default",
-                "query": "SELECT COUNT(value), MAX(value)  FROM queryReport WHERE $timeFilter AND host =~ /^$host$/ AND \"statementType\" =~ /^$querytype$/",
-                "rawQuery": true,
-                "refId": "A",
-                "resultFormat": "table",
-                "select": [
-                  [
-                    {
-                      "params": [
-                        "value"
-                      ],
-                      "type": "field"
-                    },
-                    {
-                      "params": [],
-                      "type": "count"
-                    }
-                  ]
-                ],
-                "tags": []
-              }
-            ],
-            "timeFrom": null,
-            "title": "Slow query total count and max",
-            "transform": "table",
-            "type": "table"
-          },
-          {
-            "columns": [],
-            "datasource": "InfluxDB",
-            "editable": true,
-            "error": false,
-            "fontSize": "100%",
-            "id": 3,
-            "isNew": true,
-            "links": [],
-            "pageSize": null,
-            "scroll": true,
-            "showHeader": true,
-            "sort": {
-              "col": 0,
-              "desc": true
-            },
-            "span": 12,
-            "styles": [
-              {
-                "dateFormat": "YYYY-MM-DD HH:mm:ss",
-                "pattern": "Time",
-                "type": "date"
-              },
-              {
-                "colorMode": null,
-                "colors": [
-                  "rgba(245, 54, 54, 0.9)",
-                  "rgba(237, 129, 40, 0.89)",
-                  "rgba(50, 172, 45, 0.97)"
-                ],
-                "decimals": 2,
-                "pattern": "/.*/",
-                "thresholds": [],
-                "type": "number",
-                "unit": "short"
-              }
-            ],
-            "targets": [
-              {
-                "dsType": "influxdb",
-                "groupBy": [
-                  {
-                    "params": [
-                      "$interval"
-                    ],
-                    "type": "time"
-                  },
-                  {
-                    "params": [
-                      "host"
-                    ],
-                    "type": "tag"
-                  },
-                  {
-                    "params": [
-                      "null"
-                    ],
-                    "type": "fill"
-                  }
-                ],
-                "measurement": "slow_query",
-                "policy": "default",
-                "query": "SELECT COUNT(value), MAX(value)  FROM queryReport WHERE $timeFilter AND host =~ /^$host$/  AND \"statementType\" =~ /^$querytype$/ GROUP BY host, statementType",
-                "rawQuery": true,
-                "refId": "A",
-                "resultFormat": "table",
-                "select": [
-                  [
-                    {
-                      "params": [
-                        "value"
-                      ],
-                      "type": "field"
-                    },
-                    {
-                      "params": [],
-                      "type": "count"
-                    }
-                  ]
-                ],
-                "tags": []
-              }
-            ],
-            "timeFrom": null,
-            "title": "Slow query count and max",
-            "transform": "table",
-            "type": "table"
-          }
-        ],
-        "title": "New row"
-      },
-      {
-        "collapse": false,
-        "editable": true,
-        "height": "250px",
-        "panels": [
-          {
-            "columns": [],
-            "datasource": "InfluxDB",
-            "editable": true,
-            "error": false,
-            "fontSize": "100%",
-            "id": 4,
-            "isNew": true,
-            "links": [],
-            "pageSize": 20,
-            "scroll": true,
-            "showHeader": true,
-            "sort": {
-              "col": 2,
-              "desc": true
-            },
-            "span": 12,
-            "styles": [
-              {
-                "dateFormat": "YYYY-MM-DD HH:mm:ss:SSS",
-                "pattern": "Time",
-                "type": "date"
-              },
-              {
-                "colorMode": null,
-                "colors": [
-                  "rgba(245, 54, 54, 0.9)",
-                  "rgba(237, 129, 40, 0.89)",
-                  "rgba(50, 172, 45, 0.97)"
-                ],
-                "decimals": 2,
-                "pattern": "/.*/",
-                "thresholds": [],
-                "type": "number",
-                "unit": "short"
-              }
-            ],
-            "targets": [
-              {
-                "dsType": "influxdb",
-                "groupBy": [],
-                "measurement": "slow_query",
-                "policy": "default",
-                "query": "SELECT \"value\", \"host\", \"client\", \"statementType\" FROM \"queryReport\" WHERE $timeFilter AND host =~ /^$host$/  AND \"statementType\" =~ /^$querytype$/",
-                "rawQuery": true,
-                "refId": "A",
-                "resultFormat": "table",
-                "select": [
-                  [
-                    {
-                      "params": [
-                        "value"
-                      ],
-                      "type": "field"
-                    }
-                  ]
-                ],
-                "tags": []
-              }
-            ],
-            "title": "Slow queries",
-            "transform": "table",
-            "type": "table"
-          }
-        ],
-        "title": "New row"
       }
     ],
     "time": {
-      "from": "now-3h",
+      "from": "now-15m",
       "to": "now"
     },
     "timepicker": {
@@ -540,15 +648,13 @@
       "list": [
         {
           "current": {
-            "value": [
-              "$__all"
-            ],
-            "text": "All"
+            "text": "All",
+            "value": "$__all"
           },
           "datasource": "InfluxDB",
           "hide": 0,
           "includeAll": true,
-          "label": "Cassandra host",
+          "label": "host",
           "multi": true,
           "name": "host",
           "options": [
@@ -558,40 +664,22 @@
               "selected": true
             },
             {
-              "text": "cassandra",
-              "value": "cassandra",
+              "text": "ip-172-31-30-3",
+              "value": "ip-172-31-30-3",
               "selected": false
-            }
-          ],
-          "query": "SHOW TAG VALUES FROM \"heartbeat\" WITH KEY = \"host\"",
-          "refresh": 1,
-          "regex": "",
-          "type": "query"
-        },
-        {
-          "current": {
-            "text": "All",
-            "value": "$__all"
-          },
-          "datasource": "InfluxDB",
-          "hide": 0,
-          "includeAll": true,
-          "label": "querytype",
-          "multi": false,
-          "name": "querytype",
-          "options": [
-            {
-              "text": "All",
-              "value": "$__all",
-              "selected": true
             },
             {
-              "text": "UPDATE",
-              "value": "UPDATE",
+              "text": "ip-172-31-30-4",
+              "value": "ip-172-31-30-4",
+              "selected": false
+            },
+            {
+              "text": "ip-172-31-30-5",
+              "value": "ip-172-31-30-5",
               "selected": false
             }
           ],
-          "query": "SHOW TAG VALUES FROM \"queryReport\" WITH KEY = \"statementType\"",
+          "query": "SHOW TAG VALUES FROM \"cpu\" WITH KEY = \"host\"",
           "refresh": 1,
           "regex": "",
           "type": "query"
@@ -601,6 +689,7 @@
     "annotations": {
       "list": []
     },
+    "refresh": false,
     "schemaVersion": 12,
     "version": 2,
     "links": [],

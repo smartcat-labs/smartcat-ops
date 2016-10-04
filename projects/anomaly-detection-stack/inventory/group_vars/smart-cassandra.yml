@@ -21,7 +21,7 @@ monitoring_node: '{{ hostvars[groups["smart-monitoring"][0]]["private_ip"] }}'
 filebeat_elasticsearch_hosts: "'{{ monitoring_node }}:9200'"
 
 # Diagnostics
-cassandra_diagnostics_version: "1.1.1"
+cassandra_diagnostics_version: "1.1.2"
 cassandra_diagnostics_connector_version: "21"
 cassandra_diagnostics_version_file: "/opt/cassandra-diagnostics.version"
 cassandra_diagnostics_configuration_file: ../../anomaly-detection-stack/templates/cassandra-diagnostics.yml.j2
@@ -36,6 +36,9 @@ cassandra_diagnostics_binaries:
   - "{{ cassandra_diagnostics_url_core }}"
   - "{{ cassandra_diagnostics_url_connector }}"
   - "{{ cassandra_diagnostics_url_reporter_riemann }}"
+
+cassandra_diagnostics_jmx_host: 127.0.0.1
+cassandra_diagnostics_jmx_port: 7199
 
 # OS metrics
 osmetrics_riemann_port: "{{ cassandra_diagnostics_riemann_port }}"

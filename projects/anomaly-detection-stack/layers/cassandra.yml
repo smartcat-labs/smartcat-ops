@@ -28,6 +28,5 @@
     - java
     - filebeat
     - cassandra
-    - cassandra-metrics-reporter
     - cassandra-diagnostics
     - osmetrics

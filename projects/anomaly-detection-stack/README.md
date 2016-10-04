@@ -7,7 +7,7 @@ following software:
 | Software              | Version |
 |-----------------------|---------|
 | Apache Cassandra      | 2.1.15  |
-| cassandra-diagnostics | 1.1.1   |
+| cassandra-diagnostics | 1.1.2   |
 | Filebeat              | 1.3.1   |
 
 On the other side, monitoring node is equipped with the following tools:

@@ -37,8 +37,8 @@ cassandra_diagnostics_binaries:
   - "{{ cassandra_diagnostics_url_connector }}"
   - "{{ cassandra_diagnostics_url_reporter_riemann }}"
 
-jmx_host: 127.0.0.1
-jmx_port: 7199
+cassandra_diagnostics_jmx_host: 127.0.0.1
+cassandra_diagnostics_jmx_port: 7199
 
 # OS metrics
 osmetrics_riemann_port: "{{ cassandra_diagnostics_riemann_port }}"

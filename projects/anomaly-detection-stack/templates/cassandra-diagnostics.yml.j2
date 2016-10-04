@@ -21,8 +21,8 @@ modules:
     options:
       period: 1
       timeunit: SECONDS
-      jmxHost: '{{ jmx_host }}'
-      jmxPort: '{{ jmx_port }}'
+      jmxHost: '{{ cassandra_diagnostics_jmx_host }}'
+      jmxPort: '{{ cassandra_diagnostics_jmx_port }}'
       metricsPatterns:
         - "^org.apache.cassandra.metrics.Cache.+"
         - "^org.apache.cassandra.metrics.ClientRequest.+"

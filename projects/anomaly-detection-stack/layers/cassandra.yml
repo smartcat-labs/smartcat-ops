@@ -29,4 +29,5 @@
     - filebeat
     - cassandra
     - cassandra-diagnostics
+    - cassandra-metrics-reporter
     - osmetrics

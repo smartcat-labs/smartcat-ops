@@ -84,7 +84,7 @@
                   {
                     "key": "host",
                     "operator": "=~",
-                    "value": "/^$host$/"
+                    "value": "/^$diagnostics_host$/"
                   }
                 ]
               }
@@ -186,7 +186,7 @@
                   {
                     "key": "host",
                     "operator": "=~",
-                    "value": "/^$host$/"
+                    "value": "/^$diagnostics_host$/"
                   }
                 ]
               }
@@ -311,7 +311,7 @@
                   {
                     "key": "host",
                     "operator": "=~",
-                    "value": "/^$host$/"
+                    "value": "/^$os_host$/"
                   }
                 ]
               }
@@ -430,7 +430,7 @@
                   {
                     "key": "host",
                     "operator": "=~",
-                    "value": "/^$host$/"
+                    "value": "/^$os_host$/"
                   }
                 ]
               }
@@ -557,7 +557,7 @@
                   {
                     "key": "host",
                     "operator": "=~",
-                    "value": "/^$host$/"
+                    "value": "/^$os_host$/"
                   }
                 ]
               }
@@ -676,7 +676,7 @@
                   {
                     "key": "host",
                     "operator": "=~",
-                    "value": "/^$host$/"
+                    "value": "/^$os_host$/"
                   }
                 ]
               }
@@ -803,7 +803,7 @@
                   {
                     "key": "host",
                     "operator": "=~",
-                    "value": "/^$host$/"
+                    "value": "/^$os_host$/"
                   }
                 ]
               }
@@ -922,7 +922,7 @@
                   {
                     "key": "host",
                     "operator": "=~",
-                    "value": "/^$host$/"
+                    "value": "/^$os_host$/"
                   }
                 ]
               }
@@ -1002,9 +1002,9 @@
           "datasource": "InfluxDB",
           "hide": 0,
           "includeAll": true,
-          "label": "host",
+          "label": "os_host",
           "multi": true,
-          "name": "host",
+          "name": "os_host",
           "options": [
             {
               "text": "All",
@@ -1031,6 +1031,29 @@
           "refresh": 1,
           "regex": "",
           "type": "query"
+        },
+        {
+          "current": {
+            "text": "All",
+            "value": "$__all"
+          },
+          "datasource": "InfluxDB",
+          "hide": 0,
+          "includeAll": true,
+          "label": "diagnostics_host",
+          "multi": true,
+          "name": "diagnostics_host",
+          "options": [
+            {
+              "text": "All",
+              "value": "$__all",
+              "selected": true
+            }
+          ],
+          "query": "SHOW TAG VALUES FROM \"heartbeat\" WITH KEY = \"host\"",
+          "refresh": 1,
+          "regex": "",
+          "type": "query"
         }
       ]
     },
@@ -1038,8 +1061,7 @@
       "list": []
     },
     "schemaVersion": 12,
-    "version": 3,
+    "version": 2,
     "links": [],
     "gnetId": null
-  }
 }

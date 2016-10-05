@@ -178,7 +178,7 @@
       user: "{{ grafana_admin_user }}"
       password: "{{ grafana_admin_pwd }}"
       body_format: json
-      body: "{{ lookup('template','cluster-cassandra-os-stats-dashboard.json.j2') | from_json }}"
+      body: "{{ lookup('template','cluster-os-stats-dashboard.json.j2') | from_json }}"
       status_code: 200
     when: grafana_cluster_os_stats_dashboard.json.dashboard is not defined
 
@@ -201,7 +201,7 @@
       user: "{{ grafana_admin_user }}"
       password: "{{ grafana_admin_pwd }}"
       body_format: json
-      body: "{{ lookup('template','cluster-cassandra-disk-stats-dashboard.json.j2') | from_json }}"
+      body: "{{ lookup('template','cluster-disk-stats-dashboard.json.j2') | from_json }}"
       status_code: 200
     when: grafana_cluster_disk_stats_dashboard.json.dashboard is not defined
 
@@ -224,6 +224,6 @@
       user: "{{ grafana_admin_user }}"
       password: "{{ grafana_admin_pwd }}"
       body_format: json
-      body: "{{ lookup('template','cluster-cassandra-network-stats-dashboard.json.j2') | from_json }}"
+      body: "{{ lookup('template','cluster-network-stats-dashboard.json.j2') | from_json }}"
       status_code: 200
     when: grafana_cluster_network_stats_dashboard.json.dashboard is not defined

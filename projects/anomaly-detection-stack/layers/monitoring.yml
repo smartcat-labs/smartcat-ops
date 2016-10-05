@@ -4,29 +4,41 @@
   connection: local
   roles:
     - role: aws
-      ec2_tags:
-        Name: "smart-monitoring"
-      ec2_region: eu-central-1
-      ec2_image_id: ami-26c43149
       ec2_key_name: "eu-smartcat"
       ec2_security_group: "anomaly-stack"
+      ec2_image_id: ami-26c43149
       ec2_instance_type: m4.xlarge
+      ec2_region: eu-central-1
       ec2_count: 1
+      ec2_volumes:
+        - device_name: /dev/sda1
+          volume_type: gp2
+          volume_size: 30
+          delete_on_termination: true
+        - device_name: /dev/sdh
+          volume_type: gp2
+          volume_size: 100
+          delete_on_termination: true
+      ec2_tags:
+        Name: "smart-monitoring"
       ec2_group: smart-monitoring
 
 - name: Setup instance
   hosts: smart-monitoring
   gather_facts: False
-  tags: ['aws-setup', 'aws-start']
   remote_user: ubuntu
   become: yes
   become_method: sudo
   pre_tasks:
     - name: Gathering facts
       setup:
+      tags: ['aws-setup', 'aws-start']
+    - name: Run filesystem setup
+      include: "{{ playbook_tasks }}/monitoring-os-setup.yml"
+      tags: ['aws-setup']
   roles:
-    - docker-common
-    - influxdb-docker
-    - elk-docker
-    - grafana-docker
-    - riemann-docker
+    - { role: docker-common, tags: ['aws-setup', 'aws-start'] }
+    - { role: influxdb-docker, tags: ['aws-setup', 'aws-start'] }
+    - { role: elk-docker, tags: ['aws-setup', 'aws-start'] }
+    - { role: grafana-docker, tags: ['aws-setup', 'aws-start'] }
+    - { role: riemann-docker, tags: ['aws-setup', 'aws-start'] }

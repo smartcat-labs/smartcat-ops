@@ -3,13 +3,14 @@
   vars:
     launch_tags: '{{ ec2_tags|combine({"Group": ec2_group}) }}'
   ec2:
-    region: '{{ ec2_region }}'
-    image: '{{ ec2_image_id }}'
     key_name: '{{ ec2_key_name }}'
     group: '{{ ec2_security_group }}'
+    image: '{{ ec2_image_id }}'
     instance_type: '{{ ec2_instance_type }}'
-    instance_tags: '{{ launch_tags }}'
+    region: '{{ ec2_region }}'
+    volumes: '{{ ec2_volumes }}'
     count_tag: '{{ launch_tags }}'
+    instance_tags: '{{ launch_tags }}'
     exact_count: '{{ ec2_count }}'
     wait: true
   tags: 'aws-setup'

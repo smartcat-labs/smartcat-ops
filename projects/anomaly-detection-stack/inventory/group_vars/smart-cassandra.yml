@@ -17,8 +17,7 @@ cassandra_env_max_heap_size: 512M
 cassandra_env_heap_newsize: 100M
 
 # Filebeat
-monitoring_node: '{{ hostvars[groups["smart-monitoring"][0]]["private_ip"] }}'
-filebeat_elasticsearch_hosts: "'{{ monitoring_node }}:9200'"
+filebeat_elasticsearch_hosts: "'{{ monitoring_node_private }}:9200'"
 
 # Diagnostics
 cassandra_diagnostics_version: "1.1.1"
@@ -27,10 +26,10 @@ cassandra_diagnostics_version_file: "/opt/cassandra-diagnostics.version"
 cassandra_diagnostics_configuration_file: ../../anomaly-detection-stack/templates/cassandra-diagnostics.yml.j2
 cassandra_diagnostics_target_dir: "/usr/share/cassandra/lib/"
 
-cassandra_diagnostics_riemann_host: "{{ monitoring_node }}"
+cassandra_diagnostics_riemann_host: "{{ monitoring_node_private }}"
 cassandra_diagnostics_riemann_port: 5555
 
-riemann_server_address: "{{ monitoring_node }}"
+riemann_server_address: "{{ monitoring_node_private }}"
 
 cassandra_diagnostics_binaries:
   - "{{ cassandra_diagnostics_url_core }}"
@@ -42,4 +41,4 @@ cassandra_diagnostics_jmx_port: 7199
 
 # OS metrics
 osmetrics_riemann_port: "{{ cassandra_diagnostics_riemann_port }}"
-osmetrics_riemann_host: "{{ monitoring_node }}"
+osmetrics_riemann_host: "{{ monitoring_node_private }}"

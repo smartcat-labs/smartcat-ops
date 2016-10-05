@@ -1,2 +1,3 @@
 ---
 java_version: java8jre
+monitoring_node_private: '{{ hostvars[groups["smart-monitoring"][0]]["private_ip"] }}'

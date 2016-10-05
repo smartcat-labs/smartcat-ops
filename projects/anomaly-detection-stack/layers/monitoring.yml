@@ -35,7 +35,6 @@
       tags: ['aws-setup', 'aws-start']
     - name: Run filesystem setup
       include: "{{ playbook_tasks }}/monitoring-os-setup.yml"
-      when: tags is defined
       tags: ['aws-setup']
   roles:
     - { role: docker-common, tags: ['aws-setup', 'aws-start'] }

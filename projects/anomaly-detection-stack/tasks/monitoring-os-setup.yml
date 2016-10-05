@@ -1,11 +1,14 @@
+- name: Install dependencies
+  package: name=xfsprogs state=present
+
 - name: Create data fs
   command: mkfs.xfs -s size=4096 /dev/xvdh
 
 - name: Create mount folders
   file: path={{ item }} state=directory mode=0755
   with_items:
-    - {{ elk_elasticsearch_data_path }}
-    - {{ influxdb_data_path }}
+    - '{{ elk_elasticsearch_data_path }}'
+    - '{{ influxdb_data_path }}'
 
 - name: Update fstab
   lineinfile:

@@ -18,5 +18,5 @@
 - name: Copy filebeat configuration
   template: src=filebeat.yml.j2 dest=/etc/filebeat/filebeat.yml mode=0755
 
-- name: Set filebeat srevice
+- name: Set filebeat service
   service: name=filebeat enabled=yes state=restarted

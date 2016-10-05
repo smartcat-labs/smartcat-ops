@@ -1,3 +1,4 @@
 ---
 java_version: java8jre
+cassandra_version: 2.1.15
 monitoring_node_private: '{{ hostvars[groups["smart-monitoring"][0]]["private_ip"] }}'

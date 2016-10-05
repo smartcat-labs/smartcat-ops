@@ -1,0 +1,29 @@
+---
+- name: Load generator node
+  hosts: localhost
+  connection: local
+  roles:
+    - role: aws
+      ec2_key_name: "eu-smartcat"
+      ec2_security_group: "anomaly-stack"
+      ec2_image_id: ami-26c43149
+      ec2_instance_type: t2.micro
+      ec2_region: eu-central-1
+      ec2_count: 1
+      ec2_tags:
+        Name: "smart-load-gen"
+      ec2_group: smart-load-gen
+
+- name: Setup instance
+  hosts: smart-load-gen
+  gather_facts: False
+  tags: ['aws-setup', 'aws-start']
+  remote_user: ubuntu
+  become: yes
+  become_method: sudo
+  pre_tasks:
+    - name: Gathering facts
+      setup:
+  roles:
+    - java
+    - cassandra-tools

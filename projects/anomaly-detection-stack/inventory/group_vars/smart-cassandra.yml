@@ -1,7 +1,5 @@
 ---
-# Cassandra
 cassandra_dsc_version: dsc21
-cassandra_version: 2.1.15
 
 cassandra_seed_0: '{{ hostvars[groups["smart-cassandra"][0]]["private_ip"] }}'
 cassandra_seed_1: '{{ hostvars[groups["smart-cassandra"][1]]["private_ip"] }}'

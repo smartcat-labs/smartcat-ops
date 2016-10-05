@@ -1,0 +1,14 @@
+---
+- name: Cassandra Tools | Add datastax APT repository keys
+  apt_key: url=http://debian.datastax.com/debian/repo_key state=present
+
+- name: Cassandra Tools | Add datastax APT repository
+  apt_repository: repo="deb http://debian.datastax.com/community stable main" state=present
+
+- name: Cassandra Tools | Install package
+  apt: name={{ item }} state=present update-cache=yes force=yes
+  with_items:
+    - "cassandra={{ cassandra_version }}"
+
+- name: Cassandra Tools | Prevent Cassandra from running
+  service: name=cassandra state=stopped

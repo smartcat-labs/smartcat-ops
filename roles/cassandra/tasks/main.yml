@@ -17,8 +17,17 @@
 - name: Cassandra | Setup configuration file
   template: src=cassandra.yaml dest={{ cassandra_configuration_dir }}/cassandra.yaml
 
-- name: Cassandra | Copy Cassandra env
-  template: src=cassandra-env.sh.j2 dest={{ cassandra_configuration_dir }}/cassandra-env.sh
+- name: Cassandra | Set the MAX_HEAP_SIZE
+  lineinfile:
+    dest: "{{ cassandra_configuration_dir }}/cassandra-env.sh"
+    regexp: "^#MAX_HEAP_SIZE="
+    line: "MAX_HEAP_SIZE='{{ cassandra_env_max_heap_size }}'"
+
+- name: Cassandra | Set the HEAP_NEWSIZE
+  lineinfile:
+    dest: "{{ cassandra_configuration_dir }}/cassandra-env.sh"
+    regexp: "^#HEAP_NEWSIZE="
+    line: "HEAP_NEWSIZE='{{ cassandra_env_heap_newsize }}'"
 
 - name: Cassandra | Remove policy-rc.d file so Cassandra can start
   file: path=/usr/sbin/policy-rc.d state=absent

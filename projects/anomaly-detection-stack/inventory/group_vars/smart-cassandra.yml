@@ -18,7 +18,7 @@ cassandra_env_heap_newsize: 100M
 filebeat_elasticsearch_hosts: "'{{ monitoring_node_private }}:9200'"
 
 # Diagnostics
-cassandra_diagnostics_version: "1.1.1"
+cassandra_diagnostics_version: "1.2.0"
 cassandra_diagnostics_connector_version: "21"
 cassandra_diagnostics_version_file: "/opt/cassandra-diagnostics.version"
 cassandra_diagnostics_configuration_file: ../../anomaly-detection-stack/templates/cassandra-diagnostics.yml.j2

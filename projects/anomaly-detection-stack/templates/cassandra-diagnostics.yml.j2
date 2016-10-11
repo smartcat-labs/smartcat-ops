@@ -20,7 +20,7 @@ modules:
   - module: io.smartcat.cassandra.diagnostics.module.slowquery.SlowQueryModule
     measurement: queryReport
     options:
-      slowQueryThresholdInMilliseconds: 1
+      slowQueryThresholdInMilliseconds: 25
       tablesForLogging:
         - smartcat.test
     reporters:
@@ -31,6 +31,16 @@ modules:
     options:
       period: 1
       timeunit: SECONDS
+    reporters:
+      - io.smartcat.cassandra.diagnostics.reporter.LogReporter
+      - io.smartcat.cassandra.diagnostics.reporter.RiemannReporter
+  - module: io.smartcat.cassandra.diagnostics.module.metrics.MetricsModule
+    measurement: cassandraMetrics
+    options:
+      period: 1
+      timeunit: SECONDS
+      metricsPatterns:
+        - "^org.apache.cassandra.metrics.Compaction.+"
     reporters:
       - io.smartcat.cassandra.diagnostics.reporter.LogReporter
       - io.smartcat.cassandra.diagnostics.reporter.RiemannReporter

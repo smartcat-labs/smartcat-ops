@@ -1,3 +1,0 @@
----
-  - name: Restart cassandra service
-    service: name=cassandra state=restarted

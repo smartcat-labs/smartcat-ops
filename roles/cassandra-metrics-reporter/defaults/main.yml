@@ -1,9 +1,0 @@
----
-riemann_report_period: 1
-riemann_report_timeunit: "'SECONDS'"
-riemann_server_address: 52.49.27.253
-riemann_server_port: 5555
-cassandra_lib_location: /usr/share/cassandra/lib
-cassandra_env_location: /etc/cassandra
-cassandra_default_reporter_config_jar: reporter-config-2.1.0.jar
-cassandra_env_file: cassandra-env.sh

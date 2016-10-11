@@ -13,7 +13,6 @@
 - name: Update fstab
   lineinfile:
     dest: /etc/fstab
-    state: present
     line: '/dev/xvdh       {{ data_volume }}        xfs     defaults,noatime        0       0'
 
 - name: Run mount all

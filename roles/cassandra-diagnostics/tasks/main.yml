@@ -13,6 +13,12 @@
   when: current_version|skipped or cassandra_diagnostics_version != current_version.stdout
   notify: Restart cassandra service
 
+- name: Copy metrics reporter config fat jar with correct version of riemann
+  copy: src=reporter-config2-custom.jar
+    dest={{ cassandra_lib_location }}/reporter-config2-custom.jar
+    mode=0755 owner={{ cassandra_user }} group={{ cassandra_user }}
+  notify: Restart cassandra service
+
 - name: Update cassandra diagnostics configuration
   template: src={{ cassandra_diagnostics_configuration_file }} group={{ cassandra_user }} owner={{ cassandra_user }}
     dest={{ cassandra_configuration_dir }}/cassandra-diagnostics.yml

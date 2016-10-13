@@ -1,5 +1,5 @@
 ---
-cassandra_dsc_version: dsc21
+cassandra_dsc_version: dsc30
 
 cassandra_seed_0: '{{ hostvars[groups["smart-cassandra"][0]]["private_ip"] }}'
 cassandra_seed_1: '{{ hostvars[groups["smart-cassandra"][1]]["private_ip"] }}'
@@ -11,6 +11,7 @@ cluster_name: App Cluster
 
 cassandra_user: "root"
 cassandra_configuration_dir: "/etc/cassandra/"
+cassandra_lib_location: "/usr/share/cassandra/lib/"
 cassandra_env_max_heap_size: 2G
 cassandra_env_heap_newsize: 300M
 
@@ -19,10 +20,10 @@ filebeat_elasticsearch_hosts: "'{{ monitoring_node_private }}:9200'"
 
 # Diagnostics
 cassandra_diagnostics_version: "1.2.0"
-cassandra_diagnostics_connector_version: "21"
+cassandra_diagnostics_connector_version: "30"
 cassandra_diagnostics_version_file: "/opt/cassandra-diagnostics.version"
 cassandra_diagnostics_configuration_file: ../../anomaly-detection-stack/templates/cassandra-diagnostics.yml.j2
-cassandra_diagnostics_target_dir: "/usr/share/cassandra/lib/"
+cassandra_diagnostics_target_dir: "{{ cassandra_lib_location }}"
 
 cassandra_diagnostics_riemann_host: "{{ monitoring_node_private }}"
 cassandra_diagnostics_riemann_port: 5555

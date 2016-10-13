@@ -27,6 +27,6 @@
   roles:
     - java
     - filebeat
+    - telegraf-agent
     - cassandra
     - cassandra-diagnostics
-    - osmetrics

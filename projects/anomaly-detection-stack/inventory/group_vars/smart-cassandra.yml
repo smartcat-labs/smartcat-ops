@@ -38,5 +38,8 @@ cassandra_diagnostics_jmx_host: 127.0.0.1
 cassandra_diagnostics_jmx_port: 7199
 
 # OS metrics
-osmetrics_riemann_port: "{{ cassandra_diagnostics_riemann_port }}"
-osmetrics_riemann_host: "{{ monitoring_node_private }}"
+telegraf_version: "1.0.1"
+telegraf_collection_interval: 10s
+telegraf_influxdb_address: "http://{{ monitoring_node_private }}:8086"
+telegraf_influxdb_database: "metric"
+telegraf_influxdb_retention_policy: ""

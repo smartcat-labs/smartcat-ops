@@ -1,0 +1,6 @@
+telegraf_version: "1.0.1"
+telegraf_collection_interval: 10s
+
+telegraf_influxdb_address: "http://influxdb:8086"
+telegraf_influxdb_database: "metric"
+telegraf_influxdb_retention_policy: ""

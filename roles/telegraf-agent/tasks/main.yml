@@ -1,0 +1,27 @@
+- name: Install yum package
+  yum:
+    name: "https://dl.influxdata.com/telegraf/releases/telegraf-{{ telegraf_version }}.x86_64.rpm"
+    state: present
+  when: ansible_os_family == "RedHat"
+  register: yum_installed
+
+- name: Install apt package
+  apt:
+    deb: "https://dl.influxdata.com/telegraf/releases/telegraf_{{ telegraf_version }}_amd64.deb"
+    state: present
+  when: ansible_os_family == "Debian"
+  register: apt_installed
+
+- name: Copy configuration
+  template:
+    src: telegraf.conf.j2
+    dest: /etc/telegraf/telegraf.conf
+    mode: 0644
+  register: config_changed
+
+- name: Restart telegraf service
+  service: name=telegraf state=restarted
+  when: >
+    (yum_installed is defined and yum_installed.changed) or
+    (apt_installed is defined and apt_installed.changed) or
+    (config_changed.changed)

@@ -77,7 +77,7 @@
                 ],
                 "measurement": "queryReport",
                 "policy": "default",
-                "query": "SELECT \"value\" FROM \"queryReport\" WHERE \"host\" = 'cass-icebow-1-a.improve' AND $timeFilter",
+                "query": "SELECT \"value\" FROM \"queryReport\" WHERE \"host\" =~ /^$host$/ AND $timeFilter",
                 "refId": "A",
                 "resultFormat": "time_series",
                 "select": [
@@ -421,7 +421,7 @@
           "options": [],
           "query": "SHOW TAG VALUES FROM \"cpu\" WITH KEY = \"host\"",
           "refresh": 1,
-          "regex": "/^cass-icebow.*/",
+          "regex": "",
           "tagValuesQuery": "",
           "tagsQuery": "",
           "type": "query",

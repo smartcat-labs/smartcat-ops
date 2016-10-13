@@ -227,3 +227,26 @@
       body: "{{ lookup('template','cluster-network-stats-dashboard.json.j2') | from_json }}"
       status_code: 200
     when: grafana_cluster_network_stats_dashboard.json.dashboard is not defined
+
+  - name: Searching for Grafana Cluster Cassandra Metrics Dashboards
+    uri:
+      url: "{{ grafana_url }}/api/dashboards/db/cluster-cassandra-metrics"
+      force_basic_auth: yes
+      user: "{{ grafana_admin_user }}"
+      password: "{{ grafana_admin_pwd }}"
+      return_content: yes
+      status_code: 200, 404
+    register: grafana_cluster_cassandra_metrics_dashboard
+    when: grafana_api_ready|success
+
+  - name: Creating Grafana Cluster Cassandra Metrics Dashboard
+    uri:
+      url: "{{ grafana_url }}/api/dashboards/db"
+      method: POST
+      force_basic_auth: yes
+      user: "{{ grafana_admin_user }}"
+      password: "{{ grafana_admin_pwd }}"
+      body_format: json
+      body: "{{ lookup('template','cluster-cassandra-metrics-dashboard.json.j2') | from_json }}"
+      status_code: 200
+    when: grafana_cluster_cassandra_metrics_dashboard.json.dashboard is not defined

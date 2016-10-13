@@ -1,0 +1,533 @@
+{
+  "dashboard":
+  {
+    "id": null,
+    "title": "Cluster Cassandra metrics",
+    "tags": [
+      "cassandra"
+    ],
+    "style": "dark",
+    "timezone": "browser",
+    "editable": true,
+    "hideControls": false,
+    "sharedCrosshair": false,
+    "rows": [
+      {
+        "collapse": false,
+        "editable": true,
+        "height": "250px",
+        "panels": [
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": "${DS_INFLUXDB}",
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 2,
+            "isNew": true,
+            "legend": {
+              "avg": false,
+              "current": false,
+              "max": true,
+              "min": false,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": false,
+            "linewidth": 2,
+            "links": [
+              {
+                "dashUri": "db/cluster-slow-queries",
+                "dashboard": "Cluster Slow Queries",
+                "includeVars": false,
+                "keepTime": true,
+                "params": "",
+                "title": "Cluster Slow Queries",
+                "type": "dashboard"
+              }
+            ],
+            "nullPointMode": "null",
+            "percentage": false,
+            "pointradius": 3,
+            "points": true,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "alias": "$tag_host",
+                "dsType": "influxdb",
+                "groupBy": [
+                  {
+                    "params": [
+                      "host"
+                    ],
+                    "type": "tag"
+                  }
+                ],
+                "measurement": "queryReport",
+                "policy": "default",
+                "query": "SELECT \"value\" FROM \"queryReport\" WHERE \"host\" =~ /^$host$/ AND $timeFilter",
+                "refId": "A",
+                "resultFormat": "time_series",
+                "select": [
+                  [
+                    {
+                      "params": [
+                        "value"
+                      ],
+                      "type": "field"
+                    }
+                  ]
+                ],
+                "tags": [
+                  {
+                    "key": "host",
+                    "operator": "=~",
+                    "value": "/^$host$/"
+                  }
+                ]
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "Slow queries (external_mapping)",
+            "tooltip": {
+              "msResolution": true,
+              "shared": true,
+              "sort": 0,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "xaxis": {
+              "show": true
+            },
+            "yaxes": [
+              {
+                "format": "short",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          }
+        ],
+        "title": "New row"
+      },
+      {
+        "collapse": false,
+        "editable": true,
+        "height": "250px",
+        "panels": [
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": "${DS_INFLUXDB}",
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 1,
+            "isNew": true,
+            "legend": {
+              "alignAsTable": false,
+              "avg": false,
+              "current": false,
+              "max": true,
+              "min": false,
+              "show": true,
+              "total": false,
+              "values": true
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "repeat": null,
+            "scopedVars": {},
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": true,
+            "targets": [
+              {
+                "alias": "$tag_host",
+                "dsType": "influxdb",
+                "groupBy": [
+                  {
+                    "params": [
+                      "$interval"
+                    ],
+                    "type": "time"
+                  },
+                  {
+                    "params": [
+                      "host"
+                    ],
+                    "type": "tag"
+                  }
+                ],
+                "measurement": "/^$cassmetric$/",
+                "policy": "default",
+                "refId": "A",
+                "resultFormat": "time_series",
+                "select": [
+                  [
+                    {
+                      "params": [
+                        "value"
+                      ],
+                      "type": "field"
+                    },
+                    {
+                      "params": [],
+                      "type": "max"
+                    }
+                  ]
+                ],
+                "tags": [
+                  {
+                    "key": "host",
+                    "operator": "=~",
+                    "value": "/^$host$/"
+                  }
+                ]
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$cassmetric",
+            "tooltip": {
+              "msResolution": true,
+              "shared": true,
+              "sort": 0,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "xaxis": {
+              "show": true
+            },
+            "yaxes": [
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          }
+        ],
+        "title": "Row"
+      },
+      {
+        "collapse": false,
+        "editable": true,
+        "height": "250px",
+        "panels": [
+          {
+            "aliasColors": {},
+            "bars": false,
+            "datasource": "${DS_INFLUXDB}",
+            "editable": true,
+            "error": false,
+            "fill": 1,
+            "grid": {
+              "threshold1": null,
+              "threshold1Color": "rgba(216, 200, 27, 0.27)",
+              "threshold2": null,
+              "threshold2Color": "rgba(234, 112, 112, 0.22)"
+            },
+            "id": 3,
+            "isNew": true,
+            "legend": {
+              "avg": false,
+              "current": false,
+              "max": false,
+              "min": false,
+              "show": true,
+              "total": false,
+              "values": false
+            },
+            "lines": true,
+            "linewidth": 2,
+            "links": [],
+            "nullPointMode": "connected",
+            "percentage": false,
+            "pointradius": 5,
+            "points": false,
+            "renderer": "flot",
+            "seriesOverrides": [],
+            "span": 12,
+            "stack": false,
+            "steppedLine": false,
+            "targets": [
+              {
+                "alias": "$tag_host",
+                "dsType": "influxdb",
+                "groupBy": [
+                  {
+                    "params": [
+                      "$interval"
+                    ],
+                    "type": "time"
+                  },
+                  {
+                    "params": [
+                      "host"
+                    ],
+                    "type": "tag"
+                  }
+                ],
+                "measurement": "/^$osmetric$/",
+                "policy": "default",
+                "refId": "A",
+                "resultFormat": "time_series",
+                "select": [
+                  [
+                    {
+                      "params": [
+                        "value"
+                      ],
+                      "type": "field"
+                    },
+                    {
+                      "params": [],
+                      "type": "max"
+                    }
+                  ]
+                ],
+                "tags": [
+                  {
+                    "key": "host",
+                    "operator": "=~",
+                    "value": "/^$host$/"
+                  }
+                ]
+              }
+            ],
+            "timeFrom": null,
+            "timeShift": null,
+            "title": "$osmetric",
+            "tooltip": {
+              "msResolution": true,
+              "shared": true,
+              "sort": 0,
+              "value_type": "cumulative"
+            },
+            "type": "graph",
+            "xaxis": {
+              "show": true
+            },
+            "yaxes": [
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              },
+              {
+                "format": "short",
+                "label": null,
+                "logBase": 1,
+                "max": null,
+                "min": null,
+                "show": true
+              }
+            ]
+          }
+        ],
+        "title": "New row"
+      }
+    ],
+    "time": {
+      "from": "now-6h",
+      "to": "now"
+    },
+    "timepicker": {
+      "refresh_intervals": [
+        "5s",
+        "10s",
+        "30s",
+        "1m",
+        "5m",
+        "15m",
+        "30m",
+        "1h",
+        "2h",
+        "1d"
+      ],
+      "time_options": [
+        "5m",
+        "15m",
+        "1h",
+        "6h",
+        "12h",
+        "24h",
+        "2d",
+        "7d",
+        "30d"
+      ]
+    },
+    "templating": {
+      "list": [
+        {
+          "allValue": "",
+          "current": {},
+          "datasource": "${DS_INFLUXDB}",
+          "hide": 0,
+          "includeAll": true,
+          "label": "Cassandra hosts",
+          "multi": true,
+          "name": "host",
+          "options": [],
+          "query": "SHOW TAG VALUES FROM \"cpu\" WITH KEY = \"host\"",
+          "refresh": 1,
+          "regex": "",
+          "tagValuesQuery": "",
+          "tagsQuery": "",
+          "type": "query",
+          "useTags": false
+        },
+        {
+          "current": {
+            "text": "10s",
+            "value": "10s"
+          },
+          "datasource": null,
+          "hide": 0,
+          "includeAll": false,
+          "multi": false,
+          "name": "interval",
+          "options": [
+            {
+              "text": "1s",
+              "value": "1s",
+              "selected": false
+            },
+            {
+              "text": "10s",
+              "value": "10s",
+              "selected": true
+            },
+            {
+              "text": "1m",
+              "value": "1m",
+              "selected": false
+            },
+            {
+              "text": "5m",
+              "value": "5m",
+              "selected": false
+            },
+            {
+              "text": "10m",
+              "value": "10m",
+              "selected": false
+            }
+          ],
+          "query": "1s, 10s, 1m, 5m, 10m",
+          "refresh": 1,
+          "regex": "",
+          "type": "custom"
+        },
+        {
+          "current": {},
+          "datasource": "${DS_INFLUXDB}",
+          "hide": 0,
+          "includeAll": false,
+          "label": "Cassandra",
+          "multi": false,
+          "name": "cassmetric",
+          "options": [],
+          "query": "SHOW MEASUREMENTS WITH MEASUREMENT =~ /org.apache.cassandra.metrics.*/",
+          "refresh": 1,
+          "regex": "",
+          "tagValuesQuery": "",
+          "tagsQuery": "",
+          "type": "query",
+          "useTags": false
+        },
+        {
+          "current": {
+            "tags": [],
+            "text": "load",
+            "value": "load"
+          },
+          "datasource": null,
+          "hide": 0,
+          "includeAll": false,
+          "label": "OS Metric",
+          "multi": false,
+          "name": "osmetric",
+          "options": [
+            {
+              "selected": false,
+              "text": "cpu",
+              "value": "cpu"
+            },
+            {
+              "selected": true,
+              "text": "load",
+              "value": "load"
+            },
+            {
+              "selected": false,
+              "text": "memory",
+              "value": "memory"
+            }
+          ],
+          "query": "cpu, load, memory",
+          "refresh": 0,
+          "type": "custom"
+        }
+      ]
+    },
+    "annotations": {
+      "list": []
+    },
+    "refresh": false,
+    "schemaVersion": 12,
+    "version": 0,
+    "links": [],
+    "gnetId": null
+  }
+}

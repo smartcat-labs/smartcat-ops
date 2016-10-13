@@ -26,6 +26,7 @@
                        :db "{{ riemann_influxdb_db }}"
                        :username "{{ riemann_influxdb_user }}"
                        :password "{{ riemann_influxdb_pwd }}"
+                       :retention "{{ riemann_influxdb_retention_policy }}"
                        :tag-fields #{:host :id :statementType}}))))
 
 ; Divide timestamp with 1000 if it is sent as ms to correctly handle ms precision

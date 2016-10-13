@@ -1,5 +1,7 @@
 telegraf_version: "1.0.1"
 telegraf_collection_interval: 10s
+telegraf_install_url_deb: "https://dl.influxdata.com/telegraf/releases/telegraf_{{ telegraf_version }}_amd64.deb"
+telegraf_install_url_rpm: "https://dl.influxdata.com/telegraf/releases/telegraf-{{ telegraf_version }}.x86_64.rpm"
 
 telegraf_influxdb_address: "http://influxdb:8086"
 telegraf_influxdb_database: "metric"

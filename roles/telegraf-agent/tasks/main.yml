@@ -1,13 +1,30 @@
 - name: Install yum package
   yum:
-    name: "https://dl.influxdata.com/telegraf/releases/telegraf-{{ telegraf_version }}.x86_64.rpm"
+    name: "{{ telegraf_install_url_rpm }}"
     state: present
   when: ansible_os_family == "RedHat"
   register: yum_installed
 
-- name: Install apt package
+- name: Install any necessary dependencies [Debian/Ubuntu]
   apt:
-    deb: "https://dl.influxdata.com/telegraf/releases/telegraf_{{ telegraf_version }}_amd64.deb"
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+    cache_valid_time: 3600
+  with_items:
+    - python-httplib2
+    - python-apt
+    - curl
+    - apt-transport-https
+  when: ansible_os_family == "Debian"
+
+- name: Download Telegraf package via URL [Debian/Ubuntu]
+  command: curl -o /tmp/telegraf.deb {{ telegraf_install_url_deb }}
+  when: ansible_os_family == "Debian"
+
+- name: Install downloaded Telegraf package [Debian/Ubuntu]
+  apt:
+    deb: /tmp/telegraf.deb
     state: present
   when: ansible_os_family == "Debian"
   register: apt_installed

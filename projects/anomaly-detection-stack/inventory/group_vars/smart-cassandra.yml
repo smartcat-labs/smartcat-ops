@@ -38,9 +38,11 @@ cassandra_diagnostics_binaries:
 cassandra_diagnostics_jmx_host: 127.0.0.1
 cassandra_diagnostics_jmx_port: 7199
 
-# OS metrics
+# Telegraf
 telegraf_version: "1.0.1"
 telegraf_collection_interval: 10s
+telegraf_install_url_deb: "https://dl.influxdata.com/telegraf/releases/telegraf_{{ telegraf_version }}_amd64.deb"
+
 telegraf_influxdb_address: "http://{{ monitoring_node_private }}:8086"
 telegraf_influxdb_database: "metric"
 telegraf_influxdb_retention_policy: ""

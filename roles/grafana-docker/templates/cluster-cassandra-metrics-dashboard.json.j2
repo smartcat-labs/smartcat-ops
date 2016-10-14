@@ -77,7 +77,8 @@
                 ],
                 "measurement": "queryReport",
                 "policy": "default",
-                "query": "SELECT \"value\" FROM \"queryReport\" WHERE \"host\" =~ /^$host$/ AND $timeFilter",
+                "query": "SELECT \"value\" FROM \"queryReport\" WHERE \"host\" =~ /^$cassandra_host$/ AND $timeFilter GROUP BY \"host\"",
+                "rawQuery": true,
                 "refId": "A",
                 "resultFormat": "time_series",
                 "select": [
@@ -101,7 +102,7 @@
             ],
             "timeFrom": null,
             "timeShift": null,
-            "title": "Slow queries (external_mapping)",
+            "title": "Slow queries",
             "tooltip": {
               "msResolution": true,
               "shared": true,
@@ -216,7 +217,7 @@
                   {
                     "key": "host",
                     "operator": "=~",
-                    "value": "/^$host$/"
+                    "value": "/^$cassandra_host$/"
                   }
                 ]
               }
@@ -255,127 +256,6 @@
           }
         ],
         "title": "Row"
-      },
-      {
-        "collapse": false,
-        "editable": true,
-        "height": "250px",
-        "panels": [
-          {
-            "aliasColors": {},
-            "bars": false,
-            "datasource": "${DS_INFLUXDB}",
-            "editable": true,
-            "error": false,
-            "fill": 1,
-            "grid": {
-              "threshold1": null,
-              "threshold1Color": "rgba(216, 200, 27, 0.27)",
-              "threshold2": null,
-              "threshold2Color": "rgba(234, 112, 112, 0.22)"
-            },
-            "id": 3,
-            "isNew": true,
-            "legend": {
-              "avg": false,
-              "current": false,
-              "max": false,
-              "min": false,
-              "show": true,
-              "total": false,
-              "values": false
-            },
-            "lines": true,
-            "linewidth": 2,
-            "links": [],
-            "nullPointMode": "connected",
-            "percentage": false,
-            "pointradius": 5,
-            "points": false,
-            "renderer": "flot",
-            "seriesOverrides": [],
-            "span": 12,
-            "stack": false,
-            "steppedLine": false,
-            "targets": [
-              {
-                "alias": "$tag_host",
-                "dsType": "influxdb",
-                "groupBy": [
-                  {
-                    "params": [
-                      "$interval"
-                    ],
-                    "type": "time"
-                  },
-                  {
-                    "params": [
-                      "host"
-                    ],
-                    "type": "tag"
-                  }
-                ],
-                "measurement": "/^$osmetric$/",
-                "policy": "default",
-                "refId": "A",
-                "resultFormat": "time_series",
-                "select": [
-                  [
-                    {
-                      "params": [
-                        "value"
-                      ],
-                      "type": "field"
-                    },
-                    {
-                      "params": [],
-                      "type": "max"
-                    }
-                  ]
-                ],
-                "tags": [
-                  {
-                    "key": "host",
-                    "operator": "=~",
-                    "value": "/^$host$/"
-                  }
-                ]
-              }
-            ],
-            "timeFrom": null,
-            "timeShift": null,
-            "title": "$osmetric",
-            "tooltip": {
-              "msResolution": true,
-              "shared": true,
-              "sort": 0,
-              "value_type": "cumulative"
-            },
-            "type": "graph",
-            "xaxis": {
-              "show": true
-            },
-            "yaxes": [
-              {
-                "format": "short",
-                "label": null,
-                "logBase": 1,
-                "max": null,
-                "min": null,
-                "show": true
-              },
-              {
-                "format": "short",
-                "label": null,
-                "logBase": 1,
-                "max": null,
-                "min": null,
-                "show": true
-              }
-            ]
-          }
-        ],
-        "title": "New row"
       }
     ],
     "time": {
@@ -415,11 +295,11 @@
           "datasource": "${DS_INFLUXDB}",
           "hide": 0,
           "includeAll": true,
-          "label": "Cassandra hosts",
+          "label": "Cassandra host",
           "multi": true,
-          "name": "host",
+          "name": "cassandra_host",
           "options": [],
-          "query": "SHOW TAG VALUES FROM \"cpu\" WITH KEY = \"host\"",
+          "query": "SHOW TAG VALUES FROM \"heartbeat\" WITH KEY = \"host\"",
           "refresh": 1,
           "regex": "",
           "tagValuesQuery": "",
@@ -485,39 +365,6 @@
           "tagsQuery": "",
           "type": "query",
           "useTags": false
-        },
-        {
-          "current": {
-            "tags": [],
-            "text": "load",
-            "value": "load"
-          },
-          "datasource": null,
-          "hide": 0,
-          "includeAll": false,
-          "label": "OS Metric",
-          "multi": false,
-          "name": "osmetric",
-          "options": [
-            {
-              "selected": false,
-              "text": "cpu",
-              "value": "cpu"
-            },
-            {
-              "selected": true,
-              "text": "load",
-              "value": "load"
-            },
-            {
-              "selected": false,
-              "text": "memory",
-              "value": "memory"
-            }
-          ],
-          "query": "cpu, load, memory",
-          "refresh": 0,
-          "type": "custom"
         }
       ]
     },
@@ -526,7 +373,7 @@
     },
     "refresh": false,
     "schemaVersion": 12,
-    "version": 0,
+    "version": 4,
     "links": [],
     "gnetId": null
   }

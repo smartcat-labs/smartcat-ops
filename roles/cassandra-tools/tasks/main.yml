@@ -1,5 +1,5 @@
 ---
-- name: Load generator | Download cassandra tools
+- name: Download cassandra tools
   unarchive:
     src: "http://downloads.datastax.com/community/dsc-cassandra-{{ cassandra_version }}-bin.tar.gz"
     dest: "/opt"

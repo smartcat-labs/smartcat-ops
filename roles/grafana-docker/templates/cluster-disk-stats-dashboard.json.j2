@@ -20,7 +20,7 @@
           {
             "aliasColors": {},
             "bars": false,
-            "datasource": "InfluxDB",
+            "datasource": "${DS_INFLUXDB}",
             "editable": true,
             "error": false,
             "fill": 1,
@@ -130,7 +130,7 @@
           {
             "aliasColors": {},
             "bars": false,
-            "datasource": "InfluxDB",
+            "datasource": "${DS_INFLUXDB}",
             "editable": true,
             "error": false,
             "fill": 1,
@@ -187,8 +187,10 @@
                     "type": "fill"
                   }
                 ],
-                "measurement": "diskstats xvda reads reqs",
+                "measurement": "diskio",
                 "policy": "default",
+                "query": "SELECT difference(\"reads\") FROM \"diskio\" WHERE \"host\" =~ /^$os_host$/ AND \"name\" = 'xvda' AND $timeFilter GROUP BY \"host\"",
+                "rawQuery": true,
                 "refId": "A",
                 "resultFormat": "time_series",
                 "select": [
@@ -201,7 +203,7 @@
                     },
                     {
                       "params": [],
-                      "type": "max"
+                      "type": "difference"
                     }
                   ]
                 ],
@@ -216,7 +218,7 @@
             ],
             "timeFrom": null,
             "timeShift": null,
-            "title": "(data volume) diskstats xvda reads reqs",
+            "title": "(data and commit log volume) diskstats xvda reads reqs",
             "tooltip": {
               "msResolution": true,
               "shared": true,
@@ -249,7 +251,7 @@
           {
             "aliasColors": {},
             "bars": false,
-            "datasource": "InfluxDB",
+            "datasource": "${DS_INFLUXDB}",
             "editable": true,
             "error": false,
             "fill": 1,
@@ -308,6 +310,8 @@
                 ],
                 "measurement": "diskstats xvda io time",
                 "policy": "default",
+                "query": "SELECT difference(\"io_time\") FROM \"diskio\" WHERE \"host\" =~ /^$os_host$/ AND \"name\" = 'xvda' AND $timeFilter GROUP BY \"host\"",
+                "rawQuery": true,
                 "refId": "A",
                 "resultFormat": "time_series",
                 "select": [
@@ -335,7 +339,7 @@
             ],
             "timeFrom": null,
             "timeShift": null,
-            "title": "(data volume) diskstats xvda io time",
+            "title": "(data and commit log volume) diskstats xvda io time",
             "tooltip": {
               "msResolution": true,
               "shared": true,
@@ -367,252 +371,6 @@
           }
         ],
         "title": "Row"
-      },
-      {
-        "collapse": false,
-        "editable": true,
-        "height": "250px",
-        "panels": [
-          {
-            "aliasColors": {},
-            "bars": false,
-            "datasource": "InfluxDB",
-            "editable": true,
-            "error": false,
-            "fill": 1,
-            "grid": {
-              "threshold1": null,
-              "threshold1Color": "rgba(216, 200, 27, 0.27)",
-              "threshold2": null,
-              "threshold2Color": "rgba(234, 112, 112, 0.22)"
-            },
-            "id": 5,
-            "isNew": true,
-            "legend": {
-              "avg": false,
-              "current": false,
-              "max": false,
-              "min": false,
-              "show": true,
-              "total": false,
-              "values": false
-            },
-            "lines": true,
-            "linewidth": 2,
-            "links": [],
-            "nullPointMode": "connected",
-            "percentage": false,
-            "pointradius": 5,
-            "points": false,
-            "renderer": "flot",
-            "seriesOverrides": [],
-            "span": 12,
-            "stack": false,
-            "steppedLine": false,
-            "targets": [
-              {
-                "alias": "$tag_host",
-                "dsType": "influxdb",
-                "groupBy": [
-                  {
-                    "params": [
-                      "$interval"
-                    ],
-                    "type": "time"
-                  },
-                  {
-                    "params": [
-                      "host"
-                    ],
-                    "type": "tag"
-                  },
-                  {
-                    "params": [
-                      "null"
-                    ],
-                    "type": "fill"
-                  }
-                ],
-                "measurement": "diskstats xvda writes reqs",
-                "policy": "default",
-                "refId": "A",
-                "resultFormat": "time_series",
-                "select": [
-                  [
-                    {
-                      "params": [
-                        "value"
-                      ],
-                      "type": "field"
-                    },
-                    {
-                      "params": [],
-                      "type": "max"
-                    }
-                  ]
-                ],
-                "tags": [
-                  {
-                    "key": "host",
-                    "operator": "=~",
-                    "value": "/^$os_host$/"
-                  }
-                ]
-              }
-            ],
-            "timeFrom": null,
-            "timeShift": null,
-            "title": "(commit log) diskstats xvda writes reqs",
-            "tooltip": {
-              "msResolution": true,
-              "shared": true,
-              "sort": 0,
-              "value_type": "cumulative"
-            },
-            "type": "graph",
-            "xaxis": {
-              "show": true
-            },
-            "yaxes": [
-              {
-                "format": "short",
-                "label": null,
-                "logBase": 1,
-                "max": null,
-                "min": null,
-                "show": true
-              },
-              {
-                "format": "short",
-                "label": null,
-                "logBase": 1,
-                "max": null,
-                "min": null,
-                "show": true
-              }
-            ]
-          },
-          {
-            "aliasColors": {},
-            "bars": false,
-            "datasource": "InfluxDB",
-            "editable": true,
-            "error": false,
-            "fill": 1,
-            "grid": {
-              "threshold1": null,
-              "threshold1Color": "rgba(216, 200, 27, 0.27)",
-              "threshold2": null,
-              "threshold2Color": "rgba(234, 112, 112, 0.22)"
-            },
-            "id": 4,
-            "isNew": true,
-            "legend": {
-              "avg": false,
-              "current": false,
-              "max": false,
-              "min": false,
-              "show": true,
-              "total": false,
-              "values": false
-            },
-            "lines": true,
-            "linewidth": 2,
-            "links": [],
-            "nullPointMode": "connected",
-            "percentage": false,
-            "pointradius": 5,
-            "points": false,
-            "renderer": "flot",
-            "seriesOverrides": [],
-            "span": 12,
-            "stack": false,
-            "steppedLine": false,
-            "targets": [
-              {
-                "alias": "$tag_host",
-                "dsType": "influxdb",
-                "groupBy": [
-                  {
-                    "params": [
-                      "$interval"
-                    ],
-                    "type": "time"
-                  },
-                  {
-                    "params": [
-                      "host"
-                    ],
-                    "type": "tag"
-                  },
-                  {
-                    "params": [
-                      "null"
-                    ],
-                    "type": "fill"
-                  }
-                ],
-                "measurement": "diskstats xvda io reqs",
-                "policy": "default",
-                "refId": "A",
-                "resultFormat": "time_series",
-                "select": [
-                  [
-                    {
-                      "params": [
-                        "value"
-                      ],
-                      "type": "field"
-                    },
-                    {
-                      "params": [],
-                      "type": "max"
-                    }
-                  ]
-                ],
-                "tags": [
-                  {
-                    "key": "host",
-                    "operator": "=~",
-                    "value": "/^$os_host$/"
-                  }
-                ]
-              }
-            ],
-            "timeFrom": null,
-            "timeShift": null,
-            "title": "(commit log) diskstats xvda io reqs",
-            "tooltip": {
-              "msResolution": true,
-              "shared": true,
-              "sort": 0,
-              "value_type": "cumulative"
-            },
-            "type": "graph",
-            "xaxis": {
-              "show": true
-            },
-            "yaxes": [
-              {
-                "format": "short",
-                "label": null,
-                "logBase": 1,
-                "max": null,
-                "min": null,
-                "show": true
-              },
-              {
-                "format": "short",
-                "label": null,
-                "logBase": 1,
-                "max": null,
-                "min": null,
-                "show": true
-              }
-            ]
-          }
-        ],
-        "title": "New row"
       }
     ],
     "time": {
@@ -647,61 +405,28 @@
     "templating": {
       "list": [
         {
-          "current": {
-            "text": "All",
-            "value": "$__all"
-          },
-          "datasource": "InfluxDB",
+          "current": {},
+          "datasource": "${DS_INFLUXDB}",
           "hide": 0,
           "includeAll": true,
           "label": "os_host",
           "multi": true,
           "name": "os_host",
-          "options": [
-            {
-              "text": "All",
-              "value": "$__all",
-              "selected": true
-            },
-            {
-              "text": "ip-172-31-30-3",
-              "value": "ip-172-31-30-3",
-              "selected": false
-            },
-            {
-              "text": "ip-172-31-30-4",
-              "value": "ip-172-31-30-4",
-              "selected": false
-            },
-            {
-              "text": "ip-172-31-30-5",
-              "value": "ip-172-31-30-5",
-              "selected": false
-            }
-          ],
+          "options": [],
           "query": "SHOW TAG VALUES FROM \"cpu\" WITH KEY = \"host\"",
           "refresh": 1,
           "regex": "",
           "type": "query"
         },
         {
-          "current": {
-            "text": "All",
-            "value": "$__all"
-          },
-          "datasource": "InfluxDB",
+          "current": {},
+          "datasource": "${DS_INFLUXDB}",
           "hide": 0,
           "includeAll": true,
           "label": "diagnostics_host",
           "multi": true,
           "name": "diagnostics_host",
-          "options": [
-            {
-              "text": "All",
-              "value": "$__all",
-              "selected": true
-            }
-          ],
+          "options": [],
           "query": "SHOW TAG VALUES FROM \"heartbeat\" WITH KEY = \"host\"",
           "refresh": 1,
           "regex": "",
@@ -714,7 +439,7 @@
     },
     "refresh": false,
     "schemaVersion": 12,
-    "version": 1,
+    "version": 3,
     "links": [],
     "gnetId": null
   }

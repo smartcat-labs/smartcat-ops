@@ -20,7 +20,7 @@
           {
             "aliasColors": {},
             "bars": false,
-            "datasource": "InfluxDB",
+            "datasource": "${DS_INFLUXDB}",
             "editable": true,
             "error": false,
             "fill": 1,
@@ -130,7 +130,7 @@
           {
             "aliasColors": {},
             "bars": false,
-            "datasource": "InfluxDB",
+            "datasource": "${DS_INFLUXDB}",
             "editable": true,
             "error": false,
             "fill": 1,
@@ -189,6 +189,8 @@
                 ],
                 "measurement": "cpu",
                 "policy": "default",
+                "query": "SELECT \"usage_nice\" FROM \"cpu\" WHERE \"host\" =~ /^$os_host$/ AND \"cpu\" = 'cpu-total' AND $timeFilter GROUP BY \"host\"",
+                "rawQuery": true,
                 "refId": "A",
                 "resultFormat": "time_series",
                 "select": [
@@ -257,7 +259,7 @@
           {
             "aliasColors": {},
             "bars": false,
-            "datasource": "InfluxDB",
+            "datasource": "${DS_INFLUXDB}",
             "editable": true,
             "error": false,
             "fill": 1,
@@ -316,6 +318,8 @@
                 ],
                 "measurement": "memory",
                 "policy": "default",
+                "query": "SELECT \"used_percent\" FROM \"mem\" WHERE \"host\" =~ /^$os_host$/ AND $timeFilter GROUP BY \"host\"",
+                "rawQuery": true,
                 "refId": "A",
                 "resultFormat": "time_series",
                 "select": [
@@ -410,38 +414,14 @@
       "list": [
         {
           "allValue": "",
-          "current": {
-            "text": "All",
-            "value": "$__all"
-          },
-          "datasource": "InfluxDB",
+          "current": {},
+          "datasource": "${DS_INFLUXDB}",
           "hide": 0,
           "includeAll": true,
           "label": "os_host",
           "multi": true,
           "name": "os_host",
-          "options": [
-            {
-              "text": "All",
-              "value": "$__all",
-              "selected": true
-            },
-            {
-              "text": "ip-172-31-30-3",
-              "value": "ip-172-31-30-3",
-              "selected": false
-            },
-            {
-              "text": "ip-172-31-30-4",
-              "value": "ip-172-31-30-4",
-              "selected": false
-            },
-            {
-              "text": "ip-172-31-30-5",
-              "value": "ip-172-31-30-5",
-              "selected": false
-            }
-          ],
+          "options": [],
           "query": "SHOW TAG VALUES FROM \"cpu\" WITH KEY = \"host\"",
           "refresh": 1,
           "regex": "",
@@ -449,23 +429,14 @@
         },
         {
           "allValue": "",
-          "current": {
-            "text": "All",
-            "value": "$__all"
-          },
-          "datasource": "InfluxDB",
+          "current": {},
+          "datasource": "${DS_INFLUXDB}",
           "hide": 0,
           "includeAll": true,
           "label": "diagnostics_host",
           "multi": true,
           "name": "diagnostics_host",
-          "options": [
-            {
-              "text": "All",
-              "value": "$__all",
-              "selected": true
-            }
-          ],
+          "options": [],
           "query": "SHOW TAG VALUES FROM \"heartbeat\" WITH KEY = \"host\"",
           "refresh": 1,
           "regex": "",
@@ -478,7 +449,7 @@
     },
     "refresh": false,
     "schemaVersion": 12,
-    "version": 2,
+    "version": 1,
     "links": [],
     "gnetId": null
   }

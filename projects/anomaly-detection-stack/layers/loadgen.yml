@@ -1,5 +1,5 @@
 ---
-- name: Load generator node
+- name: smart-load-gen | Instance setup
   hosts: localhost
   connection: local
   roles:
@@ -14,16 +14,21 @@
         Name: "smart-load-gen"
       ec2_group: smart-load-gen
 
-- name: Setup instance
+- name: smart-load-gen | Install software
   hosts: smart-load-gen
   gather_facts: False
-  tags: ['aws-setup', 'aws-start']
   remote_user: ubuntu
   become: yes
   become_method: sudo
+  tags:
+    - aws-setup
+    - aws-start
   pre_tasks:
     - name: Gathering facts
       setup:
+      tags:
+        - java
+        - cassandra-tools
   roles:
-    - java
-    - cassandra-tools
+    - { role: java, tags: ["java"] }
+    - { role: cassandra-tools, tags: ["cassandra-tools"] }

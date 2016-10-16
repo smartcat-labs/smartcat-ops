@@ -1,5 +1,5 @@
 ---
-- name: Monitoring node
+- name: smart-monitoring | Instance setup
   hosts: localhost
   connection: local
   roles:
@@ -23,22 +23,29 @@
         Name: "smart-monitoring"
       ec2_group: smart-monitoring
 
-- name: Setup instance
+- name: smart-monitoring | Install software
   hosts: smart-monitoring
   gather_facts: False
   remote_user: ubuntu
   become: yes
   become_method: sudo
+  tags:
+    - aws-setup
   pre_tasks:
     - name: Gathering facts
       setup:
-      tags: ['aws-setup', 'aws-start']
+      tags:
+        - aws-start
+        - docker-common
+        - influxdb-docker
+        - elk-docker
+        - grafana-docker
+        - riemann-docker
     - name: Run filesystem setup
       include: "{{ playbook_tasks }}/monitoring-os-setup.yml"
-      tags: ['aws-setup']
   roles:
-    - { role: docker-common, tags: ['aws-setup', 'aws-start'] }
-    - { role: influxdb-docker, tags: ['aws-setup', 'aws-start'] }
-    - { role: elk-docker, tags: ['aws-setup', 'aws-start'] }
-    - { role: grafana-docker, tags: ['aws-setup', 'aws-start'] }
-    - { role: riemann-docker, tags: ['aws-setup', 'aws-start'] }
+    - { role: docker-common, tags: ["aws-start", "docker-common"] }
+    - { role: influxdb-docker, tags: ["aws-start", "influxdb-docker"] }
+    - { role: elk-docker, tags: ["aws-start", "elk-docker"] }
+    - { role: grafana-docker, tags: ["aws-start", "grafana-docker"] }
+    - { role: riemann-docker, tags: ["aws-start", "riemann-docker"] }

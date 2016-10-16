@@ -1,5 +1,5 @@
 ---
-- name: Cassandra cluster
+- name: smart-cassandra | Cluster setup
   hosts: localhost
   connection: local
   roles:
@@ -14,19 +14,27 @@
         Name: "smart-cassandra"
       ec2_group: smart-cassandra
 
-- name: Setup instances
+- name: smart-cassandra | Install software
   hosts: smart-cassandra
   gather_facts: False
-  tags: ['aws-setup', 'aws-start']
   remote_user: ubuntu
   become: yes
   become_method: sudo
+  tags:
+    - aws-setup
+    - aws-start
   pre_tasks:
     - name: Gathering facts
       setup:
+      tags:
+        - java
+        - filebeat
+        - telegraf-agent
+        - cassandra
+        - cassandra-diagnostics
   roles:
-    - java
-    - filebeat
-    - telegraf-agent
-    - cassandra
-    - cassandra-diagnostics
+    - { role: java, tags: ["java"] }
+    - { role: filebeat, tags: ["filebeat"] }
+    - { role: telegraf-agent, tags: ["telegraf-agent"] }
+    - { role: cassandra, tags: ["cassandra"] }
+    - { role: cassandra-diagnostics, tags: ["cassandra-diagnostics"] }

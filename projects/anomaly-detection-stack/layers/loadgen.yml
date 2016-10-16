@@ -26,6 +26,9 @@
   pre_tasks:
     - name: Gathering facts
       setup:
+      tags:
+        - java
+        - cassandra-tools
   roles:
     - { role: java, tags: ["java"] }
     - { role: cassandra-tools, tags: ["cassandra-tools"] }

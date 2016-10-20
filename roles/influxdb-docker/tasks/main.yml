@@ -16,11 +16,10 @@
         - "{{ influxdb_console_port }}:8083"
         - "{{ influxdb_api_port }}:8086"
       volumes:
-        - "{{ influxdb_data_path }}:/data"
+        - "{{ influxdb_data_path }}:/var/lib/influxdb"
       env:
         ADMIN_USER: "{{ influxdb_admin_user }}"
         INFLUXDB_INIT_PWD: "{{ influxdb_admin_pwd }}"
-        PRE_CREATE_DB: "{{ influxdb_metrics_db }}"
     register: influxdb_docker_container
 
   - name: Wait for InfluxDB API to start
@@ -33,9 +32,27 @@
     register: influxdb_api_ready
     until: influxdb_api_ready|success
 
+  - name: Creating Metrics Database
+    uri:
+      url: "{{ influxdb_url }}/query?q=CREATE+DATABASE+%22{{ influxdb_metrics_db }}%22&db=_internal"
+      method: POST
+      user: "{{ influxdb_admin_user }}"
+      password: "{{ influxdb_admin_pwd }}"
+      status_code: 200
+    when: influxdb_api_ready|success
+
   - name: Creating Default Retention Policy
     uri:
       url: "{{ influxdb_url }}/query?q=CREATE+RETENTION+POLICY+%22{{ influxdb_default_retention_policy }}%22+ON+%22{{ influxdb_metrics_db }}%22+DURATION+{{ influxdb_default_retention_policy_duration }}+REPLICATION+1+DEFAULT&db={{ influxdb_metrics_db }}"
+      method: POST
+      user: "{{ influxdb_admin_user }}"
+      password: "{{ influxdb_admin_pwd }}"
+      status_code: 200
+    when: influxdb_api_ready|success
+
+  - name: Creating Permanent Retention Policy
+    uri:
+      url: "{{ influxdb_url }}/query?q=CREATE+RETENTION+POLICY+%22{{ influxdb_permanent_retention_policy }}%22+ON+%22{{ influxdb_metrics_db }}%22+DURATION+INF+REPLICATION+1&db={{ influxdb_metrics_db }}"
       method: POST
       user: "{{ influxdb_admin_user }}"
       password: "{{ influxdb_admin_pwd }}"

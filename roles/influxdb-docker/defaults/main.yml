@@ -1,6 +1,6 @@
 ---
-influxdb_version: "0.9"
-influxdb_docker_image: "tutum/influxdb:{{ influxdb_version }}"
+influxdb_version: "1.0.2-alpine"
+influxdb_docker_image: "influxdb:{{ influxdb_version }}"
 influxdb_data_path: "/var/influxdb/data"
 influxdb_admin_user: "admin"
 influxdb_admin_pwd: "secret"
@@ -11,3 +11,4 @@ influxdb_api_port: "8086"
 influxdb_url: "http://127.0.0.1:{{ influxdb_api_port }}"
 influxdb_default_retention_policy: "three-days"
 influxdb_default_retention_policy_duration: "3d"
+influxdb_permanent_retention_policy: "permanent"

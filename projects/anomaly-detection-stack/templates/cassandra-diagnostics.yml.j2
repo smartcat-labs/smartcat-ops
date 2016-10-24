@@ -1,22 +1,21 @@
 # Reporters
 reporters:
   - reporter: io.smartcat.cassandra.diagnostics.reporter.LogReporter
-  - reporter: io.smartcat.cassandra.diagnostics.reporter.RiemannReporter
+  - reporter: io.smartcat.cassandra.diagnostics.reporter.TelegrafReporter
     options:
-      riemannHost: {{ cassandra_diagnostics_riemann_host }}
-      riemannPort: {{ cassandra_diagnostics_riemann_port }}
-      batchEventSize: 1
+      telegrafHost: localhost
+      telegrafPort: 8094
 
 # Modules
 modules:
   - module: io.smartcat.cassandra.diagnostics.module.heartbeat.HeartbeatModule
     measurement: heartbeat
     options:
-      period: 15
+      period: 1
       timeunit: MINUTES
     reporters:
       - io.smartcat.cassandra.diagnostics.reporter.LogReporter
-      - io.smartcat.cassandra.diagnostics.reporter.RiemannReporter
+      - io.smartcat.cassandra.diagnostics.reporter.TelegrafReporter
   - module: io.smartcat.cassandra.diagnostics.module.slowquery.SlowQueryModule
     measurement: queryReport
     options:
@@ -25,7 +24,7 @@ modules:
         - smartcat.test
     reporters:
       - io.smartcat.cassandra.diagnostics.reporter.LogReporter
-      - io.smartcat.cassandra.diagnostics.reporter.RiemannReporter
+      - io.smartcat.cassandra.diagnostics.reporter.TelegrafReporter
   - module: io.smartcat.cassandra.diagnostics.module.requestrate.RequestRateModule
     measurement: requestRate
     options:
@@ -33,7 +32,7 @@ modules:
       timeunit: SECONDS
     reporters:
       - io.smartcat.cassandra.diagnostics.reporter.LogReporter
-      - io.smartcat.cassandra.diagnostics.reporter.RiemannReporter
+      - io.smartcat.cassandra.diagnostics.reporter.TelegrafReporter
   - module: io.smartcat.cassandra.diagnostics.module.metrics.MetricsModule
     measurement: cassandraMetrics
     options:
@@ -56,4 +55,4 @@ modules:
         - "^org.apache.cassandra.metrics.Storage.+"
         - "^org.apache.cassandra.metrics.ThreadPools.+"
     reporters:
-      - io.smartcat.cassandra.diagnostics.reporter.RiemannReporter
+      - io.smartcat.cassandra.diagnostics.reporter.TelegrafReporter

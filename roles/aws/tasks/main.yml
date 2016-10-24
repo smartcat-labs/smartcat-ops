@@ -12,6 +12,7 @@
     count_tag: '{{ launch_tags }}'
     instance_tags: '{{ launch_tags }}'
     exact_count: '{{ ec2_count }}'
+    instance_profile_name: '{{ ec2_profile_name }}'
     wait: true
   tags: 'aws-setup'
 
@@ -69,3 +70,11 @@
     state: stopped
     wait: true
   tags: 'aws-stop'
+
+- name: Terminate instances
+  ec2:
+    instance_ids: '{{ instance_ids }}'
+    region: '{{ ec2_region }}'
+    state: absent
+    wait: true
+  tags: 'aws-terminate'

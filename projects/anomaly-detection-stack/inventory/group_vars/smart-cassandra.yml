@@ -43,6 +43,4 @@ telegraf_version: "1.0.1"
 telegraf_collection_interval: 10s
 telegraf_install_url_deb: "https://dl.influxdata.com/telegraf/releases/telegraf_{{ telegraf_version }}_amd64.deb"
 
-telegraf_influxdb_address: "http://{{ monitoring_node_private }}:8086"
-telegraf_influxdb_database: "metric"
-telegraf_influxdb_retention_policy: ""
+telegraf_configuration_file: ../../anomaly-detection-stack/templates/telegraf.conf.j2

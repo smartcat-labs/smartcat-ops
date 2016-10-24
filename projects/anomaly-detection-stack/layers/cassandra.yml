@@ -13,6 +13,7 @@
       ec2_tags:
         Name: "smart-cassandra"
       ec2_group: smart-cassandra
+      ec2_profile_name: Kinesis-Producer
 
 - name: smart-cassandra | Install software
   hosts: smart-cassandra

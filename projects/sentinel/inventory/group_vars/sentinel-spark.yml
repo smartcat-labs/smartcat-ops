@@ -1,0 +1,1 @@
+spark_master_ip: '{{ hostvars[groups["sentinel-spark"][0]]["ansible_eth0"]["ipv4"]["address"] }}'

@@ -1,3 +1,4 @@
 - include: monitoring.yml
 - include: cassandra.yml
 - include: loadgen.yml
+- include: spark.yml

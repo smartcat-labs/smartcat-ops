@@ -1,9 +1,9 @@
 ---
 cassandra_dsc_version: dsc30
 
-cassandra_seed_0: '{{ hostvars[groups["sentinel-cassandra"][0]]["private_ip"] }}'
-cassandra_seed_1: '{{ hostvars[groups["sentinel-cassandra"][1]]["private_ip"] }}'
-cassandra_seed_2: '{{ hostvars[groups["sentinel-cassandra"][2]]["private_ip"] }}'
+cassandra_seed_0: '{{ hostvars[groups["sentinel-cassandra"][0]]["ansible_eth0"]["ipv4"]["address"] }}'
+cassandra_seed_1: '{{ hostvars[groups["sentinel-cassandra"][1]]["ansible_eth0"]["ipv4"]["address"] }}'
+cassandra_seed_2: '{{ hostvars[groups["sentinel-cassandra"][2]]["ansible_eth0"]["ipv4"]["address"] }}'
 cassandra_seeds: "{{ cassandra_seed_0 }},{{ cassandra_seed_1 }},{{ cassandra_seed_2 }}"
 
 cassandra_native_transport_port: 9042
@@ -16,7 +16,7 @@ cassandra_env_max_heap_size: 2G
 cassandra_env_heap_newsize: 300M
 
 # Filebeat
-filebeat_elasticsearch_hosts: "'{{ monitoring_node_private }}:9200'"
+filebeat_elasticsearch_hosts: "'{{ monitoring_node }}:9200'"
 
 # Diagnostics
 cassandra_diagnostics_version: "1.2.3"

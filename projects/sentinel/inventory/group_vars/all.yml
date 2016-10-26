@@ -1,4 +1,6 @@
 ---
 java_version: java8jre
 cassandra_version: 3.0.8
-monitoring_node_private: '{{ hostvars[groups["sentinel-monitoring"][0]]["private_ip"] }}'
+
+monitoring_node: '{{ hostvars[groups["sentinel-monitoring"][0]]["ansible_eth0"]["ipv4"]["address"] }}'
+monitoring_influxdb_db: "metrics"

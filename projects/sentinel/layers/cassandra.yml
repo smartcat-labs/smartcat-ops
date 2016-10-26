@@ -1,22 +1,22 @@
 ---
-- name: smart-cassandra | Cluster setup
+- name: Setup Cassandra cluster
   hosts: localhost
   connection: local
   roles:
     - role: aws
       ec2_key_name: "eu-smartcat"
-      ec2_security_group: "anomaly-stack"
+      ec2_security_group: "sentinel"
       ec2_image_id: ami-26c43149
       ec2_instance_type: t2.medium
       ec2_region: eu-central-1
       ec2_count: 3
       ec2_tags:
-        Name: "smart-cassandra"
-      ec2_group: smart-cassandra
+        Name: "sentinel-cassandra"
+      ec2_group: sentinel-cassandra
       ec2_profile_name: Kinesis-Producer
 
-- name: smart-cassandra | Install software
-  hosts: smart-cassandra
+- name: Install software
+  hosts: sentinel-cassandra
   gather_facts: False
   remote_user: ubuntu
   become: yes

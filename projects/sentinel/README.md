@@ -5,8 +5,8 @@ metrics emitted by the system itself. It is built on top of the [Apache Spark][w
 
 ## About
 Sentinel stack is intended to be deployed in the AWS, using the EC2 instances. The stack is
-consisted of the 3-node Cassandra cluster, monitoring node, load generator node, and the 3-node
-analytic cluster.
+consisted of the 3-node Cassandra cluster, monitoring node, load generator node, and the Spark
+cluster consisted of 1 master, and 3 slave nodes.
 
 ### Cassandra
 
@@ -28,6 +28,10 @@ deployed as a Docker container.
 | Grafana       | 3.1.1   |
 | InfluxDB      | 0.13.0  |
 | Riemann       | 0.2.11  |
+
+### Spark cluster
+Each node has Spark 2.0.1 installed. Additionally, slave nodes have their own Cassandra 3.0.8
+cluster, used to store historic data.
 
 ## Prerequisites
 Before proceeding, make sure that you have the appropriate PEM on your machine. Besides that, you

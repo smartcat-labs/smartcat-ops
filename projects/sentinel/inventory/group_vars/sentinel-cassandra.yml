@@ -1,9 +1,9 @@
 ---
 cassandra_dsc_version: dsc30
 
-cassandra_seed_0: '{{ hostvars[groups["smart-cassandra"][0]]["private_ip"] }}'
-cassandra_seed_1: '{{ hostvars[groups["smart-cassandra"][1]]["private_ip"] }}'
-cassandra_seed_2: '{{ hostvars[groups["smart-cassandra"][2]]["private_ip"] }}'
+cassandra_seed_0: '{{ hostvars[groups["sentinel-cassandra"][0]]["ansible_eth0"]["ipv4"]["address"] }}'
+cassandra_seed_1: '{{ hostvars[groups["sentinel-cassandra"][1]]["ansible_eth0"]["ipv4"]["address"] }}'
+cassandra_seed_2: '{{ hostvars[groups["sentinel-cassandra"][2]]["ansible_eth0"]["ipv4"]["address"] }}'
 cassandra_seeds: "{{ cassandra_seed_0 }},{{ cassandra_seed_1 }},{{ cassandra_seed_2 }}"
 
 cassandra_native_transport_port: 9042
@@ -16,13 +16,13 @@ cassandra_env_max_heap_size: 2G
 cassandra_env_heap_newsize: 300M
 
 # Filebeat
-filebeat_elasticsearch_hosts: "'{{ monitoring_node_private }}:9200'"
+filebeat_elasticsearch_hosts: "'{{ monitoring_node }}:9200'"
 
 # Diagnostics
 cassandra_diagnostics_version: "1.2.3"
 cassandra_diagnostics_connector_version: "30"
 cassandra_diagnostics_version_file: "/opt/cassandra-diagnostics.version"
-cassandra_diagnostics_configuration_file: ../../anomaly-detection-stack/templates/cassandra-diagnostics.yml.j2
+cassandra_diagnostics_configuration_file: "{{ inventory_dir }}/../templates/cassandra-diagnostics.yml.j2"
 cassandra_diagnostics_target_dir: "{{ cassandra_lib_location }}"
 
 cassandra_diagnostics_binaries:
@@ -37,5 +37,4 @@ cassandra_diagnostics_jmx_port: 7199
 telegraf_version: "1.0.1"
 telegraf_collection_interval: 10s
 telegraf_install_url_deb: "https://dl.influxdata.com/telegraf/releases/telegraf_{{ telegraf_version }}_amd64.deb"
-
-telegraf_configuration_file: ../../anomaly-detection-stack/templates/telegraf.conf.j2
+telegraf_configuration_file: "{{ inventory_dir }}/../templates/telegraf.conf.j2"

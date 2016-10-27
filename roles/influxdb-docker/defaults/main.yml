@@ -4,7 +4,7 @@ influxdb_docker_image: "influxdb:{{ influxdb_version }}"
 influxdb_data_path: "/var/influxdb/data"
 influxdb_admin_user: "admin"
 influxdb_admin_pwd: "secret"
-influxdb_metrics_db: "metric"
+influxdb_metrics_db: "metrics"
 influxdb_console_port: "8083"
 influxdb_api_port: "8086"
 

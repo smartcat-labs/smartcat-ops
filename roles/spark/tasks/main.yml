@@ -1,0 +1,11 @@
+---
+- name: Get Spark distribution
+  unarchive:
+    src: "{{ spark_mirror }}/spark-{{ spark_version }}.tgz"
+    dest: "/opt"
+    copy: no
+
+- name: Configure Spark environment
+  template:
+    src: "spark-env.sh.j2"
+    dest: "{{ spark_home }}/conf/spark-env.sh"

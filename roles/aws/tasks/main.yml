@@ -5,6 +5,7 @@
   ec2:
     key_name: '{{ ec2_key_name }}'
     group: '{{ ec2_security_group }}'
+    vpc_subnet_id: '{{ ec2_subnet_id }}'
     image: '{{ ec2_image_id }}'
     instance_type: '{{ ec2_instance_type }}'
     region: '{{ ec2_region }}'
@@ -47,15 +48,14 @@
 
 - name: Build group
   add_host:
-    hostname: '{{ item.public_dns_name }}'
+    hostname: '{{ item.private_ip_address }}'
     groupname: '{{ ec2_group }}'
-    private_ip: '{{ item.private_ip_address }}'
   with_items: '{{ ec2_info.instances }}'
   tags: 'always'
 
 - name: Check SSH connections
   wait_for:
-    host: '{{ item.public_dns_name }}'
+    host: '{{ item.private_ip_address }}'
     port: 22
     delay: 15
     timeout: 120
@@ -70,6 +70,16 @@
     state: stopped
     wait: true
   tags: 'aws-stop'
+
+- name: Remove tags
+  ec2_tag:
+    region: '{{ ec2_region }}'
+    resource: '{{ item }}'
+    state: absent
+    tags:
+      Group: '{{ ec2_group }}'
+  with_items: '{{ instance_ids }}'
+  tags: 'aws-terminate'
 
 - name: Terminate instances
   ec2:

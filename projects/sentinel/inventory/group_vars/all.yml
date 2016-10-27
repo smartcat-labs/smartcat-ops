@@ -1,0 +1,9 @@
+---
+java_version: java8jre
+cassandra_version: 3.0.8
+
+monitoring_node: '{{ hostvars[groups["sentinel-monitoring"][0]]["ansible_eth0"]["ipv4"]["address"] }}'
+monitoring_influxdb_db: "metrics"
+
+spark_conf_vars:
+  spark_master_ip: '{{ hostvars[groups["sentinel-spark-master"][0]]["ansible_eth0"]["ipv4"]["address"] }}:7077'

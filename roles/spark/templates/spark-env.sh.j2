@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+{% for key, value in spark_conf_vars.iteritems() %}
+    export {{ key }}={{ value }}
+{% endfor %}

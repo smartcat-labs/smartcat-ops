@@ -1,0 +1,16 @@
+---
+cassandra_dsc_version: dsc30
+
+cassandra_seed_0: '{{ hostvars[groups["sentinel-spark-slaves"][0]]["ansible_eth0"]["ipv4"]["address"] }}'
+cassandra_seed_1: '{{ hostvars[groups["sentinel-spark-slaves"][1]]["ansible_eth0"]["ipv4"]["address"] }}'
+cassandra_seed_2: '{{ hostvars[groups["sentinel-spark-slaves"][2]]["ansible_eth0"]["ipv4"]["address"] }}'
+cassandra_seeds: "{{ cassandra_seed_0 }},{{ cassandra_seed_1 }},{{ cassandra_seed_2 }}"
+
+cassandra_native_transport_port: 9042
+cluster_name: Spark Data Cluster
+
+cassandra_user: "root"
+cassandra_configuration_dir: "/etc/cassandra/"
+cassandra_lib_location: "/usr/share/cassandra/lib/"
+cassandra_env_max_heap_size: 2G
+cassandra_env_heap_newsize: 300M

@@ -9,8 +9,3 @@
   template:
     src: "spark-env.sh.j2"
     dest: "{{ spark_home }}/conf/spark-env.sh"
-
-- name: Configure Spark slaves
-  template:
-    src: "slaves.j2"
-    dest: "{{ spark_home }}/conf/slaves"

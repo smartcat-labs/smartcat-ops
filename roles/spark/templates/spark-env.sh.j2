@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 
-export SPARK_MASTER_IP={{ spark_master_ip }}
-
-{% for item in spark_conf_vars %}
-    export {{ item.key }}={{ item.value }}
+{% for key, value in spark_conf_vars.iteritems() %}
+    export {{ key }}={{ value }}
 {% endfor %}
-

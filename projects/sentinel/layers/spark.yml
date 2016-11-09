@@ -14,6 +14,7 @@
       ec2_tags:
         Name: "sentinel-spark-master"
       ec2_group: sentinel-spark-master
+      ec2_profile_name: Kinesis-Producer
 
 - name: Install software
   hosts: sentinel-spark-master
@@ -44,12 +45,13 @@
       ec2_security_group: "sentinel"
       ec2_subnet_id: "subnet-9c0af4e6"
       ec2_image_id: ami-26c43149
-      ec2_instance_type: t2.medium
+      ec2_instance_type: m4.xlarge
       ec2_region: eu-central-1
       ec2_count: 3
       ec2_tags:
         Name: "sentinel-spark-slave"
       ec2_group: sentinel-spark-slaves
+      ec2_profile_name: Kinesis-Producer
 
 - name: Install software
   hosts: sentinel-spark-slaves

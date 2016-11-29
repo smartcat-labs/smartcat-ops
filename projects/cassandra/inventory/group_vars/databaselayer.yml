@@ -1,17 +1,26 @@
 ---
-# Cassandra configuration
+cassandra_dsc_version: dsc30
+
 cassandra_seeds: 192.168.34.20
 cassandra_listen_address: 192.168.34.20
 cassandra_rpc_address: 192.168.34.20
+
+cassandra_native_transport_port: 9042
 cluster_name: Cassandra Cluster
 
 cassandra_configuration_dir: "/etc/cassandra/"
-cassandra_diagnostics_target_dir: "/usr/share/cassandra/lib/"
-cassandra_diagnostics_riemann_host: 192.168.35.30
-cassandra_diagnostics_riemann_port: 5555
-cassandra_diagnostics_version: 1.1.1
-cassandra_diagnostics_configuration_file: ../../cassandra/templates/cassandra-diagnostics.yml.j2
+cassandra_lib_location: "/usr/share/cassandra/lib/"
+
+# Diagnostics
+cassandra_diagnostics_version: "1.2.3"
+cassandra_diagnostics_connector_version: "30"
+cassandra_diagnostics_version_file: "/opt/cassandra-diagnostics.version"
+cassandra_diagnostics_configuration_file: "{{ inventory_dir }}/../templates/cassandra-diagnostics.yml.j2"
+cassandra_diagnostics_target_dir: "{{ cassandra_lib_location }}"
+
 cassandra_diagnostics_binaries:
   - "{{ cassandra_diagnostics_url_core }}"
   - "{{ cassandra_diagnostics_url_connector }}"
-  - "{{ cassandra_diagnostics_url_reporter_riemann }}"
+
+cassandra_diagnostics_jmx_host: 127.0.0.1
+cassandra_diagnostics_jmx_port: 7199

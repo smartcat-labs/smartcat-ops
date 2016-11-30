@@ -470,8 +470,8 @@ ssl_storage_port: 7001
 # you can specify which should be chosen using listen_interface_prefer_ipv6. If false the first ipv4
 # address will be used. If true the first ipv6 address will be used. Defaults to false preferring
 # ipv4. If there is only one address it will be selected regardless of ipv4/ipv6.
-listen_address: {{ cassandra_listen_address }}
-# listen_interface: eth0
+# listen_address: {{ cassandra_listen_address }}
+listen_interface: {{ cassandra_listen_interface }}
 # listen_interface_prefer_ipv6: false
 
 # Address to broadcast to other Cassandra nodes
@@ -525,7 +525,7 @@ native_transport_port: {{ cassandra_native_transport_port }}
 # native_transport_max_concurrent_connections_per_ip: -1
 
 # Whether to start the thrift rpc server.
-start_rpc: false
+start_rpc: {{ cassandra_start_rpc }}
 
 # The address or interface to bind the Thrift RPC service and native transport
 # server to.
@@ -545,8 +545,8 @@ start_rpc: false
 # you can specify which should be chosen using rpc_interface_prefer_ipv6. If false the first ipv4
 # address will be used. If true the first ipv6 address will be used. Defaults to false preferring
 # ipv4. If there is only one address it will be selected regardless of ipv4/ipv6.
-rpc_address: {{ cassandra_rpc_address }}
-# rpc_interface: eth1
+# rpc_address: {{ cassandra_rpc_address }}
+rpc_interface: {{ cassandra_rpc_interface }}
 # rpc_interface_prefer_ipv6: false
 
 # port for Thrift to listen for clients on

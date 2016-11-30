@@ -8,6 +8,9 @@ cassandra_seeds: "{{ cassandra_seed_0 }},{{ cassandra_seed_1 }},{{ cassandra_see
 
 cassandra_native_transport_port: 9042
 cluster_name: App Cluster
+cassandra_listen_interface: eth0
+cassandra_start_rpc: true
+cassandra_rpc_interface: eth0
 
 cassandra_user: "root"
 cassandra_configuration_dir: "/etc/cassandra/"

@@ -1,0 +1,13 @@
+---
+- hosts: databaselayer
+  become: yes
+  become_user: root
+  become_method: sudo
+  roles:
+    - hostname
+    - common
+    - java
+    - python
+    - cassandra
+    - cassandra-diagnostics
+    - cassandra-node-monkey

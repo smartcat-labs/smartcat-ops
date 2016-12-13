@@ -1,0 +1,30 @@
+---
+- name: Copy JAR to Cassandra's lib
+  copy:
+    src: "node-monkey.jar"
+    dest: "{{ cassandra_lib_location }}/node-monkey.jar"
+    mode: 0755
+    owner: "{{ cassandra_user }}"
+    group: "{{ cassandra_user }}"
+  notify: Restart cassandra service
+
+- name: Configure Cassandra to use monkey
+  lineinfile:
+    dest: "{{ cassandra_configuration_dir }}/cassandra-env.sh"
+    line: 'JVM_OPTS="$JVM_OPTS -Dcassandra.custom_query_handler_class=io.smartcat.node.monkey.LatencyMonkey"'
+  notify: Restart cassandra service
+
+- name: Copy monkey configuration file
+  copy:
+    src: "{{ cassandra_node_monkey_configuration_file }}"
+    dest: "{{ cassandra_configuration_dir }}/cassandra-node-monkey.yml"
+    mode: 0755
+    owner: "{{ cassandra_user }}"
+    group: "{{ cassandra_user }}"
+  notify: Restart cassandra service
+
+- name: Configure monkey to use the external configuration file
+  lineinfile:
+    dest: "{{ cassandra_configuration_dir }}/cassandra-env.sh"
+    line: 'JVM_OPTS="$JVM_OPTS -Dnode.monkey.config=cassandra-node-monkey.yml"'
+  notify: Restart cassandra service

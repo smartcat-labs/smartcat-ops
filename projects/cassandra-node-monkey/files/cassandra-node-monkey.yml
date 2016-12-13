@@ -1,0 +1,8 @@
+# percentage of failed requests
+failedRequestsPercentage: 10
+
+# percentage of delayed requests
+delayedRequestsPercentage: 20
+
+# latency in milliseconds
+requestLatency: 30

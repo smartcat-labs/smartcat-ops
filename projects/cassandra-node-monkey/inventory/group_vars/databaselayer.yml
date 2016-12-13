@@ -1,0 +1,32 @@
+---
+cassandra_dsc_version: dsc30
+
+cassandra_seeds: 192.168.40.20
+cassandra_listen_address: 192.168.40.20
+cassandra_rpc_address: 192.168.40.20
+cassandra_listen_interface: eth1
+cassandra_start_rpc: false
+cassandra_rpc_interface: eth1
+
+cassandra_native_transport_port: 9042
+cluster_name: Cassandra Cluster
+
+cassandra_configuration_dir: "/etc/cassandra/"
+cassandra_lib_location: "/usr/share/cassandra/lib/"
+
+# Diagnostics
+cassandra_diagnostics_version: "1.2.3"
+cassandra_diagnostics_connector_version: "30"
+cassandra_diagnostics_version_file: "/opt/cassandra-diagnostics.version"
+cassandra_diagnostics_configuration_file: "{{ inventory_dir }}/../files/cassandra-diagnostics.yml"
+cassandra_diagnostics_target_dir: "{{ cassandra_lib_location }}"
+
+cassandra_diagnostics_binaries:
+  - "{{ cassandra_diagnostics_url_core }}"
+  - "{{ cassandra_diagnostics_url_connector }}"
+
+cassandra_diagnostics_jmx_host: 127.0.0.1
+cassandra_diagnostics_jmx_port: 7199
+
+# Node monkey
+cassandra_node_monkey_configuration_file: "{{ inventory_dir }}/../files/cassandra-node-monkey.yml"

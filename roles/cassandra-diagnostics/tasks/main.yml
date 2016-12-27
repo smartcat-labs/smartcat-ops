@@ -24,16 +24,9 @@
     dest={{ cassandra_configuration_dir }}/cassandra-diagnostics.yml
   notify: Restart cassandra service
 
-- name: Remove cassandra-env javaagent line
-  lineinfile: dest={{ cassandra_configuration_dir }}/cassandra-env.sh state=absent
-    regexp='^JVM_OPTS="\$JVM_OPTS -javaagent:.*cassandra-diagnostics-core-.*"'
-  when: current_version|skipped or cassandra_diagnostics_version != current_version.stdout
-  notify: Restart cassandra service
-
-- name: Set cassandra-env javaagent line
+- name: Set cassandra-env custom query handler line
   lineinfile: dest={{ cassandra_configuration_dir }}/cassandra-env.sh
-    line='JVM_OPTS="$JVM_OPTS -javaagent:{{ cassandra_diagnostics_target_dir }}cassandra-diagnostics-core-{{ cassandra_diagnostics_version }}.jar"'
-  when: current_version|skipped or cassandra_diagnostics_version != current_version.stdout
+    line='JVM_OPTS="$JVM_OPTS -Dcassandra.custom_query_handler_class=io.smartcat.cassandra.diagnostics.connector.DiagnosticsQueryHandler"'
   notify: Restart cassandra service
 
 - name: Update cassandra-env configuration line

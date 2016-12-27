@@ -15,7 +15,7 @@ cassandra_configuration_dir: "/etc/cassandra/"
 cassandra_lib_location: "/usr/share/cassandra/lib/"
 
 # Diagnostics
-cassandra_diagnostics_version: "1.2.3"
+cassandra_diagnostics_version: "2.0"
 cassandra_diagnostics_connector_version: "30"
 cassandra_diagnostics_version_file: "/opt/cassandra-diagnostics.version"
 cassandra_diagnostics_configuration_file: "{{ inventory_dir }}/../templates/cassandra-diagnostics.yml.j2"

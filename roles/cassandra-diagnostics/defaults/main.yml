@@ -1,6 +1,6 @@
 cassandra_configuration_dir: "/etc/cassandra/"
 cassandra_user: "cassandra"
-cassandra_diagnostics_version: "1.1.1"
+cassandra_diagnostics_version: "2.0"
 cassandra_diagnostics_connector_version: "21"
 cassandra_diagnostics_version_file: "/opt/cassandra-diagnostics.version"
 cassandra_diagnostics_target_dir: "/usr/share/cassandra/lib/"

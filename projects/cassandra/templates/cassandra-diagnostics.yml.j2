@@ -13,6 +13,9 @@ modules:
     measurement: queryReport
     options:
       slowQueryThresholdInMilliseconds: 25
+      slowQueryCountReportEnabled: true
+      slowQueryCountReportPeriod: 5
+      slowQueryCountReportTimeunit: MINUTES
       tablesForLogging:
         - smartcat.test_table
     reporters:

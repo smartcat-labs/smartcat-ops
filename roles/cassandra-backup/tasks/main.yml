@@ -52,5 +52,5 @@
       - "pretty_print.sh"
 
   - name: Create daily cron job for automatic backup and upload to S3 bucket
-    cron: name="Backup votecircle keyspace" weekday="*" hour="3" minute="0"
+    cron: name="Backup keyspace" weekday="*" hour="3" minute="0"
       job="{{ cassandra_automatic_backup_job }}"

@@ -1,0 +1,11 @@
+CASSANDRA_DATA_DIR={{ cassandra_data_dir }}
+SERVER_JMX_HOST={{ cassandra_jmx_host }}
+SERVER_CQL_PORT={{ cassandra_native_transport_port }}
+SERVER_JMX_PORT={{ cassandra_jmx_port }}
+ARCHIVE_EXTENSION=tar.gz
+CASSANDRA_USER={{ cassandra_system_user }}
+FUNCTIONS_DIRECTORY={{ cassandra_backup_etc_directory }}
+CASSANDRA_LISTEN_ADDRESS={{ cassandra_listen_address }}
+AUTOMATIC_BACKUP_KEYSPACE={{ project_id }}
+S3_CONFIG_FILE_PATH={{ cassandra_backup_etc_directory }}/{{ cassandra_automatic_backup_s3_configuration_file }}
+S3_BUCKET_NAME={{ cassandra_automatic_backup_s3_bucket_name }}

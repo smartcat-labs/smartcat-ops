@@ -1,0 +1,56 @@
+---
+  - name: Create Cassandra local etc directory
+    file: path={{ item }} state=directory
+    with_items:
+      - "{{ cassandra_backup_etc_directory }}"
+      - "{{ cassandra_backup_functions_directory }}"
+      - "{{ cassandra_local_doc_directory }}"
+
+  - name: Copy Cassandra backup readme file
+    copy: src=doc/README dest={{ cassandra_local_doc_directory }}
+
+  - name: Copy amazon S3 configuration file
+    template: src=configuration/{{ cassandra_automatic_backup_s3_configuration_file }}.j2
+      dest={{ cassandra_backup_etc_directory }}/{{ cassandra_automatic_backup_s3_configuration_file }}
+
+  - name: Copy cassandra backup scripts configuration file
+    template: src=configuration/{{ cassandra_backup_configuration_file }}.j2
+      dest={{ cassandra_backup_etc_directory }}/{{ cassandra_backup_configuration_file }}
+
+  - name: Copy Cassandra backup/restore scripts
+    template: src={{ item.src }} dest={{ local_bin_directory }}/{{ item.dest }}
+    with_items:
+      - { src: "scripts/cassandra_backup_keyspace.sh.j2", dest: "cassandra_backup_keyspace.sh" }
+      - { src: "scripts/cassandra_restore_keyspace.sh.j2", dest: "cassandra_restore_keyspace.sh" }
+      - { src: "scripts/cassandra_automatic_backup.sh.j2",
+        dest: "cassandra_automatic_backup.sh" }
+
+  - name: Copy Cassandra function scripts
+    template: src={{ item.src }}
+      dest={{ cassandra_backup_functions_directory }}/{{ item.dest }}
+    with_items:
+      - { src: "scripts/cassandra_common_functions.sh.j2", dest: "cassandra_common_functions.sh" }
+      - { src: "scripts/cassandra_backup_functions.sh.j2", dest: "cassandra_backup_functions.sh" }
+      - { src: "scripts/cassandra_restore_functions.sh.j2",
+        dest: "cassandra_restore_functions.sh" }
+
+  - name: Copy colorized output functions script
+    copy: src=scripts/pretty_print.sh dest={{ cassandra_backup_functions_directory }}
+
+  - name: Make backup scripts explicitly executable
+    file: path={{ local_bin_directory }}/{{ item }} mode=0755
+    with_items:
+      - "cassandra_backup_keyspace.sh"
+      - "cassandra_restore_keyspace.sh"
+      - "cassandra_automatic_backup.sh"
+
+  - name: Make backup functions scripts explicitly non-executable
+    file: path={{ cassandra_backup_functions_directory }}/{{ item }} mode=0644
+    with_items:
+      - "cassandra_backup_functions.sh"
+      - "cassandra_restore_functions.sh"
+      - "pretty_print.sh"
+
+  - name: Create daily cron job for automatic backup and upload to S3 bucket
+    cron: name="Backup votecircle keyspace" weekday="*" hour="3" minute="0"
+      job="{{ cassandra_automatic_backup_job }}"

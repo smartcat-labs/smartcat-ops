@@ -1,0 +1,14 @@
+---
+  cassandra_backup_etc_directory: /usr/local/etc/cassandra-backup
+  cassandra_backup_functions_directory: /usr/local/lib/cassandra-backup-functions
+  cassandra_local_doc_directory: /usr/local/share/doc/cassandra-backup
+  local_bin_directory: /usr/local/bin
+  cassandra_data_dir: /var/lib/cassandra/data
+  cassandra_backup_configuration_file: cassandra_backup.conf
+  cassandra_backup_functions_script: cassandra_backup_functions.sh
+  cassandra_automatic_backup_s3_access_key_id: "{{ s3_bucket_access_key }}"
+  cassandra_automatic_backup_s3_secret_key: "{{ s3_bucket_secret_key }}"
+  cassandra_automatic_backup_s3_configuration_file: backup-bucket.s3cfg
+  cassandra_automatic_backup_s3_bucket_name: "{{ s3_cassandra_backup_bucket }}"
+  cassandra_automatic_backup_log_file: /var/log/cassandra-auto-backup.log
+  cassandra_automatic_backup_job: "{{ local_bin_directory }}/cassandra_automatic_backup.sh >> {{ cassandra_automatic_backup_log_file }} 2>&1"

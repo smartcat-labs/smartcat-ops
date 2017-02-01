@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+# Backups Cassandra keyspace tables using nodetool.
+#
+# Parameters:
+#   $1 - keyspace name.
+
+# Import common functions and configuration.
+. {{ cassandra_backup_functions_directory }}/cassandra_backup_functions.sh
+
+# Prints script usage.
+function printUsage() {
+  printInfo "$0: Backups Cassandra keyspace snapshot to an archive."
+  printInfo "$0: Usage:"
+  printInfo "$0:   $0 schema_name"
+}
+
+SCRIPT_DISPLAY_NAME="Cassandra: ${LIGHT_CYAN}backup${NC}"
+
+if [ -z "$1" ]; then
+  printUsage
+  exit 0
+fi
+
+CWD=$(pwd)
+KEYSPACE_NAME=$1
+if [ -n "$2" ]; then
+  TARGET_DIRECTORY="$2"
+else
+  TARGET_DIRECTORY="$CWD"
+fi
+
+# Start backing up process
+printInfo "Backing up $KEYSPACE_NAME..."
+backupKeyspaceToArchive "$KEYSPACE_NAME" "$TARGET_DIRECTORY"
+printInfo "Done."

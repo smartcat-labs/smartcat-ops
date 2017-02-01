@@ -1,0 +1,118 @@
+#!/usr/bin/env bash
+
+# Collection of functions used by cassandra backup scripts.
+
+# Import common functions, along with configuration.
+. {{ cassandra_backup_functions_directory }}/cassandra_common_functions.sh
+
+# Copies cassandra database snapshots from source to destination directory. If destination directory
+# is non-existing, it will create new one.
+#
+# Parameters [mandatory]:
+#   $1 - Cassandra schema directory.
+#   $2 - Destination directory to copy snapshots to.
+#
+# Exits:
+#   - with implicit 0 if copying finished successfully.
+#   - with code $EXIT_CODE_RESOURCE_DOESNT_EXIST if source directory is missing.
+function copyTableSnapshots() {
+  ensureNumberOfParametersForFunction "copyTableSnapshots" $# 2
+  local KEYSPACE_ROOT_DIRECTORY="$1"
+  local BACKUP_DIRECTORY="$2"/snapshot
+
+  # Throw error if source directory doesn't exist.
+  errorIfResourcesDoesntExist $CWD
+
+  for TABLE_DIRECTORY in $(ls "$KEYSPACE_ROOT_DIRECTORY"); do
+    local SNAPSHOTS_DIRECTORY="$KEYSPACE_ROOT_DIRECTORY"/"$TABLE_DIRECTORY"/snapshots
+    local SOURCE_DIRECTORY="$SNAPSHOTS_DIRECTORY"/"$(ls -1 -t $SNAPSHOTS_DIRECTORY | head -1)"
+    local DESTINATION_DIRECTORY="$BACKUP_DIRECTORY"/"$TABLE_DIRECTORY"
+
+    createDirectoryIfDoesNotExist "$DESTINATION_DIRECTORY"
+
+    printInfo "Copying resources:"
+    printInfo "from ${WHITE}$SOURCE_DIRECTORY${NC}"
+    printInfo "to ${WHITE}$DESTINATION_DIRECTORY${NC}"
+
+    cp -Rf "$SOURCE_DIRECTORY"/* "$DESTINATION_DIRECTORY"
+  done
+}
+
+# Backups keyspace schema to destination directory. If destination directory don't exist
+# it will be automatically created.
+#
+# Parameters [mandatory]:
+#   $1 - Destination directory.
+#
+# Exits:
+#   - with implicit 0 if backup was successful.
+#   - with $EXIT_CODE_ERROR_BACKING_UP_SCHEMA if backup failed.
+function backupSchema() {
+  local KEYSPACE_DIRECTORY="$1"
+  local SCHEMA_NAME="$2"
+  local SCHEMA_FILE="$KEYSPACE_DIRECTORY"/"$CQL_SCHEMA_FILE"
+
+  echo "$BACKUP_COMMAND"
+
+  createDirectoryIfDoesNotExist "$KEYSPACE_DIRECTORY"
+
+  printInfo "Backing up schema to ${WHITE}$SCHEMA_FILE${NC}"
+
+  cqlsh -e "use $SCHEMA_NAME; describe schema;" \
+  $CASSANDRA_LISTEN_ADDRESS \
+  $SERVER_CQL_PORT > "$SCHEMA_FILE"
+
+  if [ "$?" != "0" ]; then
+    printError "Error occurred while backing up schema"
+    exit $EXIT_CODE_ERROR_BACKING_UP_SCHEMA
+  fi
+  printInfo "Done."
+}
+
+# Backups schema to archive.
+#
+# Parameters [mandatory]:
+#   $1 - schema name.
+#   $2 - target directory where to store backup archive.
+#
+# Exists:
+#   - with $EXIT_CODE_ILLEGAL_NUMBER_OF_ARGUMENTS if not both parameters have been
+#     passed of function.
+function backupKeyspaceToArchive() {
+  # Ensure that we have both parameters passed to function.
+  ensureNumberOfParametersForFunction "backupSchemaToArchive" $# 2
+
+  local KEYSPACE_NAME="$1"
+  # Directory where backup will be stored before packing it into archive.
+  local TARGET_DIRECTORY="$2"/"$KEYSPACE_NAME"
+  # Directory where $TARGET_DIRECTORY will be stored during backup process.
+  local WORKING_DIRECTORY="$2"
+
+  # Stop if target directory exists; we don't want to overwrite anything.
+  errorIfResourcesExists "$TARGET_DIRECTORY"
+
+  printInfo "Backing up tables for schema ${WHITE}'$KEYSPACE_NAME'${NC} ..."
+  # Create snapshot using nodetool.
+  nodetool -h $SERVER_JMX_HOST -p $SERVER_JMX_PORT snapshot "$KEYSPACE_NAME"
+  printInfo "Done."
+
+  printInfo "Copying tables backup to ${WHITE}$TARGET_DIRECTORY${NC}"
+  copyTableSnapshots "$CASSANDRA_DATA_DIR"/"$KEYSPACE_NAME" "$TARGET_DIRECTORY"
+  printInfo "Done."
+
+  printInfo "Backing up schema ${WHITE}'$KEYSPACE_NAME'${NC} ..."
+  backupSchema "$TARGET_DIRECTORY" "$KEYSPACE_NAME"
+  printInfo "Done."
+
+  # Sanity check; verify if content of backup directory is valid.
+  verifyBackupArchiveContents "$TARGET_DIRECTORY"
+
+  printInfo "Archiving backup directory..."
+  tar jcaf "$WORKING_DIRECTORY"/"$KEYSPACE_NAME-$(getDateInMiliseconds)"."$ARCHIVE_EXTENSION"\
+  --directory "$WORKING_DIRECTORY" "$KEYSPACE_NAME"
+  printInfo "Done."
+
+  printInfo "Removing backup directory..."
+  rm -rf "$TARGET_DIRECTORY"
+  printInfo "Done."
+}

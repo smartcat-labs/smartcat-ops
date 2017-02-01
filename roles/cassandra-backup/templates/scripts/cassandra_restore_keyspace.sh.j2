@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+# Restores cassandra schema and data from snapshot backup.
+#
+# Parameters:
+#   $1 - path to archive containing snapshot data and schema file.
+
+# Import restore functions.
+. {{ cassandra_backup_functions_directory }}/cassandra_restore_functions.sh
+
+SCRIPT_DISPLAY_NAME="Cassandra: ${LIGHT_CYAN}restore${NC}"
+
+# Prints script usage.
+function printUsage() {
+  printInfo "$0: Restores cassandra backup from snapshot archive."
+  printInfo "$0: Usage:"
+  printInfo "$0:   $0 archive_file_path"
+}
+
+if [ -z "$1" ]; then
+  printUsage
+  exit 0
+fi
+
+ARCHIVE_PATH="$1"
+ARCHIVE_NAME=$(basename "$ARCHIVE_PATH")
+EXTRACT_DIRECTORY=/tmp/cassandra_restore/"$ARCHIVE_PATH"
+
+errorIfResourcesDoesntExist $@
+
+restoreBackupFromArchive $1 $CASSANDRA_DATA_DIR

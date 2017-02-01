@@ -1,0 +1,225 @@
+#!/usr/bin/env bash
+
+# Collection of functions used by cassandra restore scripts.
+
+# Import common functions, along with configuration.
+. {{ cassandra_backup_functions_directory }}/cassandra_common_functions.sh
+
+# Temporary restore directory.
+TMP_RESTORE_DIRECTORY="$TMP"/cassandra-restore
+
+# Extracts cassandra table name from table directory name. Cassandra stores table in directories
+# with names 'table_name-table_id'. 'table-id' part is a string consisting of only alphanumeric
+# characters.
+#
+# Parameters [mandatory]:
+#   $1 - cassandra table directory name.
+#
+# Returns:
+#   table name extracted from table directory name.
+#
+# Exits:
+#   - with implicit 0.
+#   - with $EXIT_CODE_INVALID_ARGUMENT if no parameter was passed.
+#
+# Example:
+#   for directory name 'vote_counts_by_date-7e4b37703b7111e5ae9efb61c0ffcc02', this method will
+#   return string 'vote_counts_by_date'
+function extractTableNameFromTableDirectoryName() {
+  ensureAtLeastOneParameter $@
+  local TABLE_DIRECTORY_NAME="$1"
+  if [ -n "$TABLE_DIRECTORY_NAME" ]; then
+    echo "${TABLE_DIRECTORY_NAME%-*}"
+  fi
+}
+
+# Retrieves cassandra keyspace name from unpacked backup archive.
+#
+# Parameters [mandatory]:
+#   $1 - path to directory where backup archive was extracted.
+#
+# Returns:
+#   cassandra keyspace name.
+#
+# Exits:
+#   - with implicit 0, if keyspace name was found.
+#   - with $EXIT_CODE_INVALID_ARGUMENT if no parameter was passed.
+#   - with $EXIT_CODE_RESOURCE_DOESNT_EXIST if archive directory doesn't exist.
+#   - with $EXIT_CODE_NO_KEYSPACE_DIRECTORY if keyspace directory doesn't exist.
+function getKeyspaceNameFromUnpackedArchive() {
+  ensureAtLeastOneParameter $@
+  local EXTRACTED_DIRECTORY_PATH="$1"
+
+  if [ ! -d "$EXTRACTED_DIRECTORY_PATH" ]; then
+    printError "Directory $EXTRACTED_DIRECTORY_PATH doesn't exist."
+    exit $EXIT_CODE_RESOURCE_DOESNT_EXIST
+  fi
+
+  local KEYSPACE_NAME=$(ls -1 -t "$EXTRACTED_DIRECTORY_PATH" | head -1)
+  if [ ! -d "$EXTRACTED_DIRECTORY_PATH"/"$KEYSPACE_NAME" ]; then
+    printError "No keyspace directory in ${WHITE}$EXTRACTED_DIRECTORY_PATH${NC}"
+    exit $EXIT_CODE_NO_KEYSPACE_DIRECTORY
+  fi
+  echo "$KEYSPACE_NAME"
+}
+
+# Cleans keyspace directory in Cassandra data directory. This method is invasive and it
+# WILL DESTROY ALL DATA if existing keyspace is provided. Take care when using it.
+# If non-existing directory is passed to function, it will create new one.
+#
+# Parameters [mandatory]:
+#   $1 - target keyspace directory
+#
+# Exits:
+#   - with implicit 0 if cleaning of directory was successfull.
+#   - with $EXIT_CODE_INVALID_ARGUMENT if no parameter was passed.
+function ensureCleanKeyspaceDirectory() {
+  ensureAtLeastOneParameter $@
+  local KEYSPACE_DIRECTORY="$1"
+
+  if [ ! -d "$KEYSPACE_DIRECTORY" ]; then
+    printInfo "Creating new directory ${WHITE}$KEYSPACE_DIRECTORY${NC}"
+    mkdir -p "$KEYSPACE_DIRECTORY"
+  else
+    printInfo "Existing keyspace directory found, erasing all data from it"
+    rm -Rf "$KEYSPACE_DIRECTORY"/*
+  fi
+}
+
+# Drops current schema if it exists.
+#
+# Parameters [mandatory]:
+#   $1 - keyspace name.
+#
+# Exits:
+#   - with implicit 0.
+#   - with $EXIT_CODE_INVALID_ARGUMENT if no parameter was passed.
+function dropSchemaIfExists() {
+  ensureAtLeastOneParameter $@
+  local SCHEMA_NAME="$1"
+
+  printInfo "Dropping keyspace if exists: $SCHEMA_NAME"
+
+  cqlsh -e "drop keyspace if exists $SCHEMA_NAME;" \
+  $CASSANDRA_LISTEN_ADDRESS \
+  $SERVER_CQL_PORT
+
+  printInfo "Done."
+}
+
+# Executes provided CQL script.
+#
+# Parameters [mandatory]:
+#   $1 - path to CQL file.
+#
+# Exits:
+#   - with implicit 0, if everything is OK.
+#   - with $EXIT_CODE_INVALID_ARGUMENT if no parameter was passed.
+function executeCQLScript() {
+  ensureAtLeastOneParameter $@
+  local CQL_FILE="$1"
+
+  printInfo "Executing CQL script from file: ${WHITE}$CQL_FILE${NC}"
+  cqlsh < $CQL_FILE $CASSANDRA_LISTEN_ADDRESS $SERVER_PORT
+  if [ "$?" != "0" ]; then
+    printError "Error occured while executing script"
+    exit $EXIT_CODE_ERROR_WHILE_IMPORTING_SCHEMA
+  fi
+  printInfo "Done."
+}
+
+# Restores Cassandra keyspace backup. This function assumes that schema has been imported to
+# database, and that compatible directory structure has been created in keyspace directory
+# as a result.
+#
+# Parameters [mandatory]:
+#   $1 - directory containing extracted archive,
+#   $2 - target directory to restore backup to.
+#   $3 - keyspace name.
+#
+# Exits:
+#   - with implicit 0, if everything is OK.
+#   - with $EXIT_CODE_INVALID_ARGUMENT if all parameters have not been provided.
+function restoreKeyspaceBackupFromDirectory() {
+  ensureNumberOfParametersForFunction "restoreKeyspaceBackupFromDirectory" $# 3
+
+  local EXTRACTED_DIRECTORY_PATH="$1"
+  local CASSANDRA_KEYSPACE_DIRECTORY="$2"
+  local KEYSPACE_NAME="$3"
+  local SNAPSHOT_DIRECTORY="$EXTRACTED_DIRECTORY_PATH"/"$KEYSPACE_NAME"/snapshot
+
+  for TABLE_DIRECTORY in $(ls "$SNAPSHOT_DIRECTORY"); do
+    local TABLE_NAME=$(extractTableNameFromTableDirectoryName "$TABLE_DIRECTORY")
+    local DESTINATION_DIRECTORY="$CASSANDRA_KEYSPACE_DIRECTORY"/"$KEYSPACE_NAME"/"$TABLE_NAME"
+
+    printInfo "Restoring table ${WHITE}$TABLE_NAME${NC}"
+    cp "$SNAPSHOT_DIRECTORY"/"$TABLE_DIRECTORY"/* -R "$DESTINATION_DIRECTORY"*/
+
+    printInfo "Changing data ownership to ${WHITE}$CASSANDRA_USER.$CASSANDRA_USER${NC}"
+    chown "$CASSANDRA_USER"."$CASSANDRA_USER" "$DESTINATION_DIRECTORY"*/ -R
+
+    printInfo "Refreshing table ${WHITE}$TABLE_NAME${NC}"
+    nodetool -h localhost -p $SERVER_JMX_PORT refresh $KEYSPACE_NAME $TABLE_NAME
+
+    printInfo "Done with table ${WHITE}$TABLE_NAME${NC}"
+  done
+
+  printInfo "Restored all tables."
+}
+
+# Restores Cassandra keyspace backup from archive containing CQL file with schema dump
+# and snapshot directories.
+#
+# Parameters [mandatory]:
+#   $1 - path to archive.
+#   $2 - path to Cassandra data directory.
+#
+# Exits:
+#   - with implicit 0, if everything is OK.
+#   - with $EXIT_CODE_INVALID_ARGUMENT if all parameters have not been provided.
+#   - with $EXIT_CODE_RESOURCE_DOESNT_EXIST if either archive or Cassandra data directory
+#     is non-existing.
+function restoreBackupFromArchive() {
+  # Check for correct number of parameters.
+  ensureNumberOfParametersForFunction "restoreBackupFromArchive" $# 2
+
+  local ARCHIVE_FILE_PATH="$1"
+  local DATA_DIRECTORY="$2"
+  # We will use archive file name as directory for extraction.
+  local CWD="$TMP_RESTORE_DIRECTORY"/$(basename "$ARCHIVE_FILE_PATH")
+
+  # Exit if non-existing resources were provided. We can't do anything without those.
+  errorIfResourcesDoesntExist "$ARCHIVE_FILE_PATH" "$DATA_DIRECTORY"
+
+  # Create temporary directory for unpacking archive, if it doesn't exist.
+  createDirectoryIfDoesNotExist "$CWD"
+
+  # Unpack backup archive. If backup directory contains resources, tar will return non-zero
+  # exit code, thus making script exit.
+  printInfo "Unpacking snapshot archive to $CWD"
+  tar xf "$ARCHIVE_FILE_PATH" --directory "$CWD"
+
+  # Get keyspace name from extracted backup archive directory.
+  local KEYSPACE_NAME=$(getKeyspaceNameFromUnpackedArchive "$CWD")
+  printInfo "Found keyspace ${WHITE}$KEYSPACE_NAME${NC}"
+
+  local BACKUP_ROOT_DIRECTORY="$CWD"/"$KEYSPACE_NAME"
+  printInfo "Found backup root directory ${WHITE}$BACKUP_ROOT_DIRECTORY${NC}"
+
+  # Verify backup content.
+  verifyBackupArchiveContents "$BACKUP_ROOT_DIRECTORY"
+
+  # Begin data restoration process.
+  printInfo "Dropping schema ${WHITE}$KEYSPACE_NAME${NC}"
+  dropSchemaIfExists "$KEYSPACE_NAME"
+
+  printInfo "Cleaning keyspace directory ${WHITE}$CASSANDRA_DATA_DIR/$KEYSPACE_NAME${NC}"
+  ensureCleanKeyspaceDirectory "$CASSANDRA_DATA_DIR"/"$KEYSPACE_NAME"
+
+  printInfo "Executing CQL file ${WHITE}$BACKUP_ROOT_DIRECTORY/$CQL_SCHEMA_FILE${NC}"
+  executeCQLScript "$BACKUP_ROOT_DIRECTORY"/"$CQL_SCHEMA_FILE"
+
+  printInfo "Starting restore backup..."
+  restoreKeyspaceBackupFromDirectory "$CWD" "$CASSANDRA_DATA_DIR" "$KEYSPACE_NAME"
+  printInfo "Done."
+}

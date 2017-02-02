@@ -1,0 +1,152 @@
+#!/usr/bin/env bash
+
+# Common functions and definitions.
+
+# Import configuration.
+. {{ cassandra_backup_etc_directory }}/cassandra_backup.conf
+
+# Import functions and definitions for formatted colorized output to stdout.
+. {{ cassandra_backup_functions_directory }}/pretty_print.sh
+
+# Set verbose execution and exit on first non-zero exit code.
+set -ex
+
+# Exit code definitions.
+EXIT_CODE_RESOURCE_EXISTS=127
+EXIT_CODE_RESOURCE_DOESNT_EXIST=126
+EXIT_CODE_ERROR_BACKING_UP_SCHEMA=125
+EXIT_CODE_INVALID_ARGUMENT=124
+EXIT_CODE_ILLEGAL_NUMBER_OF_ARGUMENTS=123
+EXIT_CODE_NO_KEYSPACE_DIRECTORY=122
+EXIT_CODE_ERROR_WHILE_IMPORTING_SCHEMA=121
+EXIT_CODE_VERIFY_CQL_FILE_MISSING=120
+EXIT_CODE_VERIFY_TABLE_DIRECTORIES_MISING=119
+EXIT_CODE_VERIFY_TABLE_FILES_MISSING=118
+
+# CQL schema dump file
+CQL_SCHEMA_FILE=schema.cql
+
+# Temporary directory.
+TMP=/tmp
+
+# Checks if resources in passed list exist.
+#
+# Parameters:
+#   $@ - list of resources to check
+#
+# Exits:
+#   Implicit 0 if all resources from list exist, $EXIT_CODE_RESOURCE_EXISTS otherwise.
+function errorIfResourcesExists() {
+  for RESOURCE in $@; do
+    if [ -e "$RESOURCE" ]; then
+      printError "Resource ${WHITE}$RESOURCE${NC} already exist."
+      exit $EXIT_CODE_RESOURCE_EXISTS;
+    fi
+  done
+}
+
+# Checks if resources in passed list don't exist.
+#
+# Parameters:
+#   $@ - list of resources to check
+#
+# Exits:
+#   - implicit 0 if all resources from list exist, $EXIT_CODE_RESOURCE_DOESNT_EXIST otherwise.
+function errorIfResourcesDoesntExist() {
+  for RESOURCE in $@; do
+    if [ ! -e "$RESOURCE" ]; then
+      printError "Resource ${WHITE}$RESOURCE${NC} does not exist."
+      exit $EXIT_CODE_RESOURCE_DOESNT_EXIST;
+    fi
+  done
+}
+
+function createDirectoryIfDoesNotExist() {
+  local DIRECTORY="$1"
+  if [ ! -e "$DIRECTORY" ]; then
+    printInfo "Creating directory ${WHITE}$DIRECTORY${NC}"
+    mkdir -p $DIRECTORY
+  fi
+}
+
+
+# Checks if at least one argument of non-zero length is passed to method.
+#
+# Parameters:
+#   $@ - Array of passed arguments.
+#
+# Exits:
+#   - with implicit 0 if at least one argument has been passed.
+#   - with $EXIT_CODE_INVALID_ARGUMENT if zero arguments has been passed.
+function ensureAtLeastOneParameter() {
+  if [ $# -eq 0 ]; then
+    printError "Invalid argument: no argument."
+    exit $EXIT_CODE_INVALID_ARGUMENT
+  fi
+}
+
+# Checks if correct number of arguments has been passed.
+#
+# Parameters [mandatory]:
+#   $1 - identifier name.
+#   $2 - number of parameters.
+#   $3 - number of expected parameters.
+#
+# Exits:
+#   - with implicit 0 if expected number of arguments has been passed.
+#   - with $EXIT_CODE_INVALID_ARGUMENT if different than expected number of arguments
+#     has been passed.
+function ensureNumberOfParametersForFunction() {
+  if [ ! $2 -eq $3 ]; then
+    printError "${YELLOW}$1${NC}: Illegal arguments number, got ${WHITE}$2${NC}, "\
+    "expected ${WHITE}$3${NC}"
+    exit $EXIT_CODE_ILLEGAL_NUMBER_OF_ARGUMENTS
+  fi
+}
+
+# Get date in miliseconds.
+#
+# Returns:
+#   Miliseconds from epoch.
+function getDateInMiliseconds() {
+  echo $(($(date +%s%N)/1000000))
+}
+
+# Verifies that backup archive contents has valid structure.
+#
+# Parameters [mandatory]:
+#   $1 - path to directory holding archive contents.
+#
+# Exits:
+#   - with implicit 0, if everything is OK.
+#   - with $EXIT_CODE_INVALID_ARGUMENT if all parameters have not been provided.
+#   - with $EXIT_CODE_VERIFY_CQL_FILE_MISSING if CQL file containing schema dump is missing.
+#   - with $EXIT_CODE_VERIFY_TABLE_DIRECTORIES_MISING if there is not at least one table directory.
+#   - with $EXIT_CODE_VERIFY_TABLE_FILES_MISSING if files from table directory are missing.
+function verifyBackupArchiveContents() {
+  ensureAtLeastOneParameter $@
+
+  local BACKUP_DIRECTORY="$1"
+  local SNAPSHOT_DIRECTORY="$BACKUP_DIRECTORY"/snapshot
+
+  ls $BACKUP_DIRECTORY/$CQL_SCHEMA_FILE > /dev/null 2>&1
+  if [ "$?" != "0" ]; then
+    printError "CQL schema dump file is missing from backup!"
+    exit $EXIT_CODE_VERIFY_CQL_FILE_MISSING
+  fi
+
+  local NUMBER_OF_TABLE_DIRECTORIES=$(ls -1 "$SNAPSHOT_DIRECTORY" | wc -l)
+  if [ "$NUMBER_OF_TABLE_DIRECTORIES" == "0" ]; then
+    printError "Table directories are missing from backup!"
+    exit $EXIT_CODE_VERIFY_TABLE_DIRECTORIES_MISING
+  fi
+
+  for TABLE_DIRECTORY in $(ls "$SNAPSHOT_DIRECTORY"); do
+    local NUMBER_OF_BACKUP_FILES=$(ls -1 "$SNAPSHOT_DIRECTORY"/"$TABLE_DIRECTORY" | wc -l)
+    if [ "$NUMBER_OF_BACKUP_FILES" == "0" ]; then
+      local TABLE_NAME=$(extractTableNameFromTableDirectoryName "$TABLE_DIRECTORY")
+      printError "Missing backup files for table $TABLE_NAME!"
+      exit $EXIT_CODE_VERIFY_TABLE_FILES_MISSING
+    fi
+  done
+}

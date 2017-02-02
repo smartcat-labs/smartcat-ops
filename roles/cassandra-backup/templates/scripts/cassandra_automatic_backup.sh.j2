@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+
+set -ex
+
+. {{ cassandra_backup_functions_directory }}/cassandra_common_functions.sh
+
+SCRIPT_DISPLAY_NAME="Cassandra: ${LIGHT_PURPLE}Auto backup${NC}"
+
+function uploadToS3Bucket() {
+  ARCHIVE_FILE_PATH="$1"
+  printInfo "Uploading ${WHITE}$ARCHIVE_FILE_PATH${NC} to ${WHITE}$S3_BUCKET_NAME${NC}"
+
+  # Upload backup archive to S3 bucket.
+  s3cmd -c "$S3_CONFIG_FILE_PATH" -P put "$ARCHIVE_FILE_PATH" s3://"$S3_BUCKET_NAME"
+
+  # If error occured, display error message and exit.
+  if [ $? -ne 0 ]; then
+    printError "Error occurred while uploading \
+    ${WHITE}$ARCHIVE_FILE_PATH${NC} to ${WHITE}$S3_BUCKET_NAME${NC}"
+    exit 125
+  fi
+
+  printInfo "Backup archive ${WHITE}$ARCHIVE_FILE_PATH${NC} successfully uploaded."
+}
+
+function dummyUploadToS3Bucket() {
+  printWarning "${WHITE}TODO:${NC} Implement uploading to S3 bucket"
+}
+
+# Directory to store backup archive.
+BACKUP_DIRECTORY=$TMP/daily_backup-$(getDateInMiliseconds)
+printInfo "Created temporary backup directory ${WHITE}$BACKUP_DIRECTORY${NC}"
+
+# If it already exists, stop.
+if [ -e $BACKUP_DIRECTORY ]; then
+  printError "Backup directory already exists"
+  exit 127
+fi
+
+printInfo "Starting automatic backup"
+# Call script for backing up keyspace, and pass it directory where to store archive.
+$(which bash) -c "{{ local_bin_directory }}/cassandra_backup_keyspace.sh \
+\"$AUTOMATIC_BACKUP_KEYSPACE\" \"$BACKUP_DIRECTORY\""
+
+# Backup archive file.
+BACKUP_ARCHIVE="$(ls -1 -t "$BACKUP_DIRECTORY"/"$AUTOMATIC_BACKUP_KEYSPACE"* | head -1)"
+
+printInfo "Verifying if backup archive is readable by tar..."
+# Sanity check; check if retrieved backup archive file is compressed tar archive
+# by using tar to list it's contents and send output to /dev/null. If archive is invalid,
+# tar will exit with non-zero code.
+tar tf "$BACKUP_ARCHIVE" > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+  printError "Archive ${WHITE}$BACKUP_ARCHIVE${NC} is damaged or not compressed tar archive."
+  exit 126
+fi
+printInfo "Seems ok"
+
+# Attempt to upload file to S3 bucket.
+printInfo "Uploading to S3 bucket..."
+uploadToS3Bucket "$BACKUP_ARCHIVE"
+
+# Clean up afterwards.
+printInfo "Removing temporary backup directory: ${WHITE}$BACKUP_DIRECTORY${NC}"
+rm -rvf $BACKUP_DIRECTORY
+printInfo "Done."

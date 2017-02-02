@@ -1,0 +1,51 @@
+Cassandra backup/restore scripts
+================================
+
+This set of scripts enables to backup single keyspace from a single Cassandra DB node.
+
+
+Creating backup
+---------------
+
+Backing up single keystore is done by using 'cassandra_backup_keyspace.sh' script.
+
+```
+$ cassandra_backup_schema.sh {keyspace_name}
+```
+This will produce backup archive file with name pattern: '{keyspace_name}-{timestamp}.tar.bz2'.
+
+Note that backup script will not delete Cassandra snapshot directory and/or its contents.
+
+
+Backup archive format
+---------------------
+
+Format of backup archive is following:
+
+archive_file/
+            |-schema.cql
+            |-snapshot/
+                      |-table_directory_1
+                      |-table_directory_2
+                      |...
+                      |-table_directory_n
+
+'schema.cql' file contains dump of keyspace schema.
+'snapshot' directory contains directories with snapshot of SSTable files.
+
+
+Restoring backup
+----------------
+
+Restoring of backed up snapshot is done using 'cassandra_restore_keyspace.sh'.
+Restore script needs root privileges, it can be run with either 'su' or 'sudo'.
+
+```
+$ cassandra_restore_schema.sh {archive_file}
+```
+This will drop backed up keyspace, if it exists, re-create it from backed-up schema, and copy
+backed-up tables to Cassandra data dir.
+Note that this process will destroy any existing data in specified keyspace.
+
+Restore script will check if backup archive format adheres to expected format, but it cannot
+guarantee data validity.

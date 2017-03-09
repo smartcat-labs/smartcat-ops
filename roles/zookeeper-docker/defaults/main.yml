@@ -1,0 +1,34 @@
+zookeeper_client_port: 2181
+zookeeper_leader_connect_port: 2888
+zookeeper_leader_election_port: 3888
+
+# list of ZooKeeper cluster nodes' hostnames
+zookeeper_host_list: []
+
+# dictionary that defines entries in container's /etc/hosts
+# {"hostname": "ip address", ...}
+zookeeper_etc_hosts: {}
+
+# generates server.x list for ZooKeeper config
+# based on zookeeper_host_list
+zookeeper_servers_list: "
+{%- if zookeeper_host_list is defined -%}
+  {%- for host in zookeeper_host_list -%}
+    server.{{ loop.index }}={{ host }}:{{ zookeeper_leader_connect_port }}:{{ zookeeper_leader_election_port }}{{ ' ' }}
+  {%- endfor -%}
+{%- endif -%}
+"
+
+# generates ZooKeeper node's myId
+# based on zookeeper_host_list
+zookeeper_id: "
+  {%- if zookeeper_host_list is defined -%}
+    {%- for host in zookeeper_host_list -%}
+      {%- if host == inventory_hostname -%}
+        {{ loop.index }} 
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endif -%}
+"
+
+

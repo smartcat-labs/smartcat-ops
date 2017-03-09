@@ -1,0 +1,24 @@
+---
+- name: Create ZooKeeper data container
+  docker_container:
+    name: "zookeeper_data_{{ inventory_hostname_short }}"
+    image: busybox
+    state: present
+    volumes:
+      - /data
+
+- name: Start ZooKeeper container
+  docker_container:
+    name: "zookeeper_{{ inventory_hostname_short }}"
+    image: zookeeper
+    state: started
+    restart_policy: always
+    network_mode: host
+    published_ports: "{{ zookeeper_client_port }},{{ zookeeper_leader_connect_port }},{{ zookeeper_leader_election_port }}" 
+    env:
+      ZOO_MY_ID: "{{ zookeeper_id }}"
+      ZOO_SERVERS: "{{ zookeeper_servers_list }}"
+    etc_hosts: "{{ zookeeper_etc_hosts }}"
+    volumes_from:
+      - "zookeeper_data_{{ inventory_hostname_short }}"
+

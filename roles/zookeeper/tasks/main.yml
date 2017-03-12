@@ -1,0 +1,5 @@
+---
+- include: zookeeper-tarball-install.yml
+- include: systemd-service-setup.yml
+  tags: deploy
+- include: zookeeper-config.yml

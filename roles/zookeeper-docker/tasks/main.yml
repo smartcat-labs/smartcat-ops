@@ -1,24 +1,22 @@
 ---
-- name: Create ZooKeeper data container
-  docker_container:
-    name: "zookeeper_data_{{ inventory_hostname_short }}"
-    image: busybox
-    state: present
-    volumes:
-      - /data
+- name: Ensure ZooKeeper docker configuration directory exists
+  file: path={{zookeeper_docker_conf_dir.host_path}} state=directory
 
-- name: Start ZooKeeper container
-  docker_container:
-    name: "zookeeper_{{ inventory_hostname_short }}"
-    image: zookeeper
-    state: started
-    restart_policy: always
-    network_mode: host
-    published_ports: "{{ zookeeper_client_port }},{{ zookeeper_leader_connect_port }},{{ zookeeper_leader_election_port }}" 
-    env:
-      ZOO_MY_ID: "{{ zookeeper_id }}"
-      ZOO_SERVERS: "{{ zookeeper_servers_list }}"
-    etc_hosts: "{{ zookeeper_etc_hosts }}"
-    volumes_from:
-      - "zookeeper_data_{{ inventory_hostname_short }}"
+- name: Ensure ZooKeeper data directory exists
+  file: path={{ zookeeper_host_data_dir }} state=directory
+  when: zookeeper_data_directories_configuration == "provided"
 
+- name: Ensure ZooKeeper data log directory exists
+  file: path={{ zookeeper_host_data_log_dir }} state=directory
+  when: zookeeper_data_directories_configuration == "provided"
+
+- name: Create ZooKeeper configuration from template
+  template: src=zoo.cfg.j2 dest={{ zookeeper_docker_conf_dir.host_path }}/zoo.cfg
+
+- name: Copy log4j property file
+  copy:
+    src: files/log4j.properties
+    dest: "{{ zookeeper_docker_conf_dir.host_path }}/log4j.properties"
+
+- include: start-zookeeper-data-container.yml
+- include: start-zookeeper-container.yml

@@ -1,9 +1,9 @@
 ---
 - name: Create ZooKeeper data container
   docker_container:
-    name: "zookeeper_data_{{ inventory_hostname_short }}"
+    name: "zookeeper_data_{{ zookeeper_id }}"
     image: busybox
     state: present
     volumes:
       - "{{ zookeeper_data_dir }}"
-  when: zookeeper_data_directories_configuration == "container"
+  when: zookeeper_data_directories_configuration == "containers"

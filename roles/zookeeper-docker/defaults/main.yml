@@ -9,9 +9,9 @@ zookeeper_log_dir: /datalog
 
 # specifies what will container use for data/log directories
 # possible values are:
-#   "container" - use directories on docker container instance (default)
-#   "provided" - use provided host directories
-#   "docker_default" - use docker default host directories
+# - "containers" - mount volumes on zookeeper-docker instance using directories residing on docker data container instance (default)
+# - "dirs"       - mount volumes on zookeeper-docker instance using directories on host, specified in "zookeeper_data_directories" variable
+# - "implicit"   - mount volumes on zookeeper-docker instance using default docker paths
 zookeeper_data_directories_configuration: "{{ zookeeper_data_directories | default('container') }}"
 
 # zookeeper data directory

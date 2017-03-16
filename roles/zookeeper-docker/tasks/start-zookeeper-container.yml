@@ -1,7 +1,7 @@
 ---
 - name: Start ZooKeeper container using specified host data directories
   docker_container:
-    name: "zookeeper_{{ inventory_hostname_short }}"
+    name: "zookeeper_{{ zookeeper_id }}"
     image: zookeeper
     state: started
     restart_policy: always
@@ -14,11 +14,11 @@
       - "{{ zookeeper_conf_dir_volume }}"
       - "{{ zookeeper_data_dir_volume }}"
       - "{{ zookeeper_data_log_dir_volume }}"
-  when: zookeeper_data_directories_configuration == "provided"
+  when: zookeeper_data_directories_configuration == "dirs"
 
 - name: Start ZooKeeper container using default host data directories
   docker_container:
-    name: "zookeeper_{{ inventory_hostname_short }}"
+    name: "zookeeper_{{ zookeeper_id }}"
     image: zookeeper
     state: started
     restart_policy: always
@@ -29,11 +29,11 @@
     etc_hosts: "{{ zookeeper_etc_hosts }}"
     volumes:
       - "{{ zookeeper_conf_dir_volume }}"
-  when: zookeeper_data_directories_configuration == "docker_default"
+  when: zookeeper_data_directories_configuration == "implicit"
 
 - name: Start ZooKeeper container using independent docker container data directories
   docker_container:
-    name: "zookeeper_{{ inventory_hostname_short }}"
+    name: "zookeeper_{{ zookeeper_id }}"
     image: zookeeper
     state: started
     restart_policy: always
@@ -44,5 +44,5 @@
     etc_hosts: "{{ zookeeper_etc_hosts }}"
     volumes:
       - "{{ zookeeper_conf_dir_volume }}"
-    volumes_from: "zookeeper_data_{{ inventory_hostname_short }}"
-  when: zookeeper_data_directories_configuration == "container"
+    volumes_from: "zookeeper_data_{{ zookeeper_id }}"
+  when: zookeeper_data_directories_configuration == "containers"

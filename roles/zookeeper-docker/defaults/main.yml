@@ -1,6 +1,33 @@
 zookeeper_client_port: 2181
 zookeeper_leader_connect_port: 2888
 zookeeper_leader_election_port: 3888
+zookeeper_init_limit: 5
+zookeeper_sync_limit: 2
+zookeeper_tick_time: 2000
+zookeeper_data_dir: /data
+zookeeper_log_dir: /datalog
+
+# specifies what will container use for data/log directories
+# possible values are:
+#   "container" - use directories on docker container instance (default)
+#   "provided" - use provided host directories
+#   "docker_default" - use docker default host directories
+zookeeper_data_directories_configuration: "{{ zookeeper_data_directories | default('container') }}"
+
+# zookeeper data directory
+zookeeper_data_dir_volume: "
+  {%- if zookeeper_host_data_dir is defined -%}
+    {{ zookeeper_host_data_dir }}:{{ zookeeper_data_dir }}
+  {%- endif -%}
+"
+zookeeper_data_log_dir_volume: "
+  {%- if zookeeper_host_data_log_dir is defined -%}
+    {{ zookeeper_host_data_log_dir }}:{{ zookeeper_log_dir }}
+  {%- endif -%}
+"
+
+# zookeeper log directory
+zookeeper_conf_dir_volume: "{{ zookeeper_docker_conf_dir.host_path }}:{{ zookeeper_docker_conf_dir.container_path }}"
 
 # list of ZooKeeper cluster nodes' hostnames
 zookeeper_host_list: []
@@ -9,15 +36,10 @@ zookeeper_host_list: []
 # {"hostname": "ip address", ...}
 zookeeper_etc_hosts: {}
 
-# generates server.x list for ZooKeeper config
-# based on zookeeper_host_list
-zookeeper_servers_list: "
-{%- if zookeeper_host_list is defined -%}
-  {%- for host in zookeeper_host_list -%}
-    server.{{ loop.index }}={{ host }}:{{ zookeeper_leader_connect_port }}:{{ zookeeper_leader_election_port }}{{ ' ' }}
-  {%- endfor -%}
-{%- endif -%}
-"
+# directory for storing ZooKeeper configuration, which will be mounted in Docker container
+zookeeper_docker_conf_dir:
+  host_path: "/var/lib/zookeeper-docker/conf"
+  container_path: "/conf"
 
 # generates ZooKeeper node's myId
 # based on zookeeper_host_list

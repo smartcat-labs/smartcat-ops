@@ -10,10 +10,15 @@
     name: "{{ docker_pkg_name }}"
     state: "present"
 
-- name: Set systemd playbook var
+- name: Use systemd
   set_fact:
     is_systemd: true
   when: ( ansible_lsb.id|lower == "ubuntu" and ansible_distribution_version|version_compare('15.04', '>=') )
+
+- name: Do not use systemd
+  set_fact:
+    is_systemd: false
+  when: ( ansible_lsb.id|lower == "ubuntu" and ansible_distribution_version|version_compare('15.04', '<') )
 
 - name: Set docker daemon options
   copy:
@@ -106,17 +111,10 @@
     - Restart docker
   tags: proxy
 
-- name: Start docker
-  service:
-    name: docker
-    state: started
-  when: docker_pkg_name.find('lxc-docker') != -1 or docker_pkg_name.find('docker-engine') != -1
-
 - name: Start docker.io
   service:
     name: docker
     state: started
-  when: docker_pkg_name == 'docker.io'
 
   # ATTENTION: this task can potentially create new users!
 - name: Add users to the docker group

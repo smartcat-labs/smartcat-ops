@@ -1,0 +1,25 @@
+---
+# docker-engine is the default package name
+docker_pkg_name: docker.io
+docker_apt_cache_valid_time: 600
+
+# docker dns path for docker.io package ( changed at ubuntu 14.04 from docker to docker.io )
+docker_defaults_file_path: /etc/default/docker
+
+# docker_opts: >
+#  -H unix://
+#  -H tcp://0.0.0.0:2375
+#  --log-level=debug
+docker_opts: ""
+## List of users to be added to 'docker' system group (disabled by default)
+## SECURITY WARNING: 
+## Be aware that granted users can easily get full root access on the docker host system!
+docker_group_members: ['ubuntu']
+
+# configurable proxies: a reasonable default is to re-use the proxy from ansible_env:
+# docker_http_proxy: "{{ ansible_env.http_proxy|default('') }}"
+# Notes:
+# if docker_http_proxy==""   the role sets HTTP_PROXY="" (useful to 'empty' existing ENV var)
+# if docker_http_proxy is undefined the role will not set/modify any ENV vars
+docker_http_proxy:
+docker_https_proxy:

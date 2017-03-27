@@ -20,6 +20,7 @@ cassandra_diagnostics_connector_version: "30"
 cassandra_diagnostics_version_file: "/opt/cassandra-diagnostics.version"
 cassandra_diagnostics_configuration_file: "{{ inventory_dir }}/../templates/cassandra-diagnostics.yml.j2"
 cassandra_diagnostics_target_dir: "{{ cassandra_lib_location }}"
+cassandra_data_dir: /var/lib/cassandra
 
 cassandra_diagnostics_binaries:
   - "{{ cassandra_diagnostics_url_core }}"

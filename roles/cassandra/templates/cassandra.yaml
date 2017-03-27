@@ -931,6 +931,11 @@ tracetype_repair_ttl: 604800
 # This threshold can be adjusted to minimize logging if necessary
 # gc_log_threshold_in_ms: 200
 
+# This setting has been removed from default configuration. It makes new
+# (non-seed) nodes automatically migrate the right data to themselves. When
+# initializing a fresh cluster without data, add auto_bootstrap: false.
+auto_bootstrap: true
+
 # GC Pauses greater than gc_warn_threshold_in_ms will be logged at WARN level
 # If unset, all GC Pauses greater than gc_log_threshold_in_ms will log at
 # INFO level

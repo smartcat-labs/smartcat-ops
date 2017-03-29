@@ -1,9 +1,9 @@
 ---
 cassandra_dsc_version: dsc30
 
-cassandra_seeds: 192.168.34.20
-cassandra_listen_address: 192.168.34.20
-cassandra_rpc_address: 192.168.34.20
+cassandra_seeds: "{{ all_cassandra_seeds }}"
+cassandra_listen_address: "{{ ansible_host }}"
+cassandra_rpc_address: "{{ ansible_host }}"
 cassandra_listen_interface: eth1
 cassandra_start_rpc: false
 cassandra_rpc_interface: eth1

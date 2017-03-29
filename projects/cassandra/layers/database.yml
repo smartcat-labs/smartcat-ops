@@ -10,5 +10,4 @@
     - python
     - cassandra
     - cassandra-diagnostics
-    - cassandra-backup
     - s3cmd

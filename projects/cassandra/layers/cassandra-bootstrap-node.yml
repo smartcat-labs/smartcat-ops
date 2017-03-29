@@ -8,6 +8,8 @@
   become: yes
   become_user: root
   become_method: sudo
+  vars:
+    cassandra_seeds: "{% for seed in all_cassandra_seeds.split(',') %}{% if seed == bootstrap_node %}{% else %}{{ seed }},{% endif %}{% endfor %}"
   pre_tasks:
     - name: Deleting Cassandra Folders (data, commitlog, hints)
       file:
@@ -27,3 +29,5 @@
     - name: Removing replace ip line from env file
       lineinfile: dest={{ cassandra_configuration_dir }}/cassandra-env.sh state=absent
         regexp='^JVM_OPTS="\$JVM_OPTS -Dcassandra.replace_address={{ bootstrap_node }}"'
+    - name: Return node to seed list
+      shell: echo 'Returning node to seed list'

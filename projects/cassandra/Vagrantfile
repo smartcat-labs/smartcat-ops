@@ -22,4 +22,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       v.customize [ "modifyvm", :id, "--memory", "2048" ]
     end
   end
+
+  # Database server
+  config.vm.define "node3" do |database|
+    database.vm.hostname = "cassandra"
+    database.vm.network "private_network", ip: "192.168.34.22"
+
+    database.vm.provider "virtualbox" do |v|
+      v.customize [ "modifyvm", :id, "--memory", "2048" ]
+    end
+  end
 end

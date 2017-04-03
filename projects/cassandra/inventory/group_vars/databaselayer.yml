@@ -1,9 +1,9 @@
 ---
 cassandra_dsc_version: dsc30
 
-cassandra_seeds: 192.168.34.20
-cassandra_listen_address: 192.168.34.20
-cassandra_rpc_address: 192.168.34.20
+cassandra_seeds: "{{ all_cassandra_seeds }}"
+cassandra_listen_address: "{{ ansible_host }}"
+cassandra_rpc_address: "{{ ansible_host }}"
 cassandra_listen_interface: eth1
 cassandra_start_rpc: false
 cassandra_rpc_interface: eth1
@@ -20,6 +20,7 @@ cassandra_diagnostics_connector_version: "30"
 cassandra_diagnostics_version_file: "/opt/cassandra-diagnostics.version"
 cassandra_diagnostics_configuration_file: "{{ inventory_dir }}/../templates/cassandra-diagnostics.yml.j2"
 cassandra_diagnostics_target_dir: "{{ cassandra_lib_location }}"
+cassandra_data_dir: /var/lib/cassandra
 
 cassandra_diagnostics_binaries:
   - "{{ cassandra_diagnostics_url_core }}"

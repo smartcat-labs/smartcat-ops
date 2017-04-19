@@ -1,4 +1,7 @@
 ---
 dependencies:
-  - { role: angstwad.docker_ubuntu }
-  
+  - role: angstwad.docker_ubuntu
+    docker_group_members: ['{{ ssh_user }}']
+    pip_version_docker_py: '1.10.6'
+    pip_version_docker_compose: '1.9.0'
+    tags: ['docker']

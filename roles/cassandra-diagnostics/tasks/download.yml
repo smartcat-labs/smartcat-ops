@@ -8,7 +8,7 @@
   file:
     path: "{{ item.path }}"
     state: absent
-  with_items: "{{ old_binaries.files }}"
+  with_items: "{{ old_binaries.files|default([]) }}"
   when: old_binaries is defined
 
 - name: Download binaries

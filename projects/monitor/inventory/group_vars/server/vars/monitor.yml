@@ -23,7 +23,7 @@ grafana_elasticsearch_db: "{{ monitor_elasticsearch_db }}"
 grafana_influxdb_url: "http://{{ ansible_ssh_host }}:{{ monitor_influxdb_port }}"
 grafana_elasticsearch_url: "http://{{ ansible_ssh_host }}:{{ monitor_elasticsearch_port }}"
 
-influxdb_version: "1.0.2-alpine"
+influxdb_version: "1.2.2-alpine"
 influxdb_admin_user: "{{ monitor_user }}"
 influxdb_admin_pwd: "{{ monitor_pwd }}"
 influxdb_metrics_db: "{{ monitor_influxdb_db }}"

@@ -1,0 +1,15 @@
+---
+- hosts: databaselayer
+  become: yes
+  become_user: root
+  become_method: sudo
+  vars:
+    java_binary: 1.8.0_134
+  roles:
+    - hostname
+    - common
+    - java
+    - python
+    - cassandra
+    - cassandra-diagnostics
+    - s3cmd

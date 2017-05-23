@@ -1,0 +1,43 @@
+---
+# Playbook for bootstrapping node. This script should be run when node is being added to cluster
+# as a replacement for some node already in the cluster. Script will erase data and put node in joining state.
+# Node will join cluster after data is streamed off other nodes and then node will function properly in ring.
+
+# --extra-vars="bootstrap_node=cassandra-a-1" is used to pass host which needs to be bootstrapped
+#
+- name: Bootstrap Cassandra Node
+  hosts: "{{ bootstrap_node }}"
+  become: yes
+  become_user: root
+  become_method: sudo
+  vars:
+    cassandra_bootstrapping: true
+    cassandra_env_ops_jvm_opts: |
+      JVM_OPTS="$JVM_OPTS -Dcassandra.replace_address={{ bootstrap_node }}"
+    cassandra_seeds: "{% for seed in all_cassandra_seeds.split(',') %}{% if seed == bootstrap_node %}{% else %}{{ seed }},{% endif %}{% endfor %}"
+  pre_tasks:
+    - name: Deleting Cassandra Folders (data, commitlog, hints)
+      file:
+        state: absent
+        path: "{{ cassandra_data_dir }}/{{ item }}"
+      with_items:
+        - data
+        - commitlog
+        - hints
+        - saved_caches
+    - name: Add Cassandra replace ip line to cassandra-env file
+      lineinfile: dest={{ cassandra_bin_dir }}/cassandra-env.sh
+        line='JVM_OPTS="$JVM_OPTS -Dcassandra.replace_address={{ bootstrap_node }}"'
+  roles:
+    - cassandra
+  post_tasks:
+    - name: Removing replace ip line from env file
+      lineinfile: dest={{ cassandra_bin_dir }}/cassandra-env.sh state=absent
+        regexp='^\s*JVM_OPTS=.*-Dcassandra\.replace_address=.*'
+    - name: Return node to seed list
+      lineinfile:
+        dest: "{{ cassandra_configuration_dir }}/cassandra.yaml"
+        regexp: '(\s+- seeds:\s+")(.*)'
+        line: '\1{{ all_cassandra_seeds}}"'
+        backrefs: yes
+      when: '"{{ bootstrap_node }}" in "{{ all_cassandra_seeds }}"'

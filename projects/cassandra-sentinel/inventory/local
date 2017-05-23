@@ -1,0 +1,12 @@
+[databaselayer]
+192.168.34.20 ansible_ssh_host=192.168.34.20 ansible_ssh_private_key_file=projects/cassandra-sentinel/.vagrant/machines/node1/virtualbox/private_key
+192.168.34.21 ansible_ssh_host=192.168.34.21 ansible_ssh_private_key_file=projects/cassandra-sentinel/.vagrant/machines/node2/virtualbox/private_key
+192.168.34.22 ansible_ssh_host=192.168.34.22 ansible_ssh_private_key_file=projects/cassandra-sentinel/.vagrant/machines/node3/virtualbox/private_key
+
+[databaselayer:vars]
+all_cassandra_seeds="192.168.34.20,192.168.34.21"
+ansible_ssh_port=22
+ansible_ssh_user=vagrant
+
+[kafkanodes]
+172.31.32.81

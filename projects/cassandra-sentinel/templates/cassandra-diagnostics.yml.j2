@@ -1,7 +1,3 @@
-connector:
-  jmxHost: {{ inventory_hostname }}
-  jmxPort: 7199
-
 reporters:
   - reporter: io.smartcat.cassandra.diagnostics.reporter.LogReporter
   - reporter: io.smartcat.cassandra.diagnostics.reporter.KafkaReporter

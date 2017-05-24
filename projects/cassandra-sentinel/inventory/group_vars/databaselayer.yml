@@ -1,0 +1,37 @@
+---
+cassandra_dsc_version: dsc30
+
+cassandra_seeds: "{{ all_cassandra_seeds }}"
+cassandra_listen_address: "{{ ansible_host }}"
+cassandra_rpc_address: "{{ ansible_host }}"
+cassandra_listen_interface: eth1
+cassandra_start_rpc: false
+cassandra_rpc_interface: eth1
+
+cassandra_native_transport_port: 9042
+cluster_name: Cassandra Cluster
+
+cassandra_configuration_dir: "/etc/cassandra/"
+cassandra_lib_location: "/usr/share/cassandra/lib/"
+
+# Diagnostics
+cassandra_diagnostics_version: "1.4.7"
+cassandra_diagnostics_connector_version: "30"
+cassandra_diagnostics_version_file: "/opt/cassandra-diagnostics.version"
+cassandra_diagnostics_configuration_file: "{{ inventory_dir }}/../templates/cassandra-diagnostics.yml.j2"
+cassandra_diagnostics_target_dir: "{{ cassandra_lib_location }}"
+cassandra_data_dir: /var/lib/cassandra
+
+cassandra_diagnostics_binaries:
+  - "{{ cassandra_diagnostics_url_core }}"
+  - "{{ cassandra_diagnostics_url_connector }}"
+  - "{{ cassandra_diagnostics_url_reporter_kafka }}"
+
+cassandra_diagnostics_jmx_host: 127.0.0.1
+cassandra_diagnostics_jmx_port: 7199
+
+s3_cassandra_backup_bucket: cassandra-backup
+s3_bucket_access_key: access_key
+s3_bucket_secret_key: secret_key
+
+cassandra_backup_keyspace: "keyspace"

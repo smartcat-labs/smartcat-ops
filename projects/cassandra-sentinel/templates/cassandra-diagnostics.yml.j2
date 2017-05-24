@@ -1,0 +1,70 @@
+reporters:
+  - reporter: io.smartcat.cassandra.diagnostics.reporter.LogReporter
+  - reporter: io.smartcat.cassandra.diagnostics.reporter.KafkaReporter
+    options:
+      kafkaBootstrapServers: 172.31.32.81:9092
+      kafkaTopic: sentinel
+
+modules:
+  - module: io.smartcat.cassandra.diagnostics.module.heartbeat.HeartbeatModule
+    measurement: heartbeat
+    options:
+      period: 1
+      timeunit: MINUTES
+    reporters:
+      - io.smartcat.cassandra.diagnostics.reporter.LogReporter
+      - io.smartcat.cassandra.diagnostics.reporter.KafkaReporter
+  - module: io.smartcat.cassandra.diagnostics.module.slowquery.SlowQueryModule
+    measurement: queryReport
+    options:
+      slowQueryThresholdInMilliseconds: 25
+      slowQueryReportEnabled: false
+      slowQueryCountReportEnabled: true
+      slowQueryCountReportPeriod: 5
+      slowQueryCountReportTimeunit: MINUTES
+      queryTypesToLog:
+        - ALL
+      tablesForLogging:
+        - smartcat.sentinel
+    reporters:
+      - io.smartcat.cassandra.diagnostics.reporter.KafkaReporter
+  - module: io.smartcat.cassandra.diagnostics.module.requestrate.RequestRateModule
+    measurement: requestRate
+    options:
+      period: 1
+      timeunit: SECONDS
+    reporters:
+      - io.smartcat.cassandra.diagnostics.reporter.KafkaReporter
+  - module: io.smartcat.cassandra.diagnostics.module.metrics.MetricsModule
+    measurement: metrics
+    options:
+      period: 1
+      timeunit: SECONDS
+      metricsPatterns:
+        - "^org.apache.cassandra.metrics.Cache.+"
+        - "^org.apache.cassandra.metrics.Keyspace.rts.+"
+        - "^org.apache.cassandra.metrics.ThreadPools.+"
+        - "^org.apache.cassandra.metrics.Compaction.+"
+        - "^org.apache.cassandra.metrics.CommitLog.TotalCommitLogSize"
+        - "^org.apache.cassandra.metrics.DroppedMessage.+"
+        - "^org.apache.cassandra.metrics.Client.+"
+    reporters:
+      - io.smartcat.cassandra.diagnostics.reporter.KafkaReporter
+  - module: io.smartcat.cassandra.diagnostics.module.status.StatusModule
+    measurement: cassandraStatus
+    options:
+      period: 1
+      timeunit: MINUTES
+      compactionsEnabled: true
+      tpStatsEnabled: false
+      nodeInfoEnabled: true
+    reporters:
+      - io.smartcat.cassandra.diagnostics.reporter.LogReporter
+      - io.smartcat.cassandra.diagnostics.reporter.KafkaReporter
+  - module: io.smartcat.cassandra.diagnostics.module.health.ClusterHealthModule
+    options:
+      period: 10
+      timeunit: SECONDS
+      numberOfUnreachableNodesEnabled: true
+    reporters:
+       - io.smartcat.cassandra.diagnostics.reporter.KafkaReporter

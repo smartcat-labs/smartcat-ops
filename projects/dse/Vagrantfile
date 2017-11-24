@@ -1,0 +1,14 @@
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.vm.box = "ubuntu/trusty64"
+
+  # DSE Search
+  config.vm.define "dsesearch" do |dsesearch|
+    dsesearch.vm.network "private_network", ip: "192.168.88.88"
+
+    dsesearch.vm.provider "virtualbox" do |v|
+      v.customize [ "modifyvm", :id, "--memory", "4096" ]
+    end
+  end
+end

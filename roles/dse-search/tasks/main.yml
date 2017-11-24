@@ -1,0 +1,20 @@
+---
+- name: Add DSE repo "manually" because apt_repository sucks
+  shell: echo "deb https://{{ dsa_email_address }}:{{ dsa_password }}@debian.datastax.com/enterprise stable main" | sudo tee -a /etc/apt/sources.list.d/datastax.sources.list
+
+- name: DSE | Add datastax APT repository keys
+  apt_key: url=http://debian.datastax.com/debian/repo_key state=present
+
+- name: DSE | Install package
+  apt: name=dse-full state=present update-cache=yes force=yes
+
+- name: DSE Search | Enable Search
+  lineinfile:
+    dest: "/etc/default/dse"
+    regexp: "^SOLR_ENABLED=0"
+    line: "SOLR_ENABLED=1"
+
+- name: Start DSE
+  service:
+    name: dse
+    state: started

@@ -2,9 +2,9 @@
 
 Ops scripts and tools. Prerequest for OPS scripts is Vagrant and Ansible.
 
-##Mac installation
+## Mac installation
 
-###Vagrant
+### Vagrant
 
 Vagrant uses VirtualBox. To install it use homebrew and following command:
 ```
@@ -16,7 +16,7 @@ After that you can install vagrant as well with homebrew:
 brew cask install vagrant
 ```
 
-###Ansible
+### Ansible
 
 After that you need to install Ansible and you are good to go:
 ```
@@ -39,7 +39,7 @@ to install those dependencies the following command could be issued:
 ansible-galaxy install -r projects/{project_id}/requirements.yml
 ```
 
-##Folder organization
+## Folder organization
 
 *Roles* folder consists of reusable roles, each is self contained and from layer you define which set of roles
 you want to install for that layer.

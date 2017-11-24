@@ -1,0 +1,5 @@
+---
+- hosts: dsesearch
+  become: true
+  roles:
+    - dse-search
